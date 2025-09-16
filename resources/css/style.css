@@ -27588,7 +27588,7 @@ body:has(.force-white) {
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
-  background-image: url("../resources/images/common/logo.svg");
+  background-image: url("../../resources/images/common/logo.svg");
 }
 #header .mobile-menu {
   display: none;
@@ -27731,7 +27731,7 @@ body:has(.force-white) {
   background-color: transparent;
 }
 .main #header #logo .logo-txt {
-  background-image: url("../resources/images/common/logo-wht.svg");
+  background-image: url("../../resources/images/common/logo-wht.svg");
 }
 .main #header #gnb {
   display: -webkit-box;
