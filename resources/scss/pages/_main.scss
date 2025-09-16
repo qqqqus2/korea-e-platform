@@ -11,12 +11,15 @@
       display: flex;
       flex: 1;
       justify-content: center;
-      .list-wrap {
+      .gnb-list-wrap {
         display: flex;
       }
       .gnb-list {
         .gnb-link {
           color: #fff;
+          &:hover {
+            color: #2172ec;
+          }
         }
       }
     }
@@ -85,7 +88,8 @@
     text-align: left;
     left: 50%;
     position: absolute;
-    bottom: 37rem;
+    top: 24%;
+    margin-top: 29rem;
     transform: translateX(-50%);
     width: 100%;
     max-width: 128rem;

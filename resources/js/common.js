@@ -102,6 +102,57 @@ function commonUi() {
   const header = document.getElementById('wrap');
   const gnbLinks = document.querySelectorAll('#gnb .gnb-link');
   const gnbBg = document.querySelector('#gnb .gnb-bg');
+  const gnbActiveBar = document.querySelector('.gnb-active-bar');
+  const gnbListWrap = document.querySelector('.gnb-list-wrap');
+  const gnbLists = document.querySelectorAll('.gnb-list');
+
+  // GNB active bar 위치 및 너비 업데이트
+  function updateActiveBar(targetElement, instant = false) {
+    if (!gnbActiveBar || !targetElement) return;
+
+    // gnb-list-wrap 기준으로 상대 위치 계산
+    const wrapRect = gnbListWrap.getBoundingClientRect();
+    const targetRect = targetElement.getBoundingClientRect();
+
+    // 상대 위치 계산
+    const left = targetRect.left - wrapRect.left;
+    const width = targetRect.width;
+
+    // active bar 스타일 적용
+    gnbActiveBar.style.left = left + 'px';
+    gnbActiveBar.style.width = width + 'px';
+    gnbActiveBar.style.opacity = '1';
+
+    if (instant) {
+      gnbActiveBar.style.transition = 'none';
+    } else {
+      gnbActiveBar.style.transition = 'left 0.3s ease, width 0.3s ease, opacity 0.3s ease';
+    }
+  }
+
+  // Active bar 숨기기
+  function hideActiveBar() {
+    if (!gnbActiveBar) return;
+    gnbActiveBar.style.opacity = '0';
+  }
+
+  // 초기 active 메뉴 체크 및 active bar 설정
+  function initActiveBar() {
+    const activeGnbLink = document.querySelector('.gnb-list > .gnb-link.active');
+    if (activeGnbLink) {
+      // 즉시 active bar 위치 설정 (애니메이션 없이)
+      updateActiveBar(activeGnbLink, true);
+
+      // 약간의 지연 후 트랜지션 활성화
+      setTimeout(() => {
+        if (gnbActiveBar) {
+          gnbActiveBar.style.transition = 'left 0.3s ease, width 0.3s ease, opacity 0.3s ease';
+        }
+      }, 100);
+    } else {
+      hideActiveBar();
+    }
+  }
 
   // depth-2 메뉴 중 가장 높은 height 계산
   function setGnbBgHeight() {
@@ -125,17 +176,22 @@ function commonUi() {
     }
   }
 
-  gnbLinks.forEach((link) => {
-    // 마우스 오버 이벤트
-    link.addEventListener('mouseenter', () => {
+  // 각 gnb-list에 이벤트 추가
+  gnbLists.forEach((gnbList) => {
+    const mainLink = gnbList.querySelector('.gnb-link');
+
+    // gnb-list에 마우스 오버시 active bar 업데이트
+    gnbList.addEventListener('mouseenter', () => {
       header.classList.add('gnbOpen');
       setGnbBgHeight();
+      updateActiveBar(mainLink);
     });
 
     // 포커스 이벤트
-    link.addEventListener('focus', () => {
+    mainLink.addEventListener('focus', () => {
       header.classList.add('gnbOpen');
       setGnbBgHeight();
+      updateActiveBar(mainLink);
     });
   });
 
@@ -150,6 +206,15 @@ function commonUi() {
       // 마우스가 header 밖으로 나갔을 때만 처리
       if (!headerElement.contains(e.relatedTarget)) {
         header.classList.remove('gnbOpen');
+
+        // 기존에 active 클래스가 있는 메뉴가 있으면 그 위치로 돌아가기
+        const activeGnbLink = document.querySelector('.gnb-list > .gnb-link.active');
+        if (activeGnbLink) {
+          updateActiveBar(activeGnbLink);
+        } else {
+          hideActiveBar();
+        }
+
         // 모든 depth-2 메뉴의 height 초기화
         const depth2Menus = document.querySelectorAll('#gnb .depth-2');
         depth2Menus.forEach((menu) => {
@@ -163,20 +228,42 @@ function commonUi() {
   }
 
   // 포커스가 GNB 영역 밖으로 나갈 때 클래스 제거
-  gnbLinks[gnbLinks.length - 1].addEventListener('blur', (e) => {
-    setTimeout(() => {
-      if (!gnb.contains(document.activeElement)) {
-        header.classList.remove('gnbOpen');
-        // 모든 depth-2 메뉴의 height 초기화
-        const depth2Menus = document.querySelectorAll('#gnb .depth-2');
-        depth2Menus.forEach((menu) => {
-          menu.style.height = '';
-        });
-        if (gnbBg) {
-          gnbBg.style.height = '';
+  const lastGnbLink = document.querySelector('#gnb .depth-2:last-child .gnb-link:last-child') || gnbLinks[gnbLinks.length - 1];
+  if (lastGnbLink) {
+    lastGnbLink.addEventListener('blur', (e) => {
+      setTimeout(() => {
+        if (!gnb.contains(document.activeElement)) {
+          header.classList.remove('gnbOpen');
+
+          // 기존에 active 클래스가 있는 메뉴가 있으면 그 위치로 돌아가기
+          const activeGnbLink = document.querySelector('.gnb-list > .gnb-link.active');
+          if (activeGnbLink) {
+            updateActiveBar(activeGnbLink);
+          } else {
+            hideActiveBar();
+          }
+
+          // 모든 depth-2 메뉴의 height 초기화
+          const depth2Menus = document.querySelectorAll('#gnb .depth-2');
+          depth2Menus.forEach((menu) => {
+            menu.style.height = '';
+          });
+          if (gnbBg) {
+            gnbBg.style.height = '';
+          }
         }
-      }
-    }, 100);
+      }, 100);
+    });
+  }
+  // 페이지 로드시 초기 active bar 설정
+  initActiveBar();
+
+  // window resize 시 active bar 위치 재조정
+  window.addEventListener('resize', () => {
+    const activeGnbLink = document.querySelector('.gnb-list > .gnb-link.active');
+    if (activeGnbLink) {
+      updateActiveBar(activeGnbLink, true);
+    }
   });
 }
 

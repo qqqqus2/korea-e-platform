@@ -27615,10 +27615,18 @@ body:has(.force-white) {
       -ms-flex-pack: center;
           justify-content: center;
 }
-#header #gnb .list-wrap {
+#header #gnb .gnb-list-wrap {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  position: relative;
+}
+#header #gnb .gnb-active-bar {
+  position: absolute;
+  bottom: -0.1rem;
+  background-color: #2172ec;
+  height: 0.4rem;
+  left: 0;
 }
 #header #gnb .gnb-list {
   -webkit-box-flex: 1;
@@ -27634,6 +27642,27 @@ body:has(.force-white) {
   line-height: 2.9rem;
   text-align: center;
   min-width: 19.5rem;
+  -webkit-transition: 0.3s color cubic-bezier(0.075, 0.82, 0.165, 1);
+  transition: 0.3s color cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+#header #gnb .gnb-list .gnb-link:after {
+  content: "";
+  display: block;
+  position: absolute;
+  bottom: -0.1rem;
+  background-color: #2172ec;
+  height: 0.4rem;
+  left: 50%;
+  right: 50%;
+  -webkit-transition: 0.5s all cubic-bezier(0.075, 0.82, 0.165, 1);
+  transition: 0.5s all cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+#header #gnb .gnb-list .gnb-link.active, #header #gnb .gnb-list .gnb-link:hover {
+  color: #2172ec;
+}
+#header #gnb .gnb-list .gnb-link.active:after, #header #gnb .gnb-list .gnb-link:hover:after {
+  left: 0;
+  right: 0;
 }
 #header #gnb .depth-2 {
   visibility: hidden;
@@ -27764,13 +27793,16 @@ body:has(.force-white) {
       -ms-flex-pack: center;
           justify-content: center;
 }
-.main #header #gnb .list-wrap {
+.main #header #gnb .gnb-list-wrap {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
 }
 .main #header #gnb .gnb-list .gnb-link {
   color: #fff;
+}
+.main #header #gnb .gnb-list .gnb-link:hover {
+  color: #2172ec;
 }
 .main #header .marketPlace-btn .btn-arrow {
   color: #fff;
@@ -27838,7 +27870,8 @@ body:has(.force-white) {
   text-align: left;
   left: 50%;
   position: absolute;
-  bottom: 37rem;
+  top: 24%;
+  margin-top: 29rem;
   -webkit-transform: translateX(-50%);
           transform: translateX(-50%);
   width: 100%;

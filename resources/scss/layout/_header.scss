@@ -5,6 +5,7 @@
   left: 0;
   z-index: 100;
   background-color: #fff;
+
   &.fixed {
     z-index: 30;
     transition: transform 0.3s;
@@ -58,8 +59,16 @@
     display: flex;
     flex: 1;
     justify-content: center;
-    .list-wrap {
+    .gnb-list-wrap {
       display: flex;
+      position: relative;
+    }
+    .gnb-active-bar {
+      position: absolute;
+      bottom: -0.1rem;
+      background-color: #2172ec;
+      height: 0.4rem;
+      left: 0;
     }
     .gnb-list {
       flex: 1;
@@ -72,6 +81,26 @@
         line-height: 2.9rem;
         text-align: center;
         min-width: 19.5rem;
+        transition: 0.3s color cubic-bezier(0.075, 0.82, 0.165, 1);
+        &:after {
+          content: '';
+          display: block;
+          position: absolute;
+          bottom: -0.1rem;
+          background-color: #2172ec;
+          height: 0.4rem;
+          left: 50%;
+          right: 50%;
+          transition: 0.5s all cubic-bezier(0.075, 0.82, 0.165, 1);
+        }
+        &.active,
+        &:hover {
+          color: #2172ec;
+          &:after {
+            left: 0;
+            right: 0;
+          }
+        }
       }
     }
     .depth-2 {
