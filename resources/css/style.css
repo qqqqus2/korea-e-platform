@@ -27701,7 +27701,7 @@ body:has(.force-white) {
 }
 .gnbOpen #header #logo .logo-txt,
 .main.gnbOpen #header #logo .logo-txt {
-  background-image: url("../resources/images/common/logo.svg");
+  background-image: url("../../resources/images/common/logo.svg");
 }
 .gnbOpen #header .gnb-bg,
 .main.gnbOpen #header .gnb-bg {
