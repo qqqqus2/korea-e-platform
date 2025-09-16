@@ -5,6 +5,13 @@
   left: 0;
   z-index: 100;
   background-color: #fff;
+  &.fixed {
+    z-index: 30;
+    transition: transform 0.3s;
+    &.is-up {
+      transform: translateY(-100%);
+    }
+  }
   .gnb-bg {
     display: block;
     height: 0;
@@ -19,8 +26,7 @@
     background-color: #fff;
     transition: 0.3s cubic-bezier(0.075, 0.82, 0.165, 1) height;
   }
-  &.fixed {
-  }
+
   .inner {
     width: 100%;
     max-width: 100%;
@@ -52,10 +58,10 @@
     display: flex;
     flex: 1;
     justify-content: center;
-    ul {
+    .list-wrap {
       display: flex;
     }
-    li {
+    .gnb-list {
       flex: 1;
       .gnb-link {
         display: block;
@@ -65,7 +71,7 @@
         font-weight: 700;
         line-height: 2.9rem;
         text-align: center;
-        min-width: 15.5rem;
+        min-width: 19.5rem;
       }
     }
     .depth-2 {
@@ -79,7 +85,6 @@
       justify-content: flex-start;
       top: 11.7rem;
       min-width: 0;
-      padding: 1.6rem 0;
       z-index: 20;
       border-left: 0.1rem solid #f0f0f0;
       transition: 0.3s cubic-bezier(0.075, 0.82, 0.165, 1) height;
@@ -142,7 +147,7 @@
       visibility: visible;
     }
     #gnb {
-      li {
+      .gnb-list {
         .gnb-link {
           color: #24252b;
         }
@@ -150,6 +155,7 @@
       .depth-2 {
         visibility: visible;
         opacity: 1;
+        padding: 2.4rem 0;
       }
     }
     .marketPlace-btn {

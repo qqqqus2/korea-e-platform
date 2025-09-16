@@ -53,7 +53,7 @@ function mainUI() {
         el: '.swiper-pagination',
         clickable: true,
         renderBullet: function (index, className) {
-          return '<span class="' + className + '" data-index="' + index + '"><em>0' + (index + 1) + '</em><strong class="progressbar"><i class="progress"></i></strong></span>';
+          return '<span class="' + className + '" data-index="' + index + '"><em>' + (index + 1) + '</em><strong class="progressbar"><i class="progress"></i></strong></span>';
         },
         type: 'bullets'
       },
@@ -175,3 +175,179 @@ function mainUI() {
   /* 메인 배너 스와이퍼(영상 제어 포함) - 끝 */
 }
 mainUI();
+
+/* Container 패럴렉스 스크롤 */
+(function() {
+  let isScrolling = false;
+  let currentSection = 0;
+  const sections = document.querySelectorAll('.container, #footer');
+  const totalSections = sections.length;
+
+  // 각 섹션의 높이를 100vh로 설정
+  function setSectionHeights() {
+    sections.forEach(section => {
+      if (section.classList.contains('container')) {
+        section.style.height = '100vh';
+        section.style.overflow = 'hidden';
+      }
+    });
+  }
+
+  // 현재 스크롤 위치에 맞는 섹션 찾기
+  function findCurrentSection() {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const windowHeight = window.innerHeight;
+
+    for (let i = 0; i < totalSections; i++) {
+      const sectionTop = sections[i].offsetTop;
+      const sectionBottom = sectionTop + sections[i].offsetHeight;
+
+      if (scrollTop >= sectionTop - windowHeight / 2 && scrollTop < sectionBottom - windowHeight / 2) {
+        return i;
+      }
+    }
+    return currentSection;
+  }
+
+  // 특정 섹션으로 스크롤
+  function scrollToSection(index) {
+    if (index < 0 || index >= totalSections || isScrolling) return;
+
+    isScrolling = true;
+    currentSection = index;
+
+    // 모든 섹션에서 active 클래스 제거
+    sections.forEach(section => {
+      section.classList.remove('active');
+    });
+
+    const targetSection = sections[index];
+    const targetPosition = targetSection.offsetTop;
+
+    // 현재 섹션에 active 클래스 추가
+    targetSection.classList.add('active');
+
+    // 부드러운 스크롤 애니메이션
+    window.scrollTo({
+      top: targetPosition,
+      behavior: 'smooth'
+    });
+
+    // 스크롤 애니메이션이 끝난 후 플래그 리셋
+    setTimeout(() => {
+      isScrolling = false;
+    }, 1000);
+  }
+
+  // 마우스 휠 이벤트 핸들러
+  function handleWheel(e) {
+    e.preventDefault();
+
+    if (isScrolling) return;
+
+    const delta = e.deltaY || e.wheelDelta * -1;
+
+    if (delta > 0) {
+      // 아래로 스크롤
+      if (currentSection < totalSections - 1) {
+        scrollToSection(currentSection + 1);
+      }
+    } else {
+      // 위로 스크롤
+      if (currentSection > 0) {
+        scrollToSection(currentSection - 1);
+      }
+    }
+  }
+
+  // 키보드 이벤트 핸들러 (Page Up/Down, 화살표 키)
+  function handleKeydown(e) {
+    if (isScrolling) return;
+
+    switch(e.key) {
+      case 'ArrowDown':
+      case 'PageDown':
+        e.preventDefault();
+        if (currentSection < totalSections - 1) {
+          scrollToSection(currentSection + 1);
+        }
+        break;
+      case 'ArrowUp':
+      case 'PageUp':
+        e.preventDefault();
+        if (currentSection > 0) {
+          scrollToSection(currentSection - 1);
+        }
+        break;
+    }
+  }
+
+  // 터치 이벤트 처리 (모바일)
+  let touchStartY = 0;
+  let touchEndY = 0;
+
+  function handleTouchStart(e) {
+    touchStartY = e.touches[0].clientY;
+  }
+
+  function handleTouchEnd(e) {
+    touchEndY = e.changedTouches[0].clientY;
+
+    if (isScrolling) return;
+
+    const swipeDistance = touchStartY - touchEndY;
+    const minSwipeDistance = 50;
+
+    if (Math.abs(swipeDistance) > minSwipeDistance) {
+      if (swipeDistance > 0 && currentSection < totalSections - 1) {
+        // 위로 스와이프 (아래로 스크롤)
+        scrollToSection(currentSection + 1);
+      } else if (swipeDistance < 0 && currentSection > 0) {
+        // 아래로 스와이프 (위로 스크롤)
+        scrollToSection(currentSection - 1);
+      }
+    }
+  }
+
+  // 창 크기 변경시 섹션 높이 재설정
+  function handleResize() {
+    setSectionHeights();
+    // 현재 섹션으로 다시 스크롤 (위치 보정)
+    if (!isScrolling) {
+      const targetPosition = sections[currentSection].offsetTop;
+      window.scrollTo(0, targetPosition);
+    }
+  }
+
+  // 초기화
+  function init() {
+    setSectionHeights();
+    currentSection = findCurrentSection();
+
+    // 첫 번째 섹션에 active 클래스 추가
+    if (sections[currentSection]) {
+      sections[currentSection].classList.add('active');
+    }
+
+    // 이벤트 리스너 등록
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('keydown', handleKeydown);
+    window.addEventListener('resize', handleResize);
+
+    // 모바일 터치 이벤트
+    document.addEventListener('touchstart', handleTouchStart, { passive: true });
+    document.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+    // 페이지 로드시 첫 번째 섹션으로 스크롤
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100);
+  }
+
+  // DOM 로드 완료 후 초기화
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
