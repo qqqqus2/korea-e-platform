@@ -1,1 +1,10 @@
 // 공통 레이아웃
+#wrap {
+}
+
+.inner {
+  width: 100%;
+  max-width: 124rem;
+  padding: 0 4rem;
+  margin: auto;
+}

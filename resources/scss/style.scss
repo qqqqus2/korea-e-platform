@@ -5,8 +5,12 @@
 @import 'base/font';
 
 //공통 레이아웃
+@import 'layout/common';
 @import 'layout/layout';
 
 // 공통 네비게이션
 @import 'layout/header';
 @import 'layout/footer';
+
+// pages
+@import 'pages/main';

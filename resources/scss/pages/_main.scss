@@ -1,0 +1,143 @@
+// 메인
+.main {
+  #header {
+    background-color: transparent;
+    #logo {
+      .logo-txt {
+        background-image: url('/resources/images/common/logo-wht.svg');
+      }
+    }
+    #gnb {
+      display: flex;
+      flex: 1;
+      justify-content: center;
+      ul {
+        display: flex;
+      }
+      li {
+        .gnb-link {
+          color: #fff;
+        }
+      }
+    }
+    .marketPlace-btn {
+      .btn-arrow {
+        color: #fff;
+        &:after {
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M8.33333 5.83301L12.5 9.99967L8.33333 14.1663' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        }
+      }
+    }
+  }
+  .main-banner {
+    height: 108rem;
+    position: relative;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .swiper-slide {
+      &::after {
+        content: '';
+        z-index: 3;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: 0;
+      }
+      &.slide-1 {
+        &::after {
+          background: linear-gradient(0deg, rgba(0, 14, 34, 0.4) 0%, rgba(0, 14, 34, 0.4) 100%);
+        }
+      }
+    }
+  }
+  .pagination-wrap {
+    max-width: 144rem;
+    padding: 0 2rem;
+    text-align: left;
+    left: 50%;
+    position: absolute;
+    bottom: 12rem;
+    transform: translateX(-50%);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    z-index: 10;
+    .swiper-pagination {
+      display: inline-block;
+      position: relative;
+      width: auto;
+      top: 0;
+    }
+    .progressbar {
+      display: none;
+      width: 15.6rem;
+      height: 0.2rem;
+      margin: 0 0.6rem;
+      position: relative;
+      top: 0.2rem;
+      background-color: rgba(255, 255, 255, 0.35);
+      .progress {
+        background-color: #fff;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 0%;
+        height: 100%;
+        transition: width linear;
+      }
+    }
+    .swiper-pagination-bullet {
+      width: auto;
+      height: auto;
+      background: none;
+      color: #fff;
+      border-radius: 0;
+      display: inline-flex;
+      align-items: center;
+      opacity: 0.8;
+      //영상 슬라이드
+      &:nth-child(1) {
+        .progressbar {
+          .progress {
+            // 영상 길이가 25초
+            transition-duration: 25.5s;
+          }
+        }
+      }
+      //이미지 슬라이드
+      .progressbar {
+        .progress {
+          // 5초 뒤에 슬라이드 이동
+          transition-duration: 4.5s;
+        }
+      }
+    }
+    .swiper-pagination-bullet-active {
+      opacity: 1;
+      .progressbar {
+        display: block;
+      }
+    }
+  }
+  .swiper-control {
+    position: relative;
+    width: 2rem;
+    top: 0.1rem;
+    height: 2rem;
+    box-sizing: border-box;
+    margin-left: 0.6rem;
+    background-size: 2rem auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'%3E%3Crect x='5.5' y='4' width='3' height='12' rx='1' fill='white'/%3E%3Crect x='11.5' y='4' width='3' height='12' rx='1' fill='white'/%3E%3C/svg%3E");
+  }
+  .pause {
+    .swiper-control {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M15.6174 9.14852C16.2515 9.53906 16.2515 10.4609 15.6174 10.8515L7.27438 15.9894C6.60812 16.3997 5.75 15.9204 5.75 15.1379L5.75 4.86205C5.75 4.07959 6.60812 3.60026 7.27438 4.01057L15.6174 9.14852Z' fill='white'/%3E%3C/svg%3E");
+    }
+  }
+}
