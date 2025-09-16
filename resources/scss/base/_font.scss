@@ -1,0 +1,227 @@
+$fontPath: '/fonts' !default;
+
+/* 
+ * 문제 진단: override 설정이 적용되지 않는 경우의 원인들
+ * 1. 브라우저 지원: override 속성은 Chrome 87+, Firefox 89+에서만 지원
+ * 2. 폰트 우선순위: local() 폰트가 이미 로드되어 override가 무시될 수 있음
+ * 3. CSS 특이성: 다른 폰트 설정이 override를 덮어쓸 수 있음
+ * 4. 캐시 문제: 브라우저나 폰트 캐시로 인해 변경사항이 반영되지 않을 수 있음
+ */
+
+/* 1. 기존 Pretendard 폰트 재정의 (강제 적용) */
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 800;
+  font-display: swap;
+  src: local('Pretendard ExtraBold'), url('#{$fontPath}/pretendard/Pretendard-ExtraBold.subset.woff2') format('woff2');
+  ascent-override: 85%;
+  descent-override: 15%;
+  line-gap-override: 0%;
+  size-adjust: 95%;
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 700;
+  font-display: swap;
+  src: local('Pretendard Bold'), url('#{$fontPath}/pretendard/Pretendard-Bold.subset.woff2') format('woff2');
+  ascent-override: 85%;
+  descent-override: 15%;
+  line-gap-override: 0%;
+  size-adjust: 95%;
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 600;
+  font-display: swap;
+  src: local('Pretendard SemiBold'), url('#{$fontPath}/pretendard/Pretendard-SemiBold.subset.woff2') format('woff2');
+  ascent-override: 85%;
+  descent-override: 15%;
+  line-gap-override: 0%;
+  size-adjust: 95%;
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 500;
+  font-display: swap;
+  src: local('Pretendard Medium'), url('#{$fontPath}/pretendard/Pretendard-Medium.subset.woff2') format('woff2');
+  ascent-override: 85%;
+  descent-override: 15%;
+  line-gap-override: 0%;
+  size-adjust: 95%;
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 400;
+  font-display: swap;
+  src: local('Pretendard Regular'), url('#{$fontPath}/pretendard/Pretendard-Regular.subset.woff2') format('woff2');
+  ascent-override: 85%;
+  descent-override: 15%;
+  line-gap-override: 0%;
+  size-adjust: 95%;
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 300;
+  font-display: swap;
+  src: local('Pretendard Light'), url('#{$fontPath}/pretendard/Pretendard-Light.subset.woff2') format('woff2');
+  ascent-override: 85%;
+  descent-override: 15%;
+  line-gap-override: 0%;
+  size-adjust: 95%;
+}
+
+/* 2. 새로운 폰트 패밀리로 별도 정의 (확실한 적용을 위해) */
+@font-face {
+  font-family: 'Pretendard-Optimized';
+  font-weight: 800;
+  font-display: swap;
+  src: url('#{$fontPath}/pretendard/Pretendard-ExtraBold.subset.woff2') format('woff2');
+  ascent-override: 80%;
+  descent-override: 20%;
+  line-gap-override: 0%;
+  size-adjust: 90%;
+}
+
+@font-face {
+  font-family: 'Pretendard-Optimized';
+  font-weight: 700;
+  font-display: swap;
+  src: url('#{$fontPath}/pretendard/Pretendard-Bold.subset.woff2') format('woff2');
+  ascent-override: 80%;
+  descent-override: 20%;
+  line-gap-override: 0%;
+  size-adjust: 90%;
+}
+
+@font-face {
+  font-family: 'Pretendard-Optimized';
+  font-weight: 600;
+  font-display: swap;
+  src: url('#{$fontPath}/pretendard/Pretendard-SemiBold.subset.woff2') format('woff2');
+  ascent-override: 80%;
+  descent-override: 20%;
+  line-gap-override: 0%;
+  size-adjust: 90%;
+}
+
+@font-face {
+  font-family: 'Pretendard-Optimized';
+  font-weight: 500;
+  font-display: swap;
+  src: url('#{$fontPath}/pretendard/Pretendard-Medium.subset.woff2') format('woff2');
+  ascent-override: 80%;
+  descent-override: 20%;
+  line-gap-override: 0%;
+  size-adjust: 90%;
+}
+
+@font-face {
+  font-family: 'Pretendard-Optimized';
+  font-weight: 400;
+  font-display: swap;
+  src: url('#{$fontPath}/pretendard/Pretendard-Regular.subset.woff2') format('woff2');
+  ascent-override: 80%;
+  descent-override: 20%;
+  line-gap-override: 0%;
+  size-adjust: 90%;
+}
+
+@font-face {
+  font-family: 'Pretendard-Optimized';
+  font-weight: 300;
+  font-display: swap;
+  src: url('#{$fontPath}/pretendard/Pretendard-Light.subset.woff2') format('woff2');
+  ascent-override: 80%;
+  descent-override: 20%;
+  line-gap-override: 0%;
+  size-adjust: 90%;
+}
+
+/* 3. 극단적인 설정으로 변화 확인용 */
+@font-face {
+  font-family: 'Pretendard-Test';
+  font-weight: 400;
+  font-display: swap;
+  src: url('#{$fontPath}/pretendard/Pretendard-Regular.subset.woff2') format('woff2');
+  ascent-override: 60%;
+  descent-override: 40%;
+  line-gap-override: 0%;
+  size-adjust: 75%;
+}
+
+/* 4. Fallback 폰트들도 동일한 메트릭으로 맞춤 */
+@font-face {
+  font-family: 'Pretendard-fallback';
+  src: local('Apple SD Gothic Neo'), local('Malgun Gothic'), local('맑은 고딕'), local('Noto Sans KR');
+  ascent-override: 85%;
+  descent-override: 15%;
+  line-gap-override: 0%;
+  size-adjust: 95%;
+}
+
+@font-face {
+  font-family: 'Pretendard-apple-fallback';
+  src: local('Apple SD Gothic Neo');
+  ascent-override: 85%;
+  descent-override: 15%;
+  line-gap-override: 0%;
+  size-adjust: 100%; /* macOS는 더 정확함 */
+}
+
+@font-face {
+  font-family: 'Pretendard-malgun-fallback';
+  src: local('Malgun Gothic'), local('맑은 고딕');
+  ascent-override: 85%;
+  descent-override: 15%;
+  line-gap-override: 0%;
+  size-adjust: 88%; /* Windows는 더 작게 조정 */
+}
+
+/* 5. 브라우저 지원 확인을 위한 CSS */
+@supports (ascent-override: 85%) {
+  .font-override-supported {
+    content: '✅ 이 브라우저는 font override를 지원합니다';
+  }
+}
+
+@supports not (ascent-override: 85%) {
+  .font-override-not-supported {
+    content: '❌ 이 브라우저는 font override를 지원하지 않습니다';
+  }
+
+  /* fallback: 전통적인 방법으로 line-height 조정 */
+  body {
+    line-height: 1.4 !important;
+  }
+}
+
+/* 6. 디버깅을 위한 시각적 가이드 (개발 중에만 사용) */
+.font-debug {
+  position: relative;
+  background: linear-gradient(to bottom, transparent 0%, transparent 20%, rgba(255, 0, 0, 0.1) 20%, rgba(255, 0, 0, 0.1) 80%, transparent 80%, transparent 100%);
+}
+
+.font-debug::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: red;
+  transform: translateY(-50%);
+}
+
+/* 7. 강제 적용을 위한 important 버전 */
+.force-pretendard-override {
+  font-family: 'Pretendard-Optimized', 'Pretendard-fallback', sans-serif !important;
+}
+
+.force-pretendard-test {
+  font-family: 'Pretendard-Test', 'Pretendard-fallback', sans-serif !important;
+}
