@@ -41,7 +41,7 @@
       background-repeat: no-repeat;
       background-size: contain;
       background-position: center;
-      background-image: url('/resources/images/common/logo.svg');
+      background-image: url('../resources/images/common/logo.svg');
     }
   }
 
@@ -133,7 +133,7 @@
     background-color: #fff;
     #logo {
       .logo-txt {
-        background-image: url('/resources/images/common/logo.svg');
+        background-image: url('../resources/images/common/logo.svg');
       }
     }
     .gnb-bg {
