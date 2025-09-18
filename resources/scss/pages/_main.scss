@@ -1,37 +1,5 @@
 // 메인
 .main {
-  #header {
-    background-color: transparent;
-    #logo {
-      .logo-txt {
-        background-image: url('../../resources/images/common/logo-wht.svg');
-      }
-    }
-    #gnb {
-      display: flex;
-      flex: 1;
-      justify-content: center;
-      .gnb-list-wrap {
-        display: flex;
-      }
-      .gnb-list {
-        .gnb-link {
-          color: #fff;
-          &:hover {
-            color: #2172ec;
-          }
-        }
-      }
-    }
-    .marketPlace-btn {
-      .btn-arrow {
-        color: #fff;
-        &:after {
-          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M8.33333 5.83301L12.5 9.99967L8.33333 14.1663' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-        }
-      }
-    }
-  }
   .main-banner {
     height: 100%;
     position: relative;
@@ -45,8 +13,8 @@
       text-align: left;
       left: 50%;
       position: absolute;
-      top: 24%;
-      transform: translateX(-50%);
+      top: 50%;
+      transform: translate(-50%, -50%);
       width: 100%;
       max-width: 128rem;
       display: flex;
@@ -54,6 +22,9 @@
       gap: 2rem 0;
       color: #fff;
       z-index: 5;
+      opacity: 0;
+      margin-left: 10rem;
+      transition: 0.5s 0.5s ease-in all;
       .tit {
         font-size: 8rem;
         font-weight: 700;
@@ -64,6 +35,12 @@
         font-size: 2.8rem;
         font-weight: 700;
         line-height: 3.9rem;
+      }
+    }
+    .swiper-slide-active {
+      .banner-txt {
+        opacity: 1;
+        margin: 0;
       }
     }
     .swiper-slide {
@@ -88,9 +65,9 @@
     text-align: left;
     left: 50%;
     position: absolute;
-    top: 24%;
-    margin-top: 29rem;
-    transform: translateX(-50%);
+    top: 50%;
+    margin-top: 16rem;
+    transform: translate(-50%, -50%);
     width: 100%;
     max-width: 128rem;
     display: flex;
@@ -175,8 +152,156 @@
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M15.6174 9.14852C16.2515 9.53906 16.2515 10.4609 15.6174 10.8515L7.27438 15.9894C6.60812 16.3997 5.75 15.9204 5.75 15.1379L5.75 4.86205C5.75 4.07959 6.60812 3.60026 7.27438 4.01057L15.6174 9.14852Z' fill='white'/%3E%3C/svg%3E");
     }
   }
-}
+  // Container 섹션 - 덮어쓰기 효과
+  .container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 1;
+    transform: translateY(100%);
+    transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+    will-change: transform;
+    overflow: hidden;
+    background-color: #fff;
 
-.container {
-  height: 100dvh;
+    &.active {
+      transform: translateY(0);
+      z-index: 10;
+    }
+
+    &.prev {
+      transform: translateY(0);
+      z-index: 5;
+    }
+
+    &.active + .container {
+      transform: translateY(100%);
+      z-index: 10;
+    }
+
+    // 첫 번째 섹션은 항상 보이도록
+    &#section-01 {
+      transform: translateY(0);
+      z-index: 5;
+    }
+
+    // 마지막 container가 위로 올라갈 때 footer 노출
+    &:last-of-type.footer-visible {
+      transform: translateY(-100%);
+    }
+  }
+
+  // Footer는 마지막 섹션 아래에서 올라오는 효과
+  #footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 30rem;
+    z-index: 1;
+    transform: translateY(100%);
+    transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+    will-change: transform;
+    background: #fff;
+
+    &.active {
+      transform: translateY(0);
+      z-index: 8;
+    }
+  }
+}
+.section-tit {
+  margin-top: 16rem;
+  font-size: 9.6rem;
+  color: #090a10;
+  font-weight: 700;
+  margin-bottom: 4.8rem;
+}
+.strength-list {
+  width: 100%;
+  overflow: visible;
+  padding: 0;
+
+  .swiper-wrapper {
+    align-items: center;
+  }
+
+  .swiper-slide {
+    height: 56rem;
+    width: 29rem;
+    transition: all 0.6s ease;
+    padding: 0 1.6rem;
+    &.swiper-slide-active {
+      width: 76rem !important;
+    }
+
+    // 복제된 슬라이드도 동일한 스타일 적용
+    &.swiper-slide-duplicate {
+      &.swiper-slide-active {
+        width: 76rem !important;
+      }
+    }
+  }
+  .item {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100%;
+    color: #fff;
+    display: flex;
+    justify-content: start;
+    align-items: end;
+    padding: 4rem 3rem;
+    .text-box {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem 0;
+      flex-wrap: wrap;
+      .idx {
+        font-size: 0;
+      }
+      .tit {
+        font-size: 2.8rem;
+        font-weight: 700;
+      }
+      .sub-tit {
+        font-size: 0;
+      }
+    }
+    &.item-1 {
+      background-image: url('../../resources/images/main/img-item-1.png');
+    }
+    &.item-2 {
+      background-image: url('../../resources/images/main/img-item-2.png');
+    }
+    &.item-3 {
+      background-image: url('../../resources/images/main/img-item-3.png');
+    }
+    &.item-4 {
+      background-image: url('../../resources/images/main/img-item-4.png');
+    }
+    &.item-5 {
+      background-image: url('../../resources/images/main/img-item-5.png');
+    }
+  }
+  .swiper-slide-active {
+    .item {
+      .text-box {
+        .idx {
+          font-size: 1.8rem;
+          font-weight: 700;
+        }
+        .tit {
+          font-size: 2.8rem;
+          font-weight: 700;
+        }
+        .sub-tit {
+          font-size: 1.8rem;
+          font-weight: 400;
+        }
+      }
+    }
+  }
 }

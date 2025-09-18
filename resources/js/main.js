@@ -48,10 +48,17 @@ function mainUI() {
 
     $mainBanner = new Swiper('.main-banner', {
       loop: true,
+      allowTouchMove: false,
+      allowSlideNext: true,
+      allowSlidePrev: false,
+      effect: 'fade',
+      fadeEffect: {
+        crossFade: true
+      },
       preventInteractionOnTransition: false,
       pagination: {
         el: '.swiper-pagination',
-        clickable: true,
+        clickable: false,
         renderBullet: function (index, className) {
           return '<span class="' + className + '" data-index="' + index + '"><em>' + (index + 1) + '</em><strong class="progressbar"><i class="progress"></i></strong></span>';
         },
@@ -66,17 +73,21 @@ function mainUI() {
           videoPlayStatus = 'PLAYING';
 
           const activeBullet = document.querySelector('.swiper-pagination-bullet-active .progress');
-          activeBullet.style.width = '0%';
-          setTimeout(function () {
-            activeBullet.style.width = '100%';
-          }, 100);
+          if (activeBullet) {
+            activeBullet.style.width = '0%';
+            setTimeout(function () {
+              activeBullet.style.width = '100%';
+            }, 100);
+          }
         },
         slideChangeTransitionStart() {
           let index = $mainBanner.activeIndex;
           let currentSlide = $($mainBanner.slides[index]);
           let currentSlideType = currentSlide.data('slide-type');
           const activeBullet = document.querySelector('.swiper-pagination-bullet-active .progress');
-          activeBullet.style.width = '0%';
+          if (activeBullet) {
+            activeBullet.style.width = '0%';
+          }
 
           if (videoPlayStatus === 'PLAYING') {
             player.pause();
@@ -99,36 +110,21 @@ function mainUI() {
         },
         slideChangeTransitionEnd() {
           const activeBullet = document.querySelector('.swiper-pagination-bullet-active .progress');
-          activeBullet.style.width = '100%';
+          if (activeBullet) {
+            activeBullet.style.width = '100%';
+          }
         }
       }
     });
 
     swiperInitialized = true; // Swiper 초기화
   }
+
   function handleVideoEnded() {
     next();
   }
-  // 비디오 플레이어 준비가 완료되면 실행될 함수
-  $(document).ready(function () {
-    player.ready(function () {
-      setVideoStyles(); // 비디오 스타일 적용
-      initializeSwiper();
-      player.on('ended', handleVideoEnded);
-
-      // 화면 크기 변경 시 비디오 스타일 재적용
-      $(window).on('resize', function () {
-        setVideoStyles();
-      });
-    });
-  });
-
-  function prev() {
-    $mainBanner.slidePrev();
-  }
 
   function next() {
-    // $mainBanner.slideNext();
     if (!swiperBanner.classList.contains('pause')) {
       $mainBanner.slideNext();
     }
@@ -139,7 +135,29 @@ function mainUI() {
       next();
     }, waiting);
   }
-  runNext();
+
+  // 비디오 플레이어 준비가 완료되면 실행될 함수
+  $(document).ready(function () {
+    player.ready(function () {
+      setVideoStyles(); // 비디오 스타일 적용
+      initializeSwiper();
+      player.on('ended', handleVideoEnded);
+
+      // 첫 번째 슬라이드가 이미지면 타이머 시작
+      setTimeout(() => {
+        let currentSlide = $($mainBanner.slides[$mainBanner.activeIndex]);
+        let currentSlideType = currentSlide.data('slide-type');
+        if (currentSlideType === 'img') {
+          runNext();
+        }
+      }, 1000);
+
+      // 화면 크기 변경 시 비디오 스타일 재적용
+      $(window).on('resize', function () {
+        setVideoStyles();
+      });
+    });
+  });
 
   const controlSwiper = document.querySelector('.swiper-control');
   if (controlSwiper) {
@@ -166,18 +184,34 @@ function mainUI() {
           player.play();
           videoPlayStatus = 'PLAYING';
         } else if (currentSlideType === 'img') {
-          // 이미지 슬라이드인 경우 다음 슬라이드로
+          // 이미지 슬라이드인 경우 타이머 재시작
           runNext();
         }
       }
     });
   }
   /* 메인 배너 스와이퍼(영상 제어 포함) - 끝 */
+
+  /* strength-list 스와이퍼 - 시작 */
+  $(document).ready(function () {
+    const strengthSwiper = new Swiper('.strength-list', {
+      slidesPerView: 'auto',
+      spaceBetween: 0,
+      centeredSlides: true,
+      loop: true,
+      loopFillGroupWithBlank: false,
+      speed: 600,
+      grabCursor: true,
+      observer: true,
+      observeParents: true
+    });
+  });
+  /* strength-list 스와이퍼 - 끝 */
 }
 mainUI();
 
 /* Container 패럴렉스 스크롤 */
-(function() {
+(function () {
   let isScrolling = false;
   let currentSection = 0;
   const sections = document.querySelectorAll('.container, #footer');
@@ -185,7 +219,7 @@ mainUI();
 
   // 각 섹션의 높이를 100vh로 설정
   function setSectionHeights() {
-    sections.forEach(section => {
+    sections.forEach((section) => {
       if (section.classList.contains('container')) {
         section.style.height = '100vh';
         section.style.overflow = 'hidden';
@@ -209,34 +243,86 @@ mainUI();
     return currentSection;
   }
 
-  // 특정 섹션으로 스크롤
+  // 특정 섹션으로 전환 (방향성 덮어쓰기 효과)
   function scrollToSection(index) {
     if (index < 0 || index >= totalSections || isScrolling) return;
 
     isScrolling = true;
+    const prevSectionIndex = currentSection;
+    const isGoingDown = index > currentSection; // 아래로 이동하는지 확인
     currentSection = index;
-
-    // 모든 섹션에서 active 클래스 제거
-    sections.forEach(section => {
-      section.classList.remove('active');
-    });
-
     const targetSection = sections[index];
-    const targetPosition = targetSection.offsetTop;
+    const isFooter = targetSection.id === 'footer';
+    const lastContainer = document.querySelector('.container:last-of-type');
+    const header = document.getElementById('header');
 
-    // 현재 섹션에 active 클래스 추가
-    targetSection.classList.add('active');
+    // 모든 섹션에서 클래스 초기화
+    sections.forEach((section, i) => {
+      section.classList.remove('active', 'prev', 'next', 'footer-visible');
 
-    // 부드러운 스크롤 애니메이션
-    window.scrollTo({
-      top: targetPosition,
-      behavior: 'smooth'
+      // Footer가 아닌 섹션들에 대한 처리
+      if (section.id !== 'footer') {
+        if (isGoingDown) {
+          // 아래로 이동: 현재보다 작은 섹션들은 prev
+          if (i < index && !isFooter) {
+            section.classList.add('prev');
+          }
+        } else {
+          // 위로 이동: 현재보다 큰 섹션들은 next (아래로 내려감)
+          if (i > index && !isFooter) {
+            section.classList.add('next');
+          }
+          // 현재보다 작은 섹션들은 prev (보임 상태)
+          if (i < index && !isFooter) {
+            section.classList.add('prev');
+          }
+        }
+      }
     });
 
-    // 스크롤 애니메이션이 끝난 후 플래그 리셋
+    // Header 배경 제어 - section-01이 active일 때만 bg-trans 클래스 추가
+    if (header) {
+      if (targetSection.id === 'section-01') {
+        header.classList.add('bg-trans');
+      } else {
+        header.classList.remove('bg-trans');
+      }
+    }
+
+    // Footer로 이동하는 경우
+    if (isFooter) {
+      // Footer를 active로 설정
+      targetSection.classList.add('active');
+      // 마지막 container를 위로 올림
+      if (lastContainer) {
+        lastContainer.classList.add('footer-visible');
+      }
+      // 다른 모든 container들은 prev 상태 유지
+      sections.forEach((section, i) => {
+        if (section.id !== 'footer' && i < index) {
+          section.classList.add('prev');
+        }
+      });
+    } else {
+      // 일반 섹션으로 이동하는 경우
+      targetSection.classList.add('active');
+
+      // Footer에서 다시 위로 올라가는 경우
+      if (prevSectionIndex === totalSections - 1 && index < totalSections - 1) {
+        const footer = document.getElementById('footer');
+        if (footer) {
+          footer.classList.remove('active');
+        }
+        if (lastContainer) {
+          lastContainer.classList.remove('footer-visible');
+        }
+      }
+    }
+
+    // 애니메이션이 끝난 후 플래그 리셋
     setTimeout(() => {
       isScrolling = false;
-    }, 1000);
+    }, 800);
   }
 
   // 마우스 휠 이벤트 핸들러
@@ -264,7 +350,7 @@ mainUI();
   function handleKeydown(e) {
     if (isScrolling) return;
 
-    switch(e.key) {
+    switch (e.key) {
       case 'ArrowDown':
       case 'PageDown':
         e.preventDefault();
@@ -327,6 +413,12 @@ mainUI();
     // 첫 번째 섹션에 active 클래스 추가
     if (sections[currentSection]) {
       sections[currentSection].classList.add('active');
+    }
+
+    // 첫 번째 섹션이 section-01이면 header에 bg-trans 클래스 추가
+    const header = document.getElementById('header');
+    if (header && sections[currentSection] && sections[currentSection].id === 'section-01') {
+      header.classList.add('bg-trans');
     }
 
     // 이벤트 리스너 등록
