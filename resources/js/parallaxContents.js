@@ -2,15 +2,24 @@
 (function () {
   let isScrolling = false;
   let currentSection = 0;
+  const wrap = document.querySelectorAll('#wrap');
   const sections = document.querySelectorAll('.container, #footer');
   const totalSections = sections.length;
-
+  wrap.classList.add('overflow-hidden');
   // 각 섹션의 높이를 100vh로 설정
   function setSectionHeights() {
     sections.forEach((section) => {
       if (section.classList.contains('container')) {
         section.style.height = '100dvh';
-        //  section.style.overflow = 'hidden';
+        // 컨텐츠가 많은 섹션은 스크롤 가능하도록 설정
+        const contentHeight = section.scrollHeight;
+        const viewportHeight = window.innerHeight;
+        if (contentHeight > viewportHeight) {
+          section.style.overflow = 'auto';
+          section.style.overflowX = 'hidden';
+        } else {
+          section.style.overflow = 'hidden';
+        }
       }
     });
   }
@@ -122,11 +131,34 @@
 
   // 마우스 휠 이벤트 핸들러
   function handleWheel(e) {
-    e.preventDefault();
-
     if (isScrolling) return;
 
+    const activeSection = sections[currentSection];
     const delta = e.deltaY || e.wheelDelta * -1;
+
+    // 현재 섹션이 스크롤 가능한지 확인
+    if (activeSection && activeSection.classList.contains('container')) {
+      const hasScroll = activeSection.scrollHeight > activeSection.clientHeight;
+
+      if (hasScroll) {
+        const scrollTop = activeSection.scrollTop;
+        const scrollHeight = activeSection.scrollHeight;
+        const clientHeight = activeSection.clientHeight;
+        const isAtTop = scrollTop <= 0;
+        const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
+
+        // 섹션 내부에서 스크롤 중이면 기본 동작 허용
+        if (delta > 0 && !isAtBottom) {
+          // 아래로 스크롤 중이고 바닥에 도달하지 않음
+          return;
+        } else if (delta < 0 && !isAtTop) {
+          // 위로 스크롤 중이고 상단에 도달하지 않음
+          return;
+        }
+      }
+    }
+
+    e.preventDefault();
 
     if (delta > 0) {
       // 아래로 스크롤
@@ -166,9 +198,14 @@
   // 터치 이벤트 처리 (모바일)
   let touchStartY = 0;
   let touchEndY = 0;
+  let touchStartScrollTop = 0;
 
   function handleTouchStart(e) {
     touchStartY = e.touches[0].clientY;
+    const activeSection = sections[currentSection];
+    if (activeSection && activeSection.classList.contains('container')) {
+      touchStartScrollTop = activeSection.scrollTop;
+    }
   }
 
   function handleTouchEnd(e) {
@@ -176,8 +213,31 @@
 
     if (isScrolling) return;
 
+    const activeSection = sections[currentSection];
     const swipeDistance = touchStartY - touchEndY;
     const minSwipeDistance = 50;
+
+    // 현재 섹션이 스크롤 가능한지 확인
+    if (activeSection && activeSection.classList.contains('container')) {
+      const hasScroll = activeSection.scrollHeight > activeSection.clientHeight;
+
+      if (hasScroll) {
+        const scrollTop = activeSection.scrollTop;
+        const scrollHeight = activeSection.scrollHeight;
+        const clientHeight = activeSection.clientHeight;
+        const isAtTop = scrollTop <= 0;
+        const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
+
+        // 섹션 내부에서 스크롤 중이면 기본 동작 허용
+        if (swipeDistance > 0 && !isAtBottom) {
+          // 위로 스와이프 (아래로 스크롤) 중이고 바닥에 도달하지 않음
+          return;
+        } else if (swipeDistance < 0 && !isAtTop) {
+          // 아래로 스와이프 (위로 스크롤) 중이고 상단에 도달하지 않음
+          return;
+        }
+      }
+    }
 
     if (Math.abs(swipeDistance) > minSwipeDistance) {
       if (swipeDistance > 0 && currentSection < totalSections - 1) {
