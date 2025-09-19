@@ -90,7 +90,7 @@
         <div class="swiper main-banner">
           <div class="swiper-wrapper">
             <div class="swiper-slide slide-1" data-slide-type="vdo">
-              <video id="bannerVideo" class="video-js" preload="auto" muted poster="../resources/images/main/main-video-thumb-1.png" data-setup="{}">
+              <video id="bannerVideo" class="video-js bottom-video" preload="auto" muted poster="../resources/images/main/main-video-thumb-1.png" data-setup="{}">
                 <source src="../resources/images/main/main-video-1.mp4" type="video/mp4" />
               </video>
               <div class="banner-txt">
@@ -99,14 +99,14 @@
               </div>
             </div>
             <div class="swiper-slide slide-2" data-slide-type="img">
-              <img src="../resources/images/main/main-video-thumb-2.png" alt="" />
+              <img src="../resources/images/main/main-banner-2.png" alt="" />
               <div class="banner-txt">
                 <h5 class="tit">맞춤형 구매 전략, <br />새로운 기준을 제시합니다.</h5>
                 <p class="sub-txt">Tailored strategy, New standard</p>
               </div>
             </div>
             <div class="swiper-slide slide-3" data-slide-type="img">
-              <img src="../resources/images/main/main-video-thumb-3.png" alt="" />
+              <img src="../resources/images/main/main-banner-3.png" alt="" />
               <div class="banner-txt">
                 <h5 class="tit">고객의 필요를 <br />최우선으로 생각합니다</h5>
                 <p class="sub-txt">Tailored strategy, New standard</p>
@@ -219,9 +219,58 @@
         </div>
       </section>
       <section id="section-03" class="container" style="background-color: green"></section>
-      <section id="section-04" class="container" style="background-color: blue"></section>
-      <footer id="footer" style="height: 30rem">
-        <div class="inner"></div>
+      <section id="section-04" class="container">
+        <video id="bottomVideo" class="video-js" preload="auto" muted loop poster="../resources/images/main/main-video-thumb-2.png" data-setup="{}">
+          <source src="../resources/images/main/main-video-2.mp4" type="video/mp4" />
+        </video>
+      </section>
+      <footer id="footer">
+        <div class="inner">
+          <div class="footer-top">
+            <a href="javascript:void(0)" class="logo">코리아 e플랫폼</a>
+            <div class="family-box">
+              <button type="button" class="family-btn" aria-label="패밀리 사이트 리스트 보기">Family Site</button>
+              <!-- <ul class="family-list">
+                <li>list 1</li>
+                <li>list 2</li>
+                <li>list 3</li>
+              </ul> -->
+            </div>
+          </div>
+          <div class="footer-bottom">
+            <div class="left-box">
+              <ul class="menu-list">
+                <li><a href="javascript:void(0)" class="menu-item">개인정보처리방침</a></li>
+                <li><a href="javascript:void(0)" class="menu-item">이메일무단수집거부</a></li>
+                <li><a href="javascript:void(0)" class="menu-item">공인인증서 발급안내</a></li>
+                <li><a href="javascript:void(0)" class="menu-item">사업자정보확인</a></li>
+                <li><a href="javascript:void(0)" class="menu-item">윤리경영제보</a></li>
+              </ul>
+              <ul class="info-list">
+                <li>
+                  <span class="tit">대표이사</span>
+                  <p class="desc">오승엽</p>
+                </li>
+                <li>
+                  <span class="tit">주소</span>
+                  <p class="desc">서울시 강남구 개포로 619 서울강남우체국빌딩 7층</p>
+                </li>
+                <li>
+                  <span class="tit">사업자등록번호</span>
+                  <p class="desc">107-81-85880</p>
+                </li>
+                <li>
+                  <span class="tit">통신판매업신고번호</span>
+                  <p class="desc">2015-서울강남-02012</p>
+                </li>
+              </ul>
+              <span class="copyright-txt">Copyright Ⓒ Korea e platform. All Right Reserved.</span>
+            </div>
+            <div class="right-box">
+              <img src="../resources/images/common/isms.svg" alt="정보보호 관리체계 인증 마크" />
+            </div>
+          </div>
+        </div>
       </footer>
     </div>
 
@@ -231,6 +280,7 @@
     <script src="../resources/js/lib/swiper-bundle.11.0.5.min.js"></script>
     <script src="../resources/js/lib/video.min.js"></script>
     <script src="../resources/js/common.js"></script>
+    <script src="../resources/js/parallaxContents.js"></script>
     <script src="../resources/js/main.js"></script>
   </body>
 </html>

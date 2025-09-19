@@ -49,6 +49,67 @@ function commonUi() {
     }
   });
 
+  // 스크롤 header 고정 스크립트
+  function fixedClassChk(elArray, nowSclTop, sclDirection, sclDistance) {
+    elArray.forEach(function (item) {
+      const itemEnd = getOffset(item).top + item.offsetHeight;
+      if (nowSclTop > itemEnd) {
+        item.classList.add('fixed');
+        if (sclDistance > 5) {
+          if (sclDirection === 'down') {
+            item.classList.add('is-up');
+          } else {
+            item.classList.remove('is-up');
+          }
+        }
+      } else {
+        item.classList.remove('fixed', 'is-up');
+      }
+    });
+  }
+  function getOffset(element) {
+    let $el = element;
+    let $elX = 0;
+    let $elY = 0;
+    let isSticky = false;
+    while ($el && !Number.isNaN($el.offsetLeft) && !Number.isNaN($el.offsetTop)) {
+      let $style = window.getComputedStyle($el);
+      // const $matrix = new WebKitCSSMatrix($style.transform);
+      if ($style.position === 'sticky') {
+        isSticky = true;
+        $el.style.position = 'static';
+      }
+      $elX += $el.offsetLeft;
+      // $elX += $matrix.m41; //translateX
+      $elY += $el.offsetTop;
+      // $elY += $matrix.m42;  //translateY
+      if (isSticky) {
+        isSticky = false;
+        $el.style.position = '';
+        if ($el.getAttribute('style') === '') $el.removeAttribute('style');
+      }
+      $el = $el.offsetParent;
+      if ($el !== null) {
+        $style = window.getComputedStyle($el);
+        $elX += parseInt($style.borderLeftWidth);
+        $elY += parseInt($style.borderTopWidth);
+      }
+    }
+    return { left: $elX, top: $elY };
+  }
+
+  $scrollTopBtn.on('click', function () {
+    $('html, body').animate({ scrollTop: 0 }, 500);
+  });
+  $scrollTopBtn.hide();
+  $(window).scroll(function () {
+    if ($(this).scrollTop() > 100) {
+      $scrollTopBtn.fadeIn();
+    } else {
+      $scrollTopBtn.fadeOut();
+    }
+  });
+
   // GNB 메뉴 hover/focus 이벤트
   const header = document.getElementById('wrap');
   const gnbLinks = document.querySelectorAll('#gnb .gnb-link');

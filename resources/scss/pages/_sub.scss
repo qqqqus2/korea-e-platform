@@ -1,8 +1,8 @@
 .sub-visual {
   .title-section {
-    padding-block: 10.6rem;
     display: flex;
     align-items: flex-end;
+    padding-block: 10.6rem;
     justify-content: space-between;
     .sub-tit {
       font-size: 2.8rem;
@@ -178,6 +178,20 @@
   }
 }
 
+section {
+  &.top-pd {
+    padding-top: 11.7rem;
+  }
+  &.section-pd {
+    padding-block: 12rem 16rem;
+    @media screen and (max-width: 768px) {
+      padding-block: 8rem;
+    }
+  }
+  &.gray-bg {
+    background-color: #f6f8f9;
+  }
+}
 .mro-category {
   width: 100%;
   position: relative;

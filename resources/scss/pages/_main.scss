@@ -124,7 +124,7 @@
       .progressbar {
         .progress {
           // 5초 뒤에 슬라이드 이동
-          transition-duration: 4.5s;
+          transition-duration: 7.5s;
         }
       }
     }
@@ -150,65 +150,6 @@
   .pause {
     .swiper-control {
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M15.6174 9.14852C16.2515 9.53906 16.2515 10.4609 15.6174 10.8515L7.27438 15.9894C6.60812 16.3997 5.75 15.9204 5.75 15.1379L5.75 4.86205C5.75 4.07959 6.60812 3.60026 7.27438 4.01057L15.6174 9.14852Z' fill='white'/%3E%3C/svg%3E");
-    }
-  }
-  // Container 섹션 - 덮어쓰기 효과
-  .container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    z-index: 1;
-    transform: translateY(100%);
-    transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
-    will-change: transform;
-    overflow: hidden;
-    background-color: #fff;
-
-    &.active {
-      transform: translateY(0);
-      z-index: 10;
-    }
-
-    &.prev {
-      transform: translateY(0);
-      z-index: 5;
-    }
-
-    &.active + .container {
-      transform: translateY(100%);
-      z-index: 10;
-    }
-
-    // 첫 번째 섹션은 항상 보이도록
-    &#section-01 {
-      transform: translateY(0);
-      z-index: 5;
-    }
-
-    // 마지막 container가 위로 올라갈 때 footer 노출
-    &:last-of-type.footer-visible {
-      transform: translateY(-100%);
-    }
-  }
-
-  // Footer는 마지막 섹션 아래에서 올라오는 효과
-  #footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 30rem;
-    z-index: 1;
-    transform: translateY(100%);
-    transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
-    will-change: transform;
-    background: #fff;
-
-    &.active {
-      transform: translateY(0);
-      z-index: 8;
     }
   }
 }
@@ -304,4 +245,26 @@
       }
     }
   }
+
+  .bottom-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.vjs-tech {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Video.js 컨트롤 숨기기 */
+.vjs-control-bar,
+.vjs-loading-spinner,
+.vjs-big-play-button {
+  display: none !important;
 }
