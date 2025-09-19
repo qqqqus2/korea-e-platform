@@ -8,3 +8,42 @@
   padding: 0 4rem;
   margin: auto;
 }
+
+section {
+  &.top-pd {
+    padding-top: 11.7rem;
+  }
+  &.section-pd {
+    padding-block: 12rem 16rem;
+    @media screen and (max-width: 768px) {
+      padding-block: 8rem;
+    }
+  }
+  &.gray-bg {
+    background-color: #f6f8f9;
+  }
+}
+
+.w-1280 {
+  width: 100%;
+  position: relative;
+  max-width: 132.8rem;
+  padding: 0 2.4rem;
+  margin: 0 auto;
+}
+
+.pc-show {
+  display: block;
+}
+.mob-show {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  .pc-show {
+    display: none;
+  }
+  .mob-show {
+    display: block;
+  }
+}
