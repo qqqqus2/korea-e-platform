@@ -195,6 +195,13 @@ section {
   }
   &.gray-bg {
     background-color: #f6f8f9;
+    @media screen and (max-width: 768px) {
+      .contents {
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+    }
   }
 }
 .mro-category {
