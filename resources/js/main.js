@@ -1,6 +1,8 @@
 /* main ui */
 let $mainBanner;
-let activeBullet;
+let activeBullet; // 메인 프로그래스
+let strengthSwiper; // 전역 변수로 선언 (window 객체에 할당하기 위해)
+
 function mainUI() {
   /* 메인 배너 스와이퍼(영상 제어 포함) - 시작 */
   let videoPlayStatus = 'PAUSE';
@@ -201,30 +203,54 @@ function mainUI() {
 
   /* strength-list 스와이퍼 - 시작 */
   $(document).ready(function () {
-    const strengthSwiper = new Swiper('.strength-list', {
+    strengthSwiper = new Swiper('.strength-list', {
       slidesPerView: 'auto',
-      spaceBetween: 0,
+      spaceBetween: 32,
       centeredSlides: true,
       loop: true,
-      speed: 300,
-      autoplay: 500,
-      grabCursor: true,
+      autoplay: {
+        delay: 2500,
+        disableOnInteraction: false
+      },
+      allowTouchMove: false, // 드래그 비활성화
       observer: true,
       observeParents: true,
-      slideToClickedSlide: true,
       watchSlidesProgress: true,
       loopedSlides: 5,
       on: {
-        touchEnd: function (swiper) {
-          setTimeout(() => {
-            swiper.slideToClosest(300);
-          }, 50);
+        init: function () {
+          // autoplay는 section-02가 active 될 때 시작
+          this.autoplay.stop();
+
+          // 첫 번째 active 슬라이드에 test 클래스 추가
+          const activeSlide = this.slides[this.activeIndex];
+          if (activeSlide) {
+            activeSlide.classList.add('test');
+          }
         },
-        momentumBounce: function (swiper) {
-          swiper.slideToClosest(300);
+        slideChange: function () {
+          // 슬라이드 변경 시 모든 test 클래스 제거
+          this.slides.forEach((slide) => {
+            slide.classList.remove('test');
+          });
+
+          // 새로운 active 슬라이드에 test 클래스 추가
+          setTimeout(() => {
+            const activeSlide = this.slides[this.activeIndex];
+            if (activeSlide) {
+              activeSlide.classList.add('test');
+            }
+          }, 0);
+        },
+
+        slideChangeTransitionEnd: function () {
+          this.wrapperEl.style.marginLeft = '23.5rem';
         }
       }
     });
+
+    // 전역 변수로 설정하여 다른 파일에서 접근 가능하도록
+    window.strengthSwiper = strengthSwiper;
   });
   /* strength-list 스와이퍼 - 끝 */
 }

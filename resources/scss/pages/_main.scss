@@ -1,5 +1,8 @@
 // 메인
 .main {
+  .container {
+    display: block;
+  }
   .main-banner {
     height: 100%;
     position: relative;
@@ -172,16 +175,20 @@
   .swiper-slide {
     height: 56rem;
     width: 29rem;
-    transition: all 0.6s ease;
-    padding: 0 1.6rem;
-    &.swiper-slide-active {
-      width: 76rem !important;
+    transition: width 0.3s ease;
+    // padding: 0 1.6rem;
+    flex-shrink: 0;
+    overflow: hidden;
+
+    &.test {
+      width: 76rem;
     }
 
-    // 복제된 슬라이드도 동일한 스타일 적용
-    &.swiper-slide-duplicate {
-      &.swiper-slide-active {
-        width: 76rem !important;
+    // 이전/다음 슬라이드 스타일
+    &.swiper-slide-prev,
+    &.swiper-slide-next {
+      .item {
+        width: 29rem;
       }
     }
   }
@@ -261,10 +268,11 @@
   height: 100%;
   object-fit: cover;
 }
-
 /* Video.js 컨트롤 숨기기 */
-.vjs-control-bar,
+.vjs-poster,
+.vjs-hidden,
+.vjs-text-track-display,
 .vjs-loading-spinner,
-.vjs-big-play-button {
+.vjs-control-bar {
   display: none !important;
 }

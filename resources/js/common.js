@@ -27,10 +27,22 @@ function commonUi() {
 
   // GNB 모바일 메뉴
   const gnbBtn = document.querySelector('#header .btn-gnb');
+  const wrap = document.querySelector('#wrap');
 
   gnbBtn.addEventListener('click', function (e) {
     e.stopPropagation();
-    document.body.classList.toggle('gnbOpen');
+    wrap.classList.toggle('mGnbOpen');
+
+    // mGnbOpen 클래스가 있으면 parallax 기능 중단
+    if (wrap.classList.contains('mGnbOpen')) {
+      if (window.disableParallax) {
+        window.disableParallax();
+      }
+    } else {
+      if (window.enableParallax) {
+        window.enableParallax();
+      }
+    }
   });
 
   //스크롤 탑 버튼
@@ -169,6 +181,7 @@ function commonUi() {
   // depth-2 메뉴 중 가장 높은 height 계산
   function setGnbBgHeight() {
     const depth2Menus = document.querySelectorAll('#gnb .depth-2');
+    const outLinkMenu = document.querySelector('#header .out-link-menu');
     let maxHeight = 0;
 
     depth2Menus.forEach((menu) => {
@@ -183,27 +196,60 @@ function commonUi() {
       menu.style.height = maxHeight * 0.1 + 'rem';
     });
 
+    outLinkMenu.style.height = maxHeight * 0.1 + 'rem';
+
     if (gnbBg) {
       gnbBg.style.height = maxHeight * 0.1 + 'rem';
     }
+  }
+
+  // 화면 크기 체크 함수
+  function isDesktop() {
+    return window.innerWidth >= 1025;
   }
 
   // 각 gnb-list에 이벤트 추가
   gnbLists.forEach((gnbList) => {
     const mainLink = gnbList.querySelector('.gnb-link');
 
-    // gnb-list에 마우스 오버시 active bar 업데이트
+    // gnb-list에 마우스 오버시 active bar 업데이트 (데스크탑에서만)
     gnbList.addEventListener('mouseenter', () => {
-      header.classList.add('gnbOpen');
-      setGnbBgHeight();
-      updateActiveBar(mainLink);
+      if (isDesktop()) {
+        header.classList.add('gnbOpen');
+        setGnbBgHeight();
+        updateActiveBar(mainLink);
+      }
     });
 
-    // 포커스 이벤트
+    gnbList.addEventListener('mousedown', () => {
+      if (!isDesktop()) {
+        // 현재 클릭한 gnb-list
+        const currentGnbList = gnbList.closest('.gnb-list');
+
+        if (currentGnbList) {
+          // 현재 active 상태인지 확인
+          const isCurrentlyActive = currentGnbList.classList.contains('active');
+
+          // 모든 gnb-list에서 active 클래스 제거
+          document.querySelectorAll('.gnb-list').forEach((list) => {
+            list.classList.remove('active');
+          });
+
+          // 현재 클릭한 요소가 active가 아니었다면 active 추가 (toggle 효과)
+          if (!isCurrentlyActive) {
+            currentGnbList.classList.add('active');
+          }
+        }
+      }
+    });
+
+    // 포커스 이벤트 (데스크탑에서만)
     mainLink.addEventListener('focus', () => {
-      header.classList.add('gnbOpen');
-      setGnbBgHeight();
-      updateActiveBar(mainLink);
+      if (isDesktop()) {
+        header.classList.add('gnbOpen');
+        setGnbBgHeight();
+        updateActiveBar(mainLink);
+      }
     });
   });
 
@@ -211,40 +257,14 @@ function commonUi() {
   const headerElement = document.getElementById('header');
   const gnb = document.getElementById('gnb');
 
-  // GNB 영역을 벗어날 때 처리
+  // GNB 영역을 벗어날 때 처리 (데스크탑에서만)
   if (headerElement && gnb) {
     // 마우스가 header 영역을 완전히 벗어날 때
     headerElement.addEventListener('mouseleave', (e) => {
-      // 마우스가 header 밖으로 나갔을 때만 처리
-      if (!headerElement.contains(e.relatedTarget)) {
-        header.classList.remove('gnbOpen');
-
-        // 기존에 active 클래스가 있는 메뉴가 있으면 그 위치로 돌아가기
-        const activeGnbLink = document.querySelector('.gnb-list > .gnb-link.active');
-        if (activeGnbLink) {
-          updateActiveBar(activeGnbLink);
-        } else {
-          hideActiveBar();
-        }
-
-        // 모든 depth-2 메뉴의 height 초기화
-        const depth2Menus = document.querySelectorAll('#gnb .depth-2');
-        depth2Menus.forEach((menu) => {
-          menu.style.height = '';
-        });
-        if (gnbBg) {
-          gnbBg.style.height = '';
-        }
-      }
-    });
-  }
-
-  // 포커스가 GNB 영역 밖으로 나갈 때 클래스 제거
-  const lastGnbLink = document.querySelector('#gnb .depth-2:last-child .gnb-link:last-child') || gnbLinks[gnbLinks.length - 1];
-  if (lastGnbLink) {
-    lastGnbLink.addEventListener('blur', (e) => {
-      setTimeout(() => {
-        if (!gnb.contains(document.activeElement)) {
+      // 데스크탑에서만 처리
+      if (isDesktop()) {
+        // 마우스가 header 밖으로 나갔을 때만 처리
+        if (!headerElement.contains(e.relatedTarget)) {
           header.classList.remove('gnbOpen');
 
           // 기존에 active 클래스가 있는 메뉴가 있으면 그 위치로 돌아가기
@@ -264,17 +284,63 @@ function commonUi() {
             gnbBg.style.height = '';
           }
         }
-      }, 100);
+      }
+    });
+  }
+
+  // 포커스가 GNB 영역 밖으로 나갈 때 클래스 제거 (데스크탑에서만)
+  const lastGnbLink = document.querySelector('#gnb .depth-2:last-child .gnb-link:last-child') || gnbLinks[gnbLinks.length - 1];
+  if (lastGnbLink) {
+    lastGnbLink.addEventListener('blur', (e) => {
+      // 데스크탑에서만 처리
+      if (isDesktop()) {
+        setTimeout(() => {
+          if (!gnb.contains(document.activeElement)) {
+            header.classList.remove('gnbOpen');
+
+            // 기존에 active 클래스가 있는 메뉴가 있으면 그 위치로 돌아가기
+            const activeGnbLink = document.querySelector('.gnb-list > .gnb-link.active');
+            if (activeGnbLink) {
+              updateActiveBar(activeGnbLink);
+            } else {
+              hideActiveBar();
+            }
+
+            // 모든 depth-2 메뉴의 height 초기화
+            const depth2Menus = document.querySelectorAll('#gnb .depth-2');
+            depth2Menus.forEach((menu) => {
+              menu.style.height = '';
+            });
+            if (gnbBg) {
+              gnbBg.style.height = '';
+            }
+          }
+        }, 100);
+      }
     });
   }
   // 페이지 로드시 초기 active bar 설정
   initActiveBar();
 
-  // window resize 시 active bar 위치 재조정
+  // window resize 시 active bar 위치 재조정 및 모바일에서 gnbOpen 클래스 제거
   window.addEventListener('resize', () => {
     const activeGnbLink = document.querySelector('.gnb-list > .gnb-link.active');
-    if (activeGnbLink) {
+    if (activeGnbLink && isDesktop()) {
       updateActiveBar(activeGnbLink, true);
+    }
+
+    // 모바일로 변경되면 gnbOpen 클래스 제거
+    if (!isDesktop()) {
+      header.classList.remove('gnbOpen');
+
+      // depth-2 메뉴 height 초기화
+      const depth2Menus = document.querySelectorAll('#gnb .depth-2');
+      depth2Menus.forEach((menu) => {
+        menu.style.height = '';
+      });
+      if (gnbBg) {
+        gnbBg.style.height = '';
+      }
     }
   });
 }
