@@ -221,24 +221,29 @@ function commonUi() {
       }
     });
 
-    gnbList.addEventListener('mousedown', () => {
+    mainLink.addEventListener('mousedown', (e) => {
       if (!isDesktop()) {
-        // 현재 클릭한 gnb-list
-        const currentGnbList = gnbList.closest('.gnb-list');
+        // depth-2 내부의 링크는 제외
+        if (!e.target.closest('.depth-2')) {
+          // 현재 클릭한 gnb-list
+          const currentGnbList = gnbList.closest('.gnb-list');
 
-        if (currentGnbList) {
-          // 현재 active 상태인지 확인
-          const isCurrentlyActive = currentGnbList.classList.contains('active');
+          if (currentGnbList) {
+            // 현재 active 상태인지 확인
+            const isCurrentlyActive = currentGnbList.classList.contains('active');
 
-          // 모든 gnb-list에서 active 클래스 제거
-          document.querySelectorAll('.gnb-list').forEach((list) => {
-            list.classList.remove('active');
-          });
+            // 모든 gnb-list에서 active 클래스 제거
+            document.querySelectorAll('.gnb-list').forEach((list) => {
+              list.classList.remove('active');
+            });
 
-          // 현재 클릭한 요소가 active가 아니었다면 active 추가 (toggle 효과)
-          if (!isCurrentlyActive) {
-            currentGnbList.classList.add('active');
+            // 현재 클릭한 요소가 active가 아니었다면 active 추가 (toggle 효과)
+            if (!isCurrentlyActive) {
+              currentGnbList.classList.add('active');
+            }
           }
+
+          e.preventDefault();
         }
       }
     });
@@ -247,6 +252,7 @@ function commonUi() {
     mainLink.addEventListener('focus', () => {
       if (isDesktop()) {
         header.classList.add('gnbOpen');
+        wrap.classList.remove('mGnbOpen');
         setGnbBgHeight();
         updateActiveBar(mainLink);
       }

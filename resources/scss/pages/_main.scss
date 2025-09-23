@@ -260,7 +260,8 @@
   }
 }
 
-.vjs-tech {
+.vjs-tech,
+.bottomVideo-dimensions {
   position: absolute;
   top: 0;
   left: 0;
@@ -276,6 +277,8 @@
 .vjs-control-bar {
   display: none !important;
 }
+
+// why choose us
 .service-wrap {
   display: flex;
   justify-content: center;
@@ -320,6 +323,121 @@
       margin-top: 1.2rem;
       font-size: 2rem;
       line-height: 2.6rem;
+    }
+  }
+}
+
+// overseas corporation
+.corporation-wrap {
+  display: flex;
+  gap: 0 3.2rem;
+  margin-top: 7.3rem;
+}
+.corporation-item {
+  width: 62.4rem;
+  height: 37.2rem;
+  text-align: left;
+  padding: 0 0 4.8rem 4.8rem;
+  border-radius: 1.2rem;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background-color: #10141b;
+  background-repeat: no-repeat;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  &.europe {
+    background-image: url('../../resources/images/main/bg-europe.svg');
+    .point-1 {
+      right: 12.5rem;
+      top: 4.6rem;
+    }
+    .point-2 {
+      right: 14.5rem;
+      top: 9.6rem;
+    }
+    .point-3 {
+      right: 10.5rem;
+      top: 14.6rem;
+    }
+  }
+  &.china {
+    background-image: url('../../resources/images/main/bg-china.svg');
+    .point-1 {
+      right: 10.7rem;
+      top: 7.3rem;
+    }
+    .point-2 {
+      right: 11.6rem;
+      top: 11.8rem;
+    }
+  }
+  .item-tit {
+    color: #fff;
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 4.8rem;
+  }
+  .corporation-list {
+    font-size: 1.8rem;
+    font-weight: 400;
+    line-height: 2.6rem;
+    margin-top: 2.2rem;
+    li {
+      position: relative;
+      padding-left: 1.2rem;
+      &::before {
+        content: '';
+        display: block;
+        width: 0.2rem;
+        height: 0.2rem;
+        background-color: #fff;
+        border-radius: 50%;
+        position: absolute;
+        left: 0;
+        top: 1rem;
+      }
+    }
+  }
+  .spot-point {
+    position: absolute;
+    width: 2.2rem;
+    height: 2.2rem;
+    background-color: rgba(44, 91, 201, 0.8);
+    border-radius: 50%;
+    &:after {
+      content: '';
+      position: absolute;
+      width: 0.7rem;
+      height: 0.7rem;
+      background-color: #6bf5f8;
+      border-radius: 50%;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 50%;
+      background-color: $input-focus-line;
+      opacity: 0.3;
+      animation: ripple 1.5s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+    }
+  }
+  @keyframes ripple {
+    0% {
+      transform: scale(1);
+      opacity: 0.8;
+    }
+    100% {
+      transform: scale(5);
+      opacity: 0;
     }
   }
 }
