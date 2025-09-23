@@ -3,10 +3,17 @@
   #section-01 {
     background-color: transparent;
     display: block;
-  }
-  .section {
     height: 100vh;
+    padding: 0;
   }
+  #section-04 {
+    height: 100vh;
+    padding: 0;
+  }
+  .container {
+    padding-block: 20rem;
+  }
+
   .main-banner {
     height: 100%;
     position: relative;
@@ -191,7 +198,7 @@
   .item {
     background-position: center;
     background-repeat: no-repeat;
-    // background-size: cover;
+    background-size: cover;
     height: 100%;
     color: #fff;
     display: flex;

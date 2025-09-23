@@ -28632,9 +28632,15 @@ body:has(.force-white) {
 .main #section-01 {
   background-color: transparent;
   display: block;
-}
-.main .section {
   height: 100vh;
+  padding: 0;
+}
+.main #section-04 {
+  height: 100vh;
+  padding: 0;
+}
+.main .container {
+  padding-block: 20rem;
 }
 .main .main-banner {
   height: 100%;
@@ -28834,6 +28840,7 @@ body:has(.force-white) {
 .strength-list .item {
   background-position: center;
   background-repeat: no-repeat;
+  background-size: cover;
   height: 100%;
   color: #fff;
   display: -webkit-box;
