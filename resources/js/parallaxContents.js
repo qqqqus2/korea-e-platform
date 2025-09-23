@@ -101,17 +101,6 @@
         section.style.zIndex = 5;
       }
 
-      // section-02가 활성화되면 swiper autoplay 시작
-      if (section.id === 'section-02' && opacity > 0.8) {
-        if (window.strengthSwiper && window.strengthSwiper.autoplay) {
-          window.strengthSwiper.autoplay.start();
-        }
-      } else if (section.id === 'section-02' && opacity < 0.3) {
-        if (window.strengthSwiper && window.strengthSwiper.autoplay) {
-          window.strengthSwiper.autoplay.stop();
-        }
-      }
-
       // Header 배경 제어 - section-01의 opacity에 따라 변경 (#wrap에 main 클래스가 있을 때만)
       if (wrap.classList.contains('main') && header && section.id === 'section-01') {
         const section01Opacity = parseFloat(section.style.opacity) || 0;

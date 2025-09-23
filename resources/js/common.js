@@ -351,57 +351,59 @@ function commonUi() {
   });
 }
 
-// fadeInUp 애니메이션 적용 함수
+// fadeIn 방향 애니메이션 적용 함수
 function applyFadeInUpAnimation(section) {
-  // fadeInUp 클래스를 적용할 요소들을 선택 (data-fade 속성을 가진 요소들)
+  // data-fade 속성을 가진 요소들을 선택
   const fadeElements = section.querySelectorAll('[data-fade]');
 
   fadeElements.forEach((element, index) => {
+    // 방향 설정 (기본값: up)
+    const direction = element.getAttribute('data-fade') || 'up';
+
+    // 애니메이션 클래스 매핑
+    const animationClasses = {
+      'up': 'fadeInUp',
+      'down': 'fadeInDown',
+      'left': 'fadeInLeft',
+      'right': 'fadeInRight',
+      'zoom': 'fadeInZoom',
+      'fade': 'fadeIn'
+    };
+
     // 기존 애니메이션 클래스 제거
-    element.classList.remove('fadeInUp', 'animated');
+    Object.values(animationClasses).forEach(className => {
+      element.classList.remove(className);
+    });
+    element.classList.remove('animated');
 
     // 지연 시간 설정 (순차적 애니메이션을 위해)
     const delay = element.getAttribute('data-fade-delay') || index * 100;
 
+    // 선택된 방향의 애니메이션 클래스 적용
+    const animationClass = animationClasses[direction] || 'fadeInUp';
+
     setTimeout(() => {
-      element.classList.add('animated', 'fadeInUp');
+      element.classList.add('animated', animationClass);
     }, delay);
   });
-
-  // data-fade 속성이 없는 경우에는 애니메이션을 적용하지 않음
 }
 
 // 애니메이션 초기화 함수
 function resetAnimations(section) {
   const fadeElements = section.querySelectorAll('[data-fade]');
+
+  // 모든 애니메이션 클래스 목록
+  const animationClasses = ['fadeInUp', 'fadeInDown', 'fadeInLeft', 'fadeInRight', 'fadeInZoom', 'fadeIn', 'animated'];
+
   fadeElements.forEach((element) => {
-    element.classList.remove('fadeInUp', 'animated');
-  });
-  // 섹션 자체의 애니메이션 클래스는 제거하지 않음 (data-fade가 있는 요소만 처리)
-}
-
-// strength-list의 list-box 클릭 이벤트
-function initStrengthList() {
-  const strengthList = document.querySelector('.strength-list');
-  if (!strengthList) return;
-
-  const listBoxes = strengthList.querySelectorAll('.list-box');
-
-  listBoxes.forEach(box => {
-    box.addEventListener('click', function() {
-      // 모든 list-box에서 active 클래스 제거
-      listBoxes.forEach(item => {
-        item.classList.remove('active');
-      });
-
-      // 클릭한 list-box에 active 클래스 추가
-      this.classList.add('active');
+    animationClasses.forEach(className => {
+      element.classList.remove(className);
     });
   });
+  // 섹션 자체의 애니메이션 클래스는 제거하지 않음 (data-fade가 있는 요소만 처리)
 }
 
 // DOM 로드 완료 후 실행
 document.addEventListener('DOMContentLoaded', () => {
   commonUi();
-  initStrengthList();
 });
