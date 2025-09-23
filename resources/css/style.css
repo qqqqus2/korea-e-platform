@@ -27539,6 +27539,9 @@ body:has(.force-white) {
           box-sizing: border-box;
   overflow-x: hidden;
 }
+#wrap.main {
+  padding-top: 0;
+}
 
 .inner {
   width: 100%;
@@ -27606,6 +27609,7 @@ body:has(.force-white) {
   top: 0;
   left: 0;
   width: 100%;
+  min-height: 100vh;
   z-index: 1;
   background-color: #fff;
 }
@@ -28452,8 +28456,6 @@ body:has(.force-white) {
 .main #section-01 {
   background-color: transparent;
   height: 100vh;
-}
-.main .container {
   display: block;
 }
 .main .main-banner {
@@ -28632,25 +28634,25 @@ body:has(.force-white) {
 .strength-list .list-box {
   height: 56rem;
   width: 29rem;
-  -webkit-transition: width 0.3s ease;
-  transition: width 0.3s ease;
   -webkit-box-flex: 0;
       -ms-flex: 0 0 auto;
           flex: 0 0 auto;
   -ms-flex-negative: 0;
       flex-shrink: 0;
+  -webkit-transition: width 0.3s ease-out;
+  transition: width 0.3s ease-out;
   overflow: hidden;
+  cursor: pointer;
 }
 .strength-list .list-box.active {
   -webkit-box-flex: 1;
-      -ms-flex: 1 1 auto;
-          flex: 1 1 auto;
+      -ms-flex: 1;
+          flex: 1;
   width: 100%;
 }
 .strength-list .item {
   background-position: center;
   background-repeat: no-repeat;
-  background-size: cover;
   height: 100%;
   color: #fff;
   display: -webkit-box;
@@ -28663,6 +28665,7 @@ body:has(.force-white) {
       -ms-flex-align: end;
           align-items: end;
   padding: 4rem 3rem;
+  overflow: hidden;
 }
 .strength-list .item .text-box {
   display: -webkit-box;
@@ -28772,17 +28775,31 @@ body:has(.force-white) {
           align-items: center;
   text-align: center;
 }
-.service-wrap img {
-  width: 100%;
-  height: 27.3rem;
-  -o-object-fit: cover;
-     object-fit: cover;
+.service-wrap .img-wrap {
+  display: block;
   border-radius: 1.2rem;
+  overflow: hidden;
+  height: 27.3rem;
+  width: 100%;
 }
 @media screen and (max-width: 1280px) {
-  .service-wrap img {
+  .service-wrap .img-wrap {
     height: 23.4rem;
   }
+}
+.service-wrap .img-wrap img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -webkit-transition: 0.5s cubic-bezier(0.075, 0.82, 0.165, 1) -webkit-transform;
+  transition: 0.5s cubic-bezier(0.075, 0.82, 0.165, 1) -webkit-transform;
+  transition: 0.5s cubic-bezier(0.075, 0.82, 0.165, 1) transform;
+  transition: 0.5s cubic-bezier(0.075, 0.82, 0.165, 1) transform, 0.5s cubic-bezier(0.075, 0.82, 0.165, 1) -webkit-transform;
+}
+.service-wrap .img-wrap:hover img {
+  -webkit-transform: scale(1.2);
+          transform: scale(1.2);
 }
 .service-wrap .item-tit {
   margin-top: 4rem;
@@ -28858,6 +28875,7 @@ body:has(.force-white) {
 }
 .corporation-item.china {
   background-image: url("../../resources/images/main/bg-china.svg");
+  top: 7rem;
 }
 .corporation-item.china .point-1 {
   right: 10.7rem;

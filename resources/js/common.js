@@ -380,5 +380,28 @@ function resetAnimations(section) {
   // 섹션 자체의 애니메이션 클래스는 제거하지 않음 (data-fade가 있는 요소만 처리)
 }
 
+// strength-list의 list-box 클릭 이벤트
+function initStrengthList() {
+  const strengthList = document.querySelector('.strength-list');
+  if (!strengthList) return;
+
+  const listBoxes = strengthList.querySelectorAll('.list-box');
+
+  listBoxes.forEach(box => {
+    box.addEventListener('click', function() {
+      // 모든 list-box에서 active 클래스 제거
+      listBoxes.forEach(item => {
+        item.classList.remove('active');
+      });
+
+      // 클릭한 list-box에 active 클래스 추가
+      this.classList.add('active');
+    });
+  });
+}
+
 // DOM 로드 완료 후 실행
-document.addEventListener('DOMContentLoaded', commonUi);
+document.addEventListener('DOMContentLoaded', () => {
+  commonUi();
+  initStrengthList();
+});

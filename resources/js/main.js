@@ -1,7 +1,6 @@
 /* main ui */
 let $mainBanner;
 let activeBullet; // 메인 프로그래스
-let strengthSwiper; // 전역 변수로 선언 (window 객체에 할당하기 위해)
 
 function mainUI() {
   /* 메인 배너 스와이퍼(영상 제어 포함) - 시작 */

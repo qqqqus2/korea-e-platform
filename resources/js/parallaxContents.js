@@ -73,7 +73,7 @@
         } else if (distanceFromCenter > fullOpacityZone) {
           // 섹션이 위로 지나갈 때 (퇴장)
           const animProgress = 1 - opacity;
-          translateY = -80 * animProgress; // 더 큰 이동 거리
+          translateY = -120 * animProgress; // 더 큰 이동 거리
           scale = 1 + 0.1 * animProgress; // 더 큰 축소
           // rotate = -5 * animProgress; // 더 큰 회전
         }
@@ -89,10 +89,6 @@
           }
           sectionAnimationState.set(section, true);
         } else if (opacity < 0.5 && sectionAnimationState.get(section)) {
-          // opacity가 0.5 이하로 떨어지면 애니메이션 리셋
-          if (typeof resetAnimations === 'function') {
-            resetAnimations(section);
-          }
           sectionAnimationState.set(section, false);
         }
       }
@@ -116,17 +112,17 @@
         }
       }
 
-      // Header 배경 제어 - section-01의 opacity에 따라 변경
-      // if (header && section.id === 'section-01') {
-      //   const section01Opacity = parseFloat(section.style.opacity) || 0;
-      //   if (section01Opacity > 0.5) {
-      //     header.classList.add('bg-trans');
-      //     header.classList.remove('is-parallax');
-      //   } else {
-      //     header.classList.remove('bg-trans');
-      //     header.classList.add('is-parallax');
-      //   }
-      // }
+      // Header 배경 제어 - section-01의 opacity에 따라 변경 (#wrap에 main 클래스가 있을 때만)
+      if (wrap.classList.contains('main') && header && section.id === 'section-01') {
+        const section01Opacity = parseFloat(section.style.opacity) || 0;
+        if (section01Opacity > 0.5) {
+          header.classList.add('bg-trans');
+          header.classList.remove('is-parallax');
+        } else {
+          header.classList.remove('bg-trans');
+          header.classList.add('is-parallax');
+        }
+      }
     });
   }
 
