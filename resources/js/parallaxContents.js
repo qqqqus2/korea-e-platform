@@ -1,432 +1,210 @@
-/* Container 패럴렉스 스크롤 */
+/* Container 스크롤 기반 페이드 효과 */
 (function () {
-  let isScrolling = false;
-  let parallaxEnabled = true;
-  let currentSection = 0;
   const wrap = document.querySelector('#wrap');
-  const sections = document.querySelectorAll('.container, #footer');
-  const totalSections = sections.length;
-  wrap.classList.add('overflow-hidden');
-  // 각 섹션의 높이를 100vh로 설정
-  function setSectionHeights() {
-    sections.forEach((section) => {
-      if (section.classList.contains('container')) {
-        // 먼저 높이를 설정
-        section.style.height = '100vh';
+  const sections = document.querySelectorAll('.container'); // footer 제외
+  const header = document.getElementById('header');
 
-        // 임시로 overflow를 visible로 설정하여 실제 컨텐츠 높이 측정
-        const originalOverflow = section.style.overflow;
-        section.style.overflow = 'visible';
+  // overflow-hidden 제거하여 스크롤 가능하게
+  wrap.classList.remove('overflow-hidden');
 
-        // 모든 자식 요소들의 실제 높이 계산
-        let totalHeight = 0;
-        const children = section.children;
+  // 각 섹션의 애니메이션 실행 상태 추적
+  const sectionAnimationState = new Map();
 
-        for (let i = 0; i < children.length; i++) {
-          const child = children[i];
-          const rect = child.getBoundingClientRect();
-          const styles = window.getComputedStyle(child);
-          const marginTop = parseInt(styles.marginTop);
-          const marginBottom = parseInt(styles.marginBottom);
-          totalHeight += rect.height + marginTop + marginBottom;
-        }
+  // 초기 애니메이션 완료 여부
+  let initialAnimationComplete = false;
 
-        // 패딩 추가
-        const sectionStyles = window.getComputedStyle(section);
-        const paddingTop = parseInt(sectionStyles.paddingTop);
-        const paddingBottom = parseInt(sectionStyles.paddingBottom);
-        totalHeight += paddingTop + paddingBottom;
-
-        const viewportHeight = window.innerHeight;
-
-        console.log(`Section ${section.id}: total content height = ${totalHeight}px, viewport = ${viewportHeight}px`);
-
-        // 컨텐츠가 뷰포트보다 큰 경우 스크롤 설정
-        if (totalHeight > viewportHeight + 50) {
-          // 50px 여유를 둠
-          section.style.overflowY = 'auto';
-          section.style.overflowX = 'hidden';
-        }
-
-        // 디버깅: 현재 섹션의 클래스 목록 출력
-        console.log(`${section.id} classes:`, section.classList.toString());
-      }
-    });
-  }
-
-  // 현재 스크롤 위치에 맞는 섹션 찾기
-  function findCurrentSection() {
+  // 스크롤 이벤트 핸들러
+  function handleScroll() {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const windowHeight = window.innerHeight;
 
-    for (let i = 0; i < totalSections; i++) {
-      const sectionTop = sections[i].offsetTop;
-      const sectionBottom = sectionTop + sections[i].offsetHeight;
+    sections.forEach((section, index) => {
+      const sectionTop = section.offsetTop;
+      const sectionHeight = section.offsetHeight;
+      const sectionCenter = sectionTop + sectionHeight / 2;
 
-      if (scrollTop >= sectionTop - windowHeight / 2 && scrollTop < sectionBottom - windowHeight / 2) {
-        return i;
-      }
-    }
-    return currentSection;
-  }
+      if (section.id === 'section-01') {
+        // 초기 애니메이션이 완료된 후에만 스크롤 효과 적용
+        if (initialAnimationComplete) {
+          // section-01은 스크롤이 시작되면 fade out + 위로 이동
+          let progress = scrollTop / (sectionHeight * 0.7);
+          progress = Math.min(1, progress);
 
-  // fadeInUp 애니메이션 적용 함수
-  function applyFadeInUpAnimation(section) {
-    // fadeInUp 클래스를 적용할 요소들을 선택 (data-fade 속성을 가진 요소들)
-    const fadeElements = section.querySelectorAll('[data-fade]');
+          let opacity = 1 - progress;
+          opacity = Math.max(0, opacity);
 
-    fadeElements.forEach((element, index) => {
-      // 기존 애니메이션 클래스 제거
-      element.classList.remove('fadeInUp', 'animated');
+          // 위로 이동하며 사라지는 효과
+          let translateY = -50 * progress; // 최대 -50px까지 이동
+          let scale = 1 - 0.05 * progress; // 살짝 축소
 
-      // 지연 시간 설정 (순차적 애니메이션을 위해)
-      const delay = element.getAttribute('data-fade-delay') || index * 100;
-
-      setTimeout(() => {
-        element.classList.add('animated', 'fadeInUp');
-      }, delay);
-    });
-
-    // data-fade 속성이 없는 경우, 섹션 전체에 적용
-    if (fadeElements.length === 0) {
-      section.classList.add('animated', 'fadeInUp');
-    }
-  }
-
-  // 애니메이션 초기화 함수
-  function resetAnimations(section) {
-    const fadeElements = section.querySelectorAll('[data-fade]');
-    fadeElements.forEach((element) => {
-      element.classList.remove('fadeInUp', 'animated');
-    });
-    section.classList.remove('fadeInUp', 'animated');
-  }
-
-  // 특정 섹션으로 전환 (방향성 덮어쓰기 효과)
-  function scrollToSection(index) {
-    if (index < 0 || index >= totalSections || isScrolling) return;
-
-    isScrolling = true;
-    const prevSectionIndex = currentSection;
-    const isGoingDown = index > currentSection; // 아래로 이동하는지 확인
-    currentSection = index;
-    const targetSection = sections[index];
-    const isFooter = targetSection.id === 'footer';
-    const lastContainer = document.querySelector('.container:last-of-type');
-    const header = document.getElementById('header');
-
-    // section-02가 active 되면 swiper autoplay 시작
-    if (targetSection.id === 'section-02') {
-      // window 객체에서 strengthSwiper 접근
-      if (window.strengthSwiper && window.strengthSwiper.autoplay) {
-        console.log('Starting autoplay for section-02');
-        window.strengthSwiper.autoplay.start();
-      }
-    } else {
-      // 다른 섹션으로 이동시 autoplay 정지
-      if (window.strengthSwiper && window.strengthSwiper.autoplay) {
-        console.log('Stopping autoplay');
-        window.strengthSwiper.autoplay.stop();
-      }
-    }
-
-    // 모든 섹션에서 클래스 초기화 및 애니메이션 리셋
-    sections.forEach((section, i) => {
-      section.classList.remove('active', 'prev', 'next', 'footer-visible');
-      resetAnimations(section);
-
-      // Footer가 아닌 섹션들에 대한 처리
-      if (section.id !== 'footer') {
-        if (isGoingDown) {
-          // 아래로 이동: 현재보다 작은 섹션들은 prev
-          if (i < index && !isFooter) {
-            section.classList.add('prev');
-          }
-        } else {
-          // 위로 이동: 현재보다 큰 섹션들은 next (아래로 내려감)
-          if (i > index && !isFooter) {
-            section.classList.add('next');
-          }
-          // 현재보다 작은 섹션들은 prev (보임 상태)
-          if (i < index && !isFooter) {
-            section.classList.add('prev');
-          }
+          section.style.opacity = opacity;
+          section.style.transform = `translateY(${translateY}px) scale(${scale})`;
         }
-      }
-    });
-
-    // Header 배경 제어 - section-01이 active일 때만 bg-trans 클래스 추가
-    if (header) {
-      if (targetSection.id === 'section-01') {
-        header.classList.add('bg-trans');
-        header.classList.remove('is-parallax');
       } else {
-        header.classList.remove('bg-trans');
-        // 아래로 스크롤할 때 header에 is-up 클래스 추가
-        if (isGoingDown) {
-          header.classList.add('is-parallax');
-        } else {
-          header.classList.remove('is-parallax');
+        // 섹션의 중앙이 화면 중앙에서 얼마나 떨어져 있는지 계산
+        const distanceFromCenter = Math.abs(scrollTop + windowHeight / 2 - sectionCenter);
+
+        // opacity 1을 유지하는 구간을 더 길게 설정 (화면 높이의 40% 범위)
+        const fadeZone = windowHeight * 0.3; // 페이드 영역을 줄임 (빠른 전환)
+        const fullOpacityZone = windowHeight * 0.4; // opacity 1 유지 구간
+
+        let opacity = 1;
+
+        if (distanceFromCenter > fullOpacityZone) {
+          // fullOpacityZone을 벗어난 거리만큼 페이드
+          const fadeDistance = distanceFromCenter - fullOpacityZone;
+          opacity = 1 - fadeDistance / fadeZone;
+          opacity = Math.max(0, Math.min(1, opacity));
+
+          // 더 급격한 페이드 커브 적용
+          opacity = Math.pow(opacity, 2);
+        }
+
+        // 등장/퇴장 애니메이션
+        let translateY = 0;
+        let scale = 1;
+        let rotate = 0;
+
+        if (scrollTop + windowHeight / 2 < sectionCenter) {
+          // 섹션이 아래에 있을 때 (등장 전)
+          const animProgress = 1 - opacity;
+          translateY = 150 * animProgress; // 더 큰 이동 거리
+          scale = 0.9 + 0.1 * opacity; // 더 작은 크기에서 시작
+        } else if (distanceFromCenter > fullOpacityZone) {
+          // 섹션이 위로 지나갈 때 (퇴장)
+          const animProgress = 1 - opacity;
+          translateY = -80 * animProgress; // 더 큰 이동 거리
+          scale = 1 + 0.1 * animProgress; // 더 큰 축소
+          // rotate = -5 * animProgress; // 더 큰 회전
+        }
+
+        section.style.opacity = opacity;
+        section.style.transform = `translateY(${translateY}px) scale(${scale}) rotate(${rotate}deg)`;
+
+        // opacity가 1이 되면 fadeInUp 애니메이션 실행
+        if (opacity >= 0.99 && !sectionAnimationState.get(section)) {
+          // common.js의 applyFadeInUpAnimation 함수 사용
+          if (typeof applyFadeInUpAnimation === 'function') {
+            applyFadeInUpAnimation(section);
+          }
+          sectionAnimationState.set(section, true);
+        } else if (opacity < 0.5 && sectionAnimationState.get(section)) {
+          // opacity가 0.5 이하로 떨어지면 애니메이션 리셋
+          if (typeof resetAnimations === 'function') {
+            resetAnimations(section);
+          }
+          sectionAnimationState.set(section, false);
         }
       }
-    }
 
-    // Footer로 이동하는 경우
-    if (isFooter) {
-      // Footer를 active로 설정
-      targetSection.classList.add('active');
-      // 마지막 container를 위로 올림
-      if (lastContainer) {
-        lastContainer.classList.add('footer-visible');
+      // z-index 조정 (현재 보이는 섹션이 위에 오도록)
+      const opacity = parseFloat(section.style.opacity) || 0;
+      if (opacity > 0.5) {
+        section.style.zIndex = 10;
+      } else {
+        section.style.zIndex = 5;
       }
-      // 다른 모든 container들은 prev 상태 유지
-      sections.forEach((section, i) => {
-        if (section.id !== 'footer' && i < index) {
-          section.classList.add('prev');
-        }
-      });
-    } else {
-      // 일반 섹션으로 이동하는 경우
-      targetSection.classList.add('active');
 
-      // active 섹션에 fadeInUp 애니메이션 적용
-      setTimeout(() => {
-        applyFadeInUpAnimation(targetSection);
-      }, 100);
-
-      // Footer에서 다시 위로 올라가는 경우
-      if (prevSectionIndex === totalSections - 1 && index < totalSections - 1) {
-        const footer = document.getElementById('footer');
-        if (footer) {
-          footer.classList.remove('active');
+      // section-02가 활성화되면 swiper autoplay 시작
+      if (section.id === 'section-02' && opacity > 0.8) {
+        if (window.strengthSwiper && window.strengthSwiper.autoplay) {
+          window.strengthSwiper.autoplay.start();
         }
-        if (lastContainer) {
-          lastContainer.classList.remove('footer-visible');
+      } else if (section.id === 'section-02' && opacity < 0.3) {
+        if (window.strengthSwiper && window.strengthSwiper.autoplay) {
+          window.strengthSwiper.autoplay.stop();
         }
       }
-    }
 
-    // 애니메이션이 끝난 후 플래그 리셋
-    setTimeout(() => {
-      isScrolling = false;
-    }, 800);
+      // Header 배경 제어 - section-01의 opacity에 따라 변경
+      // if (header && section.id === 'section-01') {
+      //   const section01Opacity = parseFloat(section.style.opacity) || 0;
+      //   if (section01Opacity > 0.5) {
+      //     header.classList.add('bg-trans');
+      //     header.classList.remove('is-parallax');
+      //   } else {
+      //     header.classList.remove('bg-trans');
+      //     header.classList.add('is-parallax');
+      //   }
+      // }
+    });
   }
 
-  // 마우스 휠 이벤트 핸들러
-  function handleWheel(e) {
-    if (!parallaxEnabled) {
-      return; // parallax가 비활성화되면 기본 스크롤 동작 허용
-    }
-
-    if (isScrolling) {
-      e.preventDefault();
-      return;
-    }
-
-    const activeSection = sections[currentSection];
-    const delta = e.deltaY || e.wheelDelta * -1;
-
-    // 디버깅: 현재 섹션 정보 출력
-    console.log(`Current section: ${activeSection.id}, has scrollable: ${activeSection.classList.contains('scrollable-section')}`);
-    console.log(`Section classes: ${activeSection.classList.toString()}`);
-
-    // 현재 섹션이 스크롤 가능한지 확인
-    if (activeSection && activeSection.classList.contains('scrollable-section')) {
-      const scrollTop = activeSection.scrollTop;
-      const scrollHeight = activeSection.scrollHeight;
-      const clientHeight = activeSection.clientHeight;
-      const isAtTop = scrollTop <= 1;
-      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
-
-      console.log(`Scrollable section detected!`);
-      console.log(`Scroll: top=${scrollTop}, height=${scrollHeight}, client=${clientHeight}, atTop=${isAtTop}, atBottom=${isAtBottom}`);
-
-      // 섹션 내부에서 스크롤 중이면 기본 동작 허용
-      if (delta > 0 && !isAtBottom) {
-        // 아래로 스크롤 중이고 바닥에 도달하지 않음
-        console.log('섹션 내부 아래로 스크롤 - 기본 스크롤 허용');
-        // preventDefault 호출하지 않음 - 기본 스크롤 허용
-        return;
-      } else if (delta < 0 && !isAtTop) {
-        // 위로 스크롤 중이고 상단에 도달하지 않음
-        console.log('섹션 내부 위로 스크롤 - 기본 스크롤 허용');
-        // preventDefault 호출하지 않음 - 기본 스크롤 허용
-        return;
-      }
-    } else {
-      console.log('Not a scrollable section');
-    }
-
-    // 섹션 전환이 필요한 경우에만 preventDefault
-    e.preventDefault();
-
-    if (delta > 0) {
-      // 아래로 스크롤
-      if (currentSection < totalSections - 1) {
-        console.log('다음 섹션으로 이동');
-        scrollToSection(currentSection + 1);
-      }
-    } else {
-      // 위로 스크롤
-      if (currentSection > 0) {
-        console.log('이전 섹션으로 이동');
-        scrollToSection(currentSection - 1);
-      }
-    }
+  // 디바운스 함수 (성능 최적화)
+  function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
   }
 
-  // 키보드 이벤트 핸들러 (Page Up/Down, 화살표 키)
-  function handleKeydown(e) {
-    if (!parallaxEnabled) return;
-    if (isScrolling) return;
+  // 최적화된 스크롤 핸들러
+  const optimizedScrollHandler = debounce(handleScroll, 10);
 
-    switch (e.key) {
-      case 'ArrowDown':
-      case 'PageDown':
-        e.preventDefault();
-        if (currentSection < totalSections - 1) {
-          scrollToSection(currentSection + 1);
-        }
-        break;
-      case 'ArrowUp':
-      case 'PageUp':
-        e.preventDefault();
-        if (currentSection > 0) {
-          scrollToSection(currentSection - 1);
-        }
-        break;
-    }
-  }
-
-  // 터치 이벤트 처리 (모바일)
-  let touchStartY = 0;
-  let touchEndY = 0;
-  let touchStartScrollTop = 0;
-
-  function handleTouchStart(e) {
-    touchStartY = e.touches[0].clientY;
-    const activeSection = sections[currentSection];
-    if (activeSection && activeSection.classList.contains('container')) {
-      touchStartScrollTop = activeSection.scrollTop;
-    }
-  }
-
-  function handleTouchEnd(e) {
-    touchEndY = e.changedTouches[0].clientY;
-
-    if (!parallaxEnabled) return;
-    if (isScrolling) return;
-
-    const activeSection = sections[currentSection];
-    const swipeDistance = touchStartY - touchEndY;
-    const minSwipeDistance = 50;
-
-    // 현재 섹션이 스크롤 가능한지 확인
-    if (activeSection && activeSection.classList.contains('container')) {
-      const hasScroll = activeSection.scrollHeight > activeSection.clientHeight;
-
-      if (hasScroll) {
-        const scrollTop = activeSection.scrollTop;
-        const scrollHeight = activeSection.scrollHeight;
-        const clientHeight = activeSection.clientHeight;
-        const isAtTop = scrollTop <= 0;
-        const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
-
-        // 섹션 내부에서 스크롤 중이면 기본 동작 허용
-        if (swipeDistance > 0 && !isAtBottom) {
-          // 위로 스와이프 (아래로 스크롤) 중이고 바닥에 도달하지 않음
-          return;
-        } else if (swipeDistance < 0 && !isAtTop) {
-          // 아래로 스와이프 (위로 스크롤) 중이고 상단에 도달하지 않음
-          return;
-        }
-      }
-    }
-
-    if (Math.abs(swipeDistance) > minSwipeDistance) {
-      if (swipeDistance > 0 && currentSection < totalSections - 1) {
-        // 위로 스와이프 (아래로 스크롤)
-        scrollToSection(currentSection + 1);
-      } else if (swipeDistance < 0 && currentSection > 0) {
-        // 아래로 스와이프 (위로 스크롤)
-        scrollToSection(currentSection - 1);
-      }
-    }
-  }
-
-  // 창 크기 변경시 섹션 높이 재설정
+  // 창 크기 변경시 재계산
   function handleResize() {
-    setSectionHeights();
-    // 현재 섹션으로 다시 스크롤 (위치 보정)
-    if (!isScrolling) {
-      const targetPosition = sections[currentSection].offsetTop;
-      window.scrollTo(0, targetPosition);
-    }
+    handleScroll();
   }
-
-  // 수동으로 스크롤 가능한 섹션 설정 (테스트용)
-  window.setScrollableSection = function (sectionId) {
-    const section = document.getElementById(sectionId);
-    if (section) {
-      section.classList.add('scrollable-section');
-      section.style.overflowY = 'auto';
-      section.style.overflowX = 'hidden';
-      console.log(`${sectionId} is manually set as scrollable`);
-      console.log(`Classes: ${section.classList.toString()}`);
-    }
-  };
-
-  // Parallax 비활성화
-  window.disableParallax = function () {
-    parallaxEnabled = false;
-    wrap.classList.remove('overflow-hidden');
-    console.log('Parallax disabled');
-  };
-
-  // Parallax 활성화
-  window.enableParallax = function () {
-    parallaxEnabled = true;
-    wrap.classList.add('overflow-hidden');
-    console.log('Parallax enabled');
-  };
 
   // 초기화
   function init() {
-    setSectionHeights();
-    currentSection = findCurrentSection();
+    // 각 섹션의 기본 스타일 설정
+    sections.forEach((section) => {
+      section.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out'; // 더 빠른 전환
+      section.style.willChange = 'opacity, transform';
+    });
 
-    // 첫 번째 섹션에 active 클래스 추가
-    if (sections[currentSection]) {
-      sections[currentSection].classList.add('active');
+    // section-01 초기 애니메이션 적용
+    const section01 = document.getElementById('section-01');
+    if (section01) {
+      // 초기 상태 설정 (숨김)
+      section01.style.opacity = '0';
+      section01.style.transform = 'scale(0.5)';
+
+      // 페이지 로드 후 애니메이션 시작
+      setTimeout(() => {
+        section01.style.transition = 'opacity .5s ease-in, transform .5s ease-in';
+        section01.style.opacity = '1';
+        section01.style.transform = 'scale(1)';
+
+        // section-01의 data-fade 요소들에도 애니메이션 적용
+        if (typeof applyFadeInUpAnimation === 'function') {
+          setTimeout(() => {
+            applyFadeInUpAnimation(section01);
+          }, 300);
+        }
+
+        // 초기 애니메이션 완료 표시
+        setTimeout(() => {
+          initialAnimationComplete = true;
+        }, 1000);
+      }, 200);
+    } else {
+      // section-01이 없으면 바로 완료 표시
+      initialAnimationComplete = true;
     }
 
-    // 페이지 로드 후 섹션 높이 재계산 (DOM이 완전히 로드된 후)
-    setTimeout(() => {
-      setSectionHeights();
-
-      // 테스트: 특정 섹션을 강제로 스크롤 가능하게 설정
-      // 예: section-03이 컨텐츠가 많은 경우
-      // window.setScrollableSection('section-03');
-    }, 1000);
-
-    // 첫 번째 섹션이 section-01이면 header에 bg-trans 클래스 추가
-    const header = document.getElementById('header');
-    if (header && sections[currentSection] && sections[currentSection].id === 'section-01') {
-      header.classList.add('bg-trans');
-    }
+    // 초기 스크롤 위치에 따른 opacity 설정 (section-01 제외)
+    sections.forEach((section) => {
+      if (section.id !== 'section-01') {
+        handleScroll();
+        return;
+      }
+    });
 
     // 이벤트 리스너 등록
-    window.addEventListener('wheel', handleWheel, { passive: false });
-    window.addEventListener('keydown', handleKeydown);
+    window.addEventListener('scroll', optimizedScrollHandler, { passive: true });
     window.addEventListener('resize', handleResize);
-
-    // 모바일 터치 이벤트
-    document.addEventListener('touchstart', handleTouchStart, { passive: true });
-    document.addEventListener('touchend', handleTouchEnd, { passive: true });
 
     // 페이지 로드시 첫 번째 섹션으로 스크롤
     setTimeout(() => {
       window.scrollTo(0, 0);
+      handleScroll();
     }, 100);
   }
 

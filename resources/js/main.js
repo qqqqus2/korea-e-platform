@@ -157,7 +157,7 @@ function mainUI() {
         let currentSlide = $($mainBanner.slides[$mainBanner.activeIndex]);
         let currentSlideType = currentSlide.data('slide-type');
         if (currentSlideType === 'img') {
-          runNext();
+          // runNext();
         }
       }, 1000);
 
@@ -200,58 +200,5 @@ function mainUI() {
     });
   }
   /* 메인 배너 스와이퍼(영상 제어 포함) - 끝 */
-
-  /* strength-list 스와이퍼 - 시작 */
-  $(document).ready(function () {
-    strengthSwiper = new Swiper('.strength-list', {
-      slidesPerView: 'auto',
-      spaceBetween: 32,
-      centeredSlides: true,
-      loop: true,
-      autoplay: {
-        delay: 2500,
-        disableOnInteraction: false
-      },
-      allowTouchMove: false, // 드래그 비활성화
-      observer: true,
-      observeParents: true,
-      watchSlidesProgress: true,
-      loopedSlides: 5,
-      on: {
-        init: function () {
-          // autoplay는 section-02가 active 될 때 시작
-          this.autoplay.stop();
-
-          // 첫 번째 active 슬라이드에 test 클래스 추가
-          const activeSlide = this.slides[this.activeIndex];
-          if (activeSlide) {
-            activeSlide.classList.add('test');
-          }
-        },
-        slideChange: function () {
-          // 슬라이드 변경 시 모든 test 클래스 제거
-          this.slides.forEach((slide) => {
-            slide.classList.remove('test');
-          });
-
-          // 새로운 active 슬라이드에 test 클래스 추가
-          setTimeout(() => {
-            const activeSlide = this.slides[this.activeIndex];
-            if (activeSlide) {
-              activeSlide.classList.add('test');
-            }
-          }, 0);
-        },
-
-        slideChangeTransitionEnd: function () {
-          this.wrapperEl.style.marginLeft = '23.5rem';
-        }
-      }
-    });
-
-    // 전역 변수로 설정하여 다른 파일에서 접근 가능하도록
-    window.strengthSwiper = strengthSwiper;
-  });
-  /* strength-list 스와이퍼 - 끝 */
 }
 mainUI();

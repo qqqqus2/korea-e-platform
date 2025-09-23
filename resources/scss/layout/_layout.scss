@@ -1,4 +1,9 @@
 // 공통 레이아웃
+#wrap {
+  padding-top: 11.7rem;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
 .inner {
   width: 100%;
   position: relative;
@@ -33,9 +38,8 @@
   opacity: 0;
 }
 
-// Container 섹션 - 덮어쓰기 효과
+// Container
 .container {
-  position: fixed;
   display: flex;
   align-items: center; // center에서 flex-start로 변경
   justify-content: center; // center에서 flex-start로 변경
@@ -43,81 +47,18 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 100vh;
   z-index: 1;
-  transform: translateY(100%);
-  transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
-  will-change: transform;
   background-color: #fff;
 
-  // 스크롤 가능한 섹션 스타일
-  &.scrollable-section {
-    display: block !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    -webkit-overflow-scrolling: touch; // iOS 스크롤 개선
-  }
   .center-box {
     position: relative;
     top: 50%;
     transform: translateY(-50%);
   }
 
-  &.active {
-    transform: translateY(0);
-    z-index: 10;
-  }
-
-  &.prev {
-    transform: translateY(0);
-    z-index: 5;
-  }
-
   &.active + .container {
     transform: translateY(100%);
     z-index: 10;
-  }
-
-  // 첫 번째 섹션은 항상 보이도록
-  &#section-01 {
-    transform: translateY(0);
-    z-index: 5;
-  }
-
-  // 마지막 container가 위로 올라갈 때 footer 노출
-  &:last-of-type.footer-visible {
-    transform: translateY(0);
-    z-index: 11;
-    &::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      right: 0;
-      opacity: 0.2;
-      background-color: #000;
-    }
-  }
-}
-// Footer는 마지막 섹션 아래에서 올라오는 효과
-#footer {
-  &.fixed {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 30rem;
-    z-index: 10;
-    transform: translateY(100%);
-    transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
-    will-change: transform;
-    background: #fff;
-
-    &.active {
-      transform: translateY(0);
-      z-index: 20;
-    }
   }
 }
 

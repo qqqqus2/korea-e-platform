@@ -1,5 +1,9 @@
 // 메인
 .main {
+  #section-01 {
+    background-color: transparent;
+    height: 100vh;
+  }
   .container {
     display: block;
   }
@@ -165,31 +169,19 @@
 }
 .strength-list {
   width: 100%;
-  overflow: visible;
   padding: 0;
-
-  .swiper-wrapper {
-    align-items: center;
-  }
-
-  .swiper-slide {
+  display: flex;
+  gap: 0 3.2rem;
+  .list-box {
     height: 56rem;
     width: 29rem;
     transition: width 0.3s ease;
-    // padding: 0 1.6rem;
+    flex: 0 0 auto;
     flex-shrink: 0;
     overflow: hidden;
-
-    &.test {
-      width: 76rem;
-    }
-
-    // 이전/다음 슬라이드 스타일
-    &.swiper-slide-prev,
-    &.swiper-slide-next {
-      .item {
-        width: 29rem;
-      }
+    &.active {
+      flex: 1 1 auto;
+      width: 100%;
     }
   }
   .item {
@@ -234,7 +226,7 @@
       background-image: url('../../resources/images/main/img-item-5.png');
     }
   }
-  .swiper-slide-active {
+  .active {
     .item {
       .text-box {
         .idx {
@@ -343,7 +335,7 @@
   border: 1px solid rgba(255, 255, 255, 0.18);
   background-color: #10141b;
   background-repeat: no-repeat;
-
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: end;

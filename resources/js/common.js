@@ -351,5 +351,34 @@ function commonUi() {
   });
 }
 
+// fadeInUp 애니메이션 적용 함수
+function applyFadeInUpAnimation(section) {
+  // fadeInUp 클래스를 적용할 요소들을 선택 (data-fade 속성을 가진 요소들)
+  const fadeElements = section.querySelectorAll('[data-fade]');
+
+  fadeElements.forEach((element, index) => {
+    // 기존 애니메이션 클래스 제거
+    element.classList.remove('fadeInUp', 'animated');
+
+    // 지연 시간 설정 (순차적 애니메이션을 위해)
+    const delay = element.getAttribute('data-fade-delay') || index * 100;
+
+    setTimeout(() => {
+      element.classList.add('animated', 'fadeInUp');
+    }, delay);
+  });
+
+  // data-fade 속성이 없는 경우에는 애니메이션을 적용하지 않음
+}
+
+// 애니메이션 초기화 함수
+function resetAnimations(section) {
+  const fadeElements = section.querySelectorAll('[data-fade]');
+  fadeElements.forEach((element) => {
+    element.classList.remove('fadeInUp', 'animated');
+  });
+  // 섹션 자체의 애니메이션 클래스는 제거하지 않음 (data-fade가 있는 요소만 처리)
+}
+
 // DOM 로드 완료 후 실행
 document.addEventListener('DOMContentLoaded', commonUi);
