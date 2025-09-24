@@ -27900,6 +27900,9 @@ body:has(.force-white) {
 #header.bg-trans .marketPlace-btn .btn-arrow:after {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M8.33333 5.83301L12.5 9.99967L8.33333 14.1663' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
+#header.bg-trans .mobile-menu .btn-gnb {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32' fill='none'%3E%3Cpath d='M4 24H28' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M4 16H28' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M4 8H28' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
 #header .gnb-bg {
   display: block;
   height: 0;
@@ -28426,6 +28429,9 @@ body:has(.force-white) {
 .mGnbOpen #header .mobile-menu .btn-gnb {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32' fill='none'%3E%3Cpath d='M24 8L8 24M24 24L8 8' stroke='%2324252B' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
 }
+.mGnbOpen #header.bg-trans .mobile-menu .btn-gnb {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32' fill='none'%3E%3Cpath d='M24 8L8 24M24 24L8 8' stroke='%23ffffff' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+}
 .mGnbOpen #header #gnb {
   height: calc(100% - 7.2rem);
   top: 7.2rem;
@@ -28640,7 +28646,7 @@ body:has(.force-white) {
   padding: 0;
 }
 .main .container {
-  padding-block: 20rem;
+  padding-block: 10rem;
 }
 .main .main-banner {
   height: 100%;
@@ -29392,15 +29398,6 @@ section.section-pd {
 section.gray-bg {
   background-color: #f6f8f9;
 }
-@media screen and (max-width: 768px) {
-  section.gray-bg .contents {
-    position: relative;
-    top: 50%;
-    -webkit-transform: translateY(-50%);
-            transform: translateY(-50%);
-  }
-}
-
 .mro-category {
   width: 100%;
   position: relative;
@@ -29706,15 +29703,20 @@ section.gray-bg {
   }
   .value-swiper {
     padding-bottom: 3rem;
+    max-width: 100%;
+    overflow: hidden;
   }
   .value-swiper .swiper-wrapper {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    gap: inherit;
+    gap: 0;
   }
   .value-swiper .swiper-wrapper .swiper-slide {
     min-height: 35.1rem;
+    width: 32rem;
+    -ms-flex-negative: 0;
+        flex-shrink: 0;
     padding: 4.8rem 3.2rem;
   }
   .value-swiper .swiper-wrapper .swiper-slide .img-box {

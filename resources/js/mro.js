@@ -7,14 +7,17 @@ $(document).ready(function () {
     if (window.innerWidth <= 768) {
       if (!offeringValueSwiper) {
         offeringValueSwiper = new Swiper('.value-swiper', {
-          slidesPerView: 1.06,
+          slidesPerView: 'auto',
           spaceBetween: 24,
           speed: 600,
           grabCursor: true,
           pagination: {
-            el: '.value-pagination',
+            el: '.value-swiper .value-pagination',
             type: 'progressbar'
-          }
+          },
+          // Enable swiper on mobile
+          observer: true,
+          observeParents: true
         });
       }
     } else {

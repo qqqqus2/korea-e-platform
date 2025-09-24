@@ -198,11 +198,11 @@ section {
   &.gray-bg {
     background-color: #f6f8f9;
     @media screen and (max-width: 768px) {
-      .contents {
-        position: relative;
-        top: 50%;
-        transform: translateY(-50%);
-      }
+      // .contents {
+      //   position: relative;
+      //   top: 50%;
+      //   transform: translateY(-50%);
+      // }
     }
   }
 }
@@ -492,11 +492,15 @@ section {
 
   .value-swiper {
     padding-bottom: 3rem;
+    max-width: 100%;
+    overflow: hidden; // Changed from auto to hidden for Swiper to work
     .swiper-wrapper {
       display: flex;
-      gap: inherit;
+      gap: 0; // Swiper handles spacing with spaceBetween
       .swiper-slide {
         min-height: 35.1rem;
+        width: 32rem;
+        flex-shrink: 0; // Ensure slides don't shrink
         padding: 4.8rem 3.2rem;
         .img-box {
           width: 5.6rem;
