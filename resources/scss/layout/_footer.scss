@@ -24,6 +24,7 @@
         color: transparent;
       }
       .family-box {
+        position: relative;
         .family-btn {
           width: 24rem;
           height: 5.6rem;
@@ -46,6 +47,61 @@
             top: 50%;
             transform: translateY(-50%);
             right: 2.4rem;
+          }
+          &.minus {
+            width: 100%;
+            height: 2.4rem;
+            padding-inline: 0;
+            margin-bottom: 1.6rem;
+            font-size: 1.6rem;
+            font-weight: 700;
+            &::after {
+              right: 0;
+              background-image: url("data:image/svg+xml,%0A%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='24' height='24' rx='12' fill='%23CACACA'/%3E%3Cpath d='M16 12L8 12' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E%0A");
+            }
+          }
+        }
+        &:hover {
+          .family-list {
+            transform: scaleY(1);
+            opacity: 1;
+          }
+        }
+        .family-list {
+          overflow: hidden;
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          padding: 1.6rem 2.4rem;
+          background-color: #f4f4f4;
+          border-radius: 2.8rem;
+          transform: scaleY(0);
+          transform-origin: bottom;
+          opacity: 0;
+          transition: 0.4s transform cubic-bezier(0.075, 0.82, 0.165, 1), 0.4s opacity cubic-bezier(0.075, 0.82, 0.165, 1);
+          li {
+            border-bottom: 0.1rem solid #dedede;
+            .list-item {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding: 1rem 0.2rem;
+              font-size: 1.4rem;
+              font-weight: 600;
+              line-height: 2rem;
+              color: #404046;
+              &:after {
+                content: '';
+                display: inline-block;
+                width: 2rem;
+                height: 2rem;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M3.3335 16.9856C3.67075 17.315 4.12817 17.5 4.60512 17.5H15.3952C15.8722 17.5 16.3296 17.315 16.6668 16.9856M10.0012 2.5V12.4521M10.0012 12.4521L14.1117 8.64941M10.0012 12.4521L5.89066 8.64941' stroke='%235B5C61' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+              }
+            }
+            &:last-child {
+              border-bottom: 0;
+            }
           }
         }
       }
