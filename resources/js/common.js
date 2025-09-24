@@ -61,6 +61,140 @@ function commonUi() {
     }
   });
 
+  // 스크롤 다운 버튼
+  const $scrollDownBtn = $('.scroll-down');
+  let cachedHeaderHeight = 0;
+
+  // 헤더 높이 업데이트 함수 (sub-navigation 포함)
+  function updateHeaderHeight() {
+    const headerHeight = $('#header').outerHeight() || 0;
+    const subNaviHeight = $('.sub-navigation').outerHeight() || 0;
+    cachedHeaderHeight = headerHeight + subNaviHeight;
+    console.log('Total header height:', cachedHeaderHeight);
+  }
+
+  // 스크롤 위치에 따라 버튼 상태 업데이트
+  function updateScrollDownButton() {
+    const sections = $('section[id^="section-"]').toArray();
+    if (sections.length === 0) return;
+
+    const currentScrollTop = $(window).scrollTop();
+    const windowHeight = $(window).height();
+    const documentHeight = $(document).height();
+    const viewportMiddle = currentScrollTop + windowHeight / 2;
+
+    // 마지막 섹션 확인
+    const lastSection = sections[sections.length - 1];
+    const lastSectionTop = $(lastSection).offset().top;
+    const lastSectionBottom = lastSectionTop + $(lastSection).outerHeight();
+
+    // 마지막 섹션에 있거나 페이지 끝에 도달한 경우
+    if (viewportMiddle >= lastSectionTop || currentScrollTop + windowHeight >= documentHeight - 100) {
+      $scrollDownBtn.addClass('scroll-top');
+    } else {
+      $scrollDownBtn.removeClass('scroll-top');
+    }
+  }
+
+  // 스크롤 이벤트에 버튼 상태 업데이트 추가
+  $(window).scroll(function () {
+    updateScrollDownButton();
+  });
+
+  // window resize 시 헤더 높이 재계산
+  $(window).resize(function () {
+    updateHeaderHeight();
+  });
+
+  // 초기 상태 설정
+  updateHeaderHeight();
+  updateScrollDownButton();
+
+  $scrollDownBtn.on('click', function () {
+    // scroll-top 클래스가 있으면 페이지 상단으로 이동
+    if ($(this).hasClass('scroll-top')) {
+      $('html, body').animate({ scrollTop: 0 }, 800, 'swing');
+      return;
+    }
+
+    // 모든 섹션 요소 가져오기 (section 태그 중 id가 section으로 시작하는 것들)
+    const sections = $('section[id^="section-"]').toArray();
+
+    if (sections.length === 0) return;
+
+    // 현재 스크롤 위치
+    const currentScrollTop = $(window).scrollTop();
+    const windowHeight = $(window).height();
+
+    // 현재 보이는 섹션 찾기 (viewport의 중간 지점 기준)
+    const viewportMiddle = currentScrollTop + windowHeight / 2;
+
+    let currentSectionIndex = -1;
+    let nextSection = null;
+
+    // 헤더 높이 가져오기
+    const headerHeight = $('#header').outerHeight() || 0;
+
+    // 현재 섹션 인덱스 찾기
+    // 각 섹션의 시작 위치를 기준으로 현재 위치와 가장 가까운 섹션 찾기
+    for (let i = sections.length - 1; i >= 0; i--) {
+      const sectionTop = $(sections[i]).offset().top;
+
+      // 현재 스크롤 위치가 섹션 시작점을 지났으면 그 섹션이 현재 섹션
+      // 헤더 높이를 고려하여 약간의 여유 추가
+      if (currentScrollTop >= sectionTop - cachedHeaderHeight - 50) {
+        currentSectionIndex = i;
+        break;
+      }
+    }
+
+    // 다음 섹션 결정
+    if (currentSectionIndex === -1) {
+      // 현재 위치가 첫 섹션 위에 있는 경우, 첫 섹션으로 이동
+      nextSection = sections[0];
+    } else if (currentSectionIndex < sections.length - 1) {
+      // 다음 섹션이 있는 경우
+      nextSection = sections[currentSectionIndex + 1];
+    } else {
+      // 마지막 섹션인 경우, 페이지 맨 아래로 이동
+      $('html, body').animate(
+        {
+          scrollTop: $(document).height() - $(window).height()
+        },
+        800,
+        'swing'
+      );
+      return;
+    }
+
+    // 다음 섹션으로 스크롤
+    if (nextSection) {
+      // offering-section 클래스를 가진 섹션 확인
+      const isOfferingSection = $(nextSection).hasClass('offering-section');
+      // section-01은 헤더 높이를 빼지 않음 (첫 번째 섹션은 상단에 위치)
+      const isSection01 = $(nextSection).attr('id') === 'section-01';
+
+      let targetPosition;
+      if (isOfferingSection) {
+        // offering-section은 페이지 상단에 딱 맞춤
+        targetPosition = $(nextSection).offset().top - 100;
+      } else if (isSection01) {
+        targetPosition = $(nextSection).offset().top;
+      } else {
+        // 다른 섹션들은 헤더 높이를 고려
+        targetPosition = $(nextSection).offset().top - cachedHeaderHeight;
+      }
+
+      $('html, body').animate(
+        {
+          scrollTop: targetPosition
+        },
+        800,
+        'swing'
+      );
+    }
+  });
+
   // 스크롤 header 고정 스크립트
   function fixedClassChk(elArray, nowSclTop, sclDirection, sclDistance) {
     elArray.forEach(function (item) {
@@ -349,6 +483,74 @@ function commonUi() {
       }
     }
   });
+
+  let offeringValueSwiper;
+  let categorySwiper;
+
+  // 제공가치 swiper (모바일에서만)
+  function initThumbSwiper() {
+    if (window.innerWidth <= 768) {
+      if (!offeringValueSwiper) {
+        offeringValueSwiper = new Swiper('.thumb-swiper', {
+          slidesPerView: 'auto',
+          spaceBetween: 24,
+          speed: 600,
+          grabCursor: true,
+          pagination: {
+            el: '.thumb-swiper .thumb-pagination',
+            type: 'progressbar'
+          },
+          // Enable swiper on mobile
+          observer: true,
+          observeParents: true
+        });
+      }
+    } else {
+      // pc에서는 swiper 제거 (768 이상)
+      if (offeringValueSwiper) {
+        offeringValueSwiper.destroy(true, true);
+        offeringValueSwiper = undefined;
+      }
+    }
+  }
+
+  // 취급항목 swiper (모바일에서만)
+  function initCategorySwiper() {
+    if (window.innerWidth <= 768) {
+      if (!categorySwiper) {
+        categorySwiper = new Swiper('.category-swiper', {
+          slidesPerView: 2.1,
+          spaceBetween: 16,
+          speed: 600,
+          grabCursor: true,
+          observer: true,
+          observeParents: true,
+          pagination: {
+            el: '.category-pagination',
+            type: 'progressbar'
+          }
+        });
+      }
+    } else {
+      // pc에서는 swiper 제거 (768 이상)
+      if (categorySwiper) {
+        categorySwiper.destroy(true, true);
+        categorySwiper = undefined;
+      }
+    }
+  }
+
+  function initSwipers() {
+    initThumbSwiper();
+    //initOfferingValueSwiper();
+    //initCategorySwiper();
+  }
+
+  initSwipers();
+
+  $(window).on('resize', function () {
+    initSwipers();
+  });
 }
 
 // fadeIn 방향 애니메이션 적용 함수
@@ -362,16 +564,16 @@ function applyFadeInUpAnimation(section) {
 
     // 애니메이션 클래스 매핑
     const animationClasses = {
-      'up': 'fadeInUp',
-      'down': 'fadeInDown',
-      'left': 'fadeInLeft',
-      'right': 'fadeInRight',
-      'zoom': 'fadeInZoom',
-      'fade': 'fadeIn'
+      up: 'fadeInUp',
+      down: 'fadeInDown',
+      left: 'fadeInLeft',
+      right: 'fadeInRight',
+      zoom: 'fadeInZoom',
+      fade: 'fadeIn'
     };
 
     // 기존 애니메이션 클래스 제거
-    Object.values(animationClasses).forEach(className => {
+    Object.values(animationClasses).forEach((className) => {
       element.classList.remove(className);
     });
     element.classList.remove('animated');
@@ -396,7 +598,7 @@ function resetAnimations(section) {
   const animationClasses = ['fadeInUp', 'fadeInDown', 'fadeInLeft', 'fadeInRight', 'fadeInZoom', 'fadeIn', 'animated'];
 
   fadeElements.forEach((element) => {
-    animationClasses.forEach(className => {
+    animationClasses.forEach((className) => {
       element.classList.remove(className);
     });
   });

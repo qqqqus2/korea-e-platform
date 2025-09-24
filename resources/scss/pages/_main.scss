@@ -9,9 +9,17 @@
   #section-04 {
     height: 100vh;
     padding: 0;
+    @media screen and (max-width: 768px) {
+      height: auto;
+      padding-top: 8rem;
+    }
   }
   .container {
     padding-block: 10rem;
+    @media screen and (max-width: 768px) {
+      // min-height: 100vh;
+      padding-block: 0;
+    }
   }
 
   .main-banner {
@@ -39,16 +47,34 @@
       opacity: 0;
       margin-left: 10rem;
       transition: 0.5s 0.5s ease-in all;
+      @media screen and (max-width: 1300px) {
+        padding: 0 2.4rem;
+      }
       .tit {
         font-size: 8rem;
         font-weight: 700;
         line-height: 130%;
         color: #fff;
+        @media screen and (max-width: 1300px) {
+          font-size: 6em;
+          word-break: keep-all;
+        }
+        @media screen and (max-width: 768px) {
+          font-size: 4em;
+        }
       }
       .sub-txt {
         font-size: 2.8rem;
         font-weight: 700;
         line-height: 3.9rem;
+        @media screen and (max-width: 1300px) {
+          font-size: 2em;
+          line-height: 3rem;
+        }
+        @media screen and (max-width: 768px) {
+          font-size: 1.8em;
+          line-height: 2.6rem;
+        }
       }
     }
     .swiper-slide-active {
@@ -87,6 +113,10 @@
     display: flex;
     align-items: center;
     z-index: 10;
+    @media screen and (max-width: 1300px) {
+      padding: 0 2.4rem;
+      margin-top: 20rem;
+    }
     .swiper-pagination {
       display: inline-block;
       position: relative;
@@ -168,17 +198,24 @@
   }
 }
 .section-tit {
-  margin-top: 16rem;
   font-size: 9.6rem;
   color: #090a10;
   font-weight: 700;
   margin-bottom: 4.8rem;
+  @media screen and (max-width: 768px) {
+    font-size: 4rem;
+    line-height: 4.8rem;
+  }
 }
 .strength-list {
   width: 100%;
   padding: 0;
   display: flex;
   gap: 0 3.2rem;
+  @media screen and (max-width: 768px) {
+    padding: 0 2.4rem;
+    display: block;
+  }
   .list-box {
     height: 56rem;
     width: 29rem;
@@ -186,6 +223,12 @@
     flex-shrink: 0;
     transition: all 0.3s ease-in;
     overflow: hidden;
+    @media screen and (max-width: 768px) {
+      opacity: 1 !important;
+      width: 32rem;
+      height: 36.8rem;
+      flex: 0 0 auto !important;
+    }
     cursor: pointer;
     &.decrease,
     &.increase {
@@ -305,6 +348,9 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
+    @media screen and (max-width: 768px) {
+      opacity: 1 !important;
+    }
   }
   .img-wrap {
     display: block;
@@ -357,6 +403,12 @@
   display: flex;
   gap: 0 3.2rem;
   margin-top: 7.3rem;
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+    padding: 0 0 8rem;
+    gap: 2.4rem 0;
+    margin-top: 3.2rem;
+  }
 }
 .corporation-item {
   width: 62.4rem;
@@ -368,10 +420,17 @@
   border: 1px solid rgba(255, 255, 255, 0.18);
   background-color: #10141b;
   background-repeat: no-repeat;
+  background-position: top right;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: end;
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    height: auto;
+    min-height: 40.3rem;
+    padding: 2.4rem;
+  }
   &.europe {
     background-image: url('../../resources/images/main/bg-europe.svg');
     .point-1 {
@@ -390,6 +449,9 @@
   &.china {
     background-image: url('../../resources/images/main/bg-china.svg');
     top: 7rem;
+    @media screen and (max-width: 768px) {
+      top: 0;
+    }
     .point-1 {
       right: 10.7rem;
       top: 7.3rem;
@@ -404,15 +466,27 @@
     font-size: 4rem;
     font-weight: 700;
     line-height: 4.8rem;
+    @media screen and (max-width: 768px) {
+      font-size: 2.4rem;
+      line-height: 3.1rem;
+    }
   }
   .corporation-list {
     font-size: 1.8rem;
     font-weight: 400;
     line-height: 2.6rem;
     margin-top: 2.2rem;
+    @media screen and (max-width: 768px) {
+      margin-top: 1.6rem;
+    }
     li {
       position: relative;
       padding-left: 1.2rem;
+      @media screen and (max-width: 768px) {
+        & + li {
+          margin-top: 0.6rem;
+        }
+      }
       &::before {
         content: '';
         display: block;
@@ -422,7 +496,7 @@
         border-radius: 50%;
         position: absolute;
         left: 0;
-        top: 1rem;
+        top: 1.2rem;
       }
     }
   }
