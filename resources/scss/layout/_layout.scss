@@ -3,6 +3,9 @@
   padding-top: 11.7rem;
   box-sizing: border-box;
   overflow-x: hidden;
+  &.main {
+    padding-top: 0;
+  }
 }
 .inner {
   width: 100%;
@@ -12,7 +15,11 @@
   padding: 0 2.4rem;
 }
 
-// fadeInUp 애니메이션
+// ========================================
+// Fade 애니메이션 정의
+// ========================================
+
+// fadeInUp - 아래에서 위로
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -24,6 +31,94 @@
   }
 }
 
+// fadeInDown - 위에서 아래로
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// fadeInLeft - 왼쪽에서 오른쪽으로
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// fadeInRight - 오른쪽에서 왼쪽으로
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// fadeInZoom - 확대되며 나타남
+@keyframes fadeInZoom {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// fadeIn - 단순 페이드
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// ========================================
+// 섹션 애니메이션 (페이지 전환용)
+// ========================================
+
+@keyframes sectionEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(80px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes sectionExit {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.98) rotate(-2deg);
+  }
+}
+
+// ========================================
+// 애니메이션 클래스
+// ========================================
+
 .animated {
   animation-duration: 0.8s;
   animation-fill-mode: both;
@@ -33,21 +128,45 @@
   animation-name: fadeInUp;
 }
 
+.fadeInDown {
+  animation-name: fadeInDown;
+}
+
+.fadeInLeft {
+  animation-name: fadeInLeft;
+}
+
+.fadeInRight {
+  animation-name: fadeInRight;
+}
+
+.fadeInZoom {
+  animation-name: fadeInZoom;
+}
+
+.fadeIn {
+  animation-name: fadeIn;
+}
+
 // data-fade 속성을 가진 요소들의 초기 상태
 [data-fade] {
   opacity: 0;
 }
 
+// ========================================
 // Container
+// ========================================
+
 .container {
+  position: relative;
   display: flex;
-  align-items: center; // center에서 flex-start로 변경
-  justify-content: center; // center에서 flex-start로 변경
+  align-items: center;
+  justify-content: center;
   flex-direction: column;
-  top: 0;
-  left: 0;
   width: 100%;
+  // min-height: 100vh;
   z-index: 1;
+  opacity: 0;
   background-color: #fff;
 
   .center-box {
@@ -56,11 +175,14 @@
     transform: translateY(-50%);
   }
 
-  &.active + .container {
-    transform: translateY(100%);
-    z-index: 10;
+  &#section-01 {
+    z-index: 5;
   }
 }
+
+// ========================================
+// 반응형 유틸리티
+// ========================================
 
 .pc-show {
   display: block;

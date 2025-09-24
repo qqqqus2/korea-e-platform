@@ -1,5 +1,4 @@
 .sub-visual {
-  height: 100vh;
   .title-section {
     display: flex;
     align-items: flex-end;
@@ -29,9 +28,8 @@
   }
   .visual-section {
     width: 100%;
-    // height: fit-content;
-    // padding-block: 34.4rem;
-    height: 100%;
+    height: fit-content;
+    padding-block: 34.4rem;
     display: flex;
     flex-direction: column;
     align-items: center;
