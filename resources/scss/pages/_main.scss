@@ -495,14 +495,23 @@
     .point-1 {
       right: 12.5rem;
       top: 4.6rem;
+      &::before {
+        animation: ripple 1.5s 0.5s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+      }
     }
     .point-2 {
       right: 14.5rem;
       top: 9.6rem;
+      &::before {
+        animation: ripple 1.5s 1s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+      }
     }
     .point-3 {
       right: 10.5rem;
       top: 14.6rem;
+      &::before {
+        animation: ripple 1.5s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+      }
     }
   }
   &.china {
@@ -514,10 +523,16 @@
     .point-1 {
       right: 10.7rem;
       top: 7.3rem;
+      &::before {
+        animation: ripple 1.5s 1s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+      }
     }
     .point-2 {
       right: 11.6rem;
       top: 11.8rem;
+      &::before {
+        animation: ripple 1.5s 2s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+      }
     }
   }
   .item-tit {
@@ -586,7 +601,6 @@
       border-radius: 50%;
       background-color: $input-focus-line;
       opacity: 0.3;
-      animation: ripple 1.5s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
     }
   }
   @keyframes ripple {

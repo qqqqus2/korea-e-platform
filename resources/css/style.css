@@ -29480,13 +29480,25 @@ body:has(.force-white) {
   right: 12.5rem;
   top: 4.6rem;
 }
+.corporation-item.europe .point-1::before {
+  -webkit-animation: ripple 1.5s 0.5s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+          animation: ripple 1.5s 0.5s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+}
 .corporation-item.europe .point-2 {
   right: 14.5rem;
   top: 9.6rem;
 }
+.corporation-item.europe .point-2::before {
+  -webkit-animation: ripple 1.5s 1s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+          animation: ripple 1.5s 1s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+}
 .corporation-item.europe .point-3 {
   right: 10.5rem;
   top: 14.6rem;
+}
+.corporation-item.europe .point-3::before {
+  -webkit-animation: ripple 1.5s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+          animation: ripple 1.5s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
 }
 .corporation-item.china {
   background-image: url("../../resources/images/main/bg-china.svg");
@@ -29501,9 +29513,17 @@ body:has(.force-white) {
   right: 10.7rem;
   top: 7.3rem;
 }
+.corporation-item.china .point-1::before {
+  -webkit-animation: ripple 1.5s 1s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+          animation: ripple 1.5s 1s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+}
 .corporation-item.china .point-2 {
   right: 11.6rem;
   top: 11.8rem;
+}
+.corporation-item.china .point-2::before {
+  -webkit-animation: ripple 1.5s 2s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+          animation: ripple 1.5s 2s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
 }
 .corporation-item .item-tit {
   color: #fff;
@@ -29577,8 +29597,6 @@ body:has(.force-white) {
   border-radius: 50%;
   background-color: #1573e1;
   opacity: 0.3;
-  -webkit-animation: ripple 1.5s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
-          animation: ripple 1.5s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
 }
 @-webkit-keyframes ripple {
   0% {
