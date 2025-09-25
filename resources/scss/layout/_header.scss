@@ -24,7 +24,9 @@
   }
   &.bg-trans {
     background-color: transparent;
-
+    .inner {
+      border-bottom: 0;
+    }
     #logo {
       .logo-txt {
         background-image: url('../../resources/images/common/logo-wht.svg');
@@ -305,6 +307,10 @@
     right: 5.4rem;
     top: 50%;
     transform: translateY(-50%);
+    span {
+      position: relative;
+      z-index: 2;
+    }
     @media screen and (max-width: 1300px) {
       right: 2.4rem;
     }
@@ -326,9 +332,25 @@
       border-radius: 2.4rem;
       font-weight: 500;
       color: #404046;
+      overflow: hidden;
       display: inline-flex;
       align-items: center;
+      position: relative;
       justify-content: center;
+      transition: 0.3s cubic-bezier(0.075, 0.82, 0.165, 1) all;
+      &::before {
+        content: '';
+        background-color: #f6495f;
+        border-color: #f6495f;
+        z-index: 1;
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        opacity: 0;
+        width: 0;
+        transition: 0.3s cubic-bezier(0.075, 0.82, 0.165, 1) all;
+      }
       @media screen and (max-width: 1024px) {
         border: 0;
         font-size: 2rem;
@@ -355,21 +377,35 @@
         }
       }
     }
+    &:hover {
+      .btn-arrow {
+        color: #fff;
+        border-color: #f6495f;
+        &::before {
+          width: 100%;
+          opacity: 1;
+        }
+        &::after {
+          z-index: 3;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M8.33333 5.83301L12.5 9.99967L8.33333 14.1663' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        }
+      }
+    }
   }
   .out-link-menu {
     position: absolute;
     visibility: hidden;
+    width: 36.4rem;
     height: 0;
     z-index: 20;
     right: 0;
     top: 11.6rem;
-    width: 0;
     display: flex;
     padding: 3.2rem;
     opacity: 0;
     flex-direction: column;
     background-color: #f4f4f4;
-    background-position: right 4.5rem;
+    background-position: right bottom;
     background-repeat: no-repeat;
     background-size: 22.4rem auto;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='224' height='236' viewBox='0 0 224 236' fill='none'%3E%3Cpath d='M189.272 186.724C162.98 210.596 137.619 222.74 113.915 222.74C76.2883 222.74 53.8262 198.193 53.8262 157.143C53.8262 151.071 54.2402 144.895 55.0166 138.823H107.601C137.412 138.823 224 117.546 224 52.3637C224 13.7007 186.166 0 153.819 0C73.3383 0 0 73.278 0 153.77C0 208.054 43.5786 249 101.338 249C137.205 249 172.503 233.535 206.299 203.123L208.059 201.566L190.824 185.479L189.375 186.776L189.272 186.724ZM149.368 20.3435C166.654 20.3435 177.368 31.2937 177.368 48.9385C177.368 72.4477 163.135 90.9229 135.031 103.793C113.346 113.757 90.9353 116.508 89.0721 116.508H58.536C65.7301 76.4437 103.667 20.3954 149.368 20.3954' fill='%23EAEAEA'/%3E%3C/svg%3E");
@@ -401,6 +437,12 @@
       display: inline-block;
       padding: 1.7rem;
       line-height: 3rem;
+      &:hover {
+        color: #f6495f;
+        &::after {
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30' fill='none'%3E%3Cpath d='M11.5294 10L19.8824 10.1176M19.8824 10.1176L20 18.4706M19.8824 10.1176L10 20' stroke='%23f6495f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        }
+      }
       @media screen and (max-width: 1300px) {
         padding: 1rem;
         font-size: 1.8rem;
@@ -453,6 +495,9 @@
   #header {
     background-color: #fff;
     transition: none;
+    .inner {
+      border-bottom: 0.1rem solid #f0f0f0;
+    }
     #logo {
       .logo-txt {
         background-image: url('../../resources/images/common/logo.svg');
@@ -490,7 +535,6 @@
     .out-link-menu {
       visibility: visible;
       opacity: 1;
-      width: 36.4rem;
       @media screen and (max-width: 1300px) {
         width: 20rem;
       }
