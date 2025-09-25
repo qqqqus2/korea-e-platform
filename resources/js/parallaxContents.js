@@ -42,39 +42,40 @@
           section.style.transform = `translateY(${translateY}px) scale(${scale})`;
         }
       } else {
-        // 섹션의 중앙이 화면 중앙에서 얼마나 떨어져 있는지 계산
+        // 섹션의 상단이 뷰포트 하단에서 얼마나 떨어져 있는지 계산
+        const sectionDistanceFromBottom = sectionTop - (scrollTop + windowHeight);
+
+        // 이전 섹션 높이의 절반 지점부터 다음 섹션이 나타나도록 설정
+        // 마지막 섹션은 더 일찍 등장 (20% 지점)
+        const triggerPoint = index > 0 ? (isLastSection ? sections[index - 1].offsetHeight * 0.2 : sections[index - 1].offsetHeight * 0.3) : 0;
+
+        // opacity 계산을 위한 거리
         const distanceFromCenter = Math.abs(scrollTop + windowHeight / 2 - sectionCenter);
 
-        // opacity 1을 유지하는 구간을 더 길게 설정 (화면 높이의 40% 범위)
-        const fadeZone = windowHeight * 0.3; // 페이드 영역을 줄임 (빠른 전환)
-        const fullOpacityZone = windowHeight * 0.4; // opacity 1 유지 구간
+        // opacity 1을 유지하는 구간 설정
+        const fadeZone = windowHeight * 0.5; // 페이드 영역을 더 길게
+        const fullOpacityZone = windowHeight * 0.3; // opacity 1 유지 구간을 줄여서 더 일찍 사라지기 시작
 
         let opacity = 1;
 
-        // 마지막 섹션이 아닌 경우에만 페이드 적용
-        if (!isLastSection) {
-          if (distanceFromCenter > fullOpacityZone) {
-            // fullOpacityZone을 벗어난 거리만큼 페이드
-            const fadeDistance = distanceFromCenter - fullOpacityZone;
-            opacity = 1 - fadeDistance / fadeZone;
-            opacity = Math.max(0, Math.min(1, opacity));
-
-            // 더 급격한 페이드 커브 적용
-            opacity = Math.pow(opacity, 2);
-          }
+        // 섹션이 트리거 포인트를 지났는지 확인 (이전 섹션의 절반 지점)
+        if (sectionDistanceFromBottom > -triggerPoint) {
+          // 아직 트리거 포인트에 도달하지 않음
+          opacity = 0;
         } else {
-          // 마지막 섹션의 경우
-          if (scrollTop + windowHeight / 2 < sectionCenter) {
-            // 등장 전에만 opacity 조정 (등장 애니메이션용)
-            if (distanceFromCenter > fullOpacityZone) {
-              const fadeDistance = distanceFromCenter - fullOpacityZone;
-              opacity = 1 - fadeDistance / fadeZone;
-              opacity = Math.max(0, Math.min(1, opacity));
-              opacity = Math.pow(opacity, 2);
-            }
-          } else {
-            // 화면 중앙을 지난 후에는 항상 opacity 1 유지
-            opacity = 1;
+          // 트리거 포인트를 지났으면 페이드인 시작
+          const fadeInDistance = Math.abs(sectionDistanceFromBottom + triggerPoint);
+          // 마지막 섹션은 더 빠른 페이드인
+          const fadeInSpeed = isLastSection ? windowHeight * 0.15 : windowHeight * 0.3;
+          opacity = Math.min(1, fadeInDistance / fadeInSpeed);
+          // 마지막 섹션은 더 급격한 커브로 빠르게 나타남
+          opacity = Math.pow(opacity, isLastSection ? 1 : 2);
+
+          // 섹션이 화면을 벗어날 때 페이드아웃 (마지막 섹션 제외)
+          if (!isLastSection && distanceFromCenter > fullOpacityZone) {
+            const fadeDistance = distanceFromCenter - fullOpacityZone;
+            const fadeOutOpacity = 1 - fadeDistance / fadeZone;
+            opacity = Math.min(opacity, Math.max(0, fadeOutOpacity));
           }
         }
 
@@ -83,16 +84,17 @@
         let scale = 1;
         let rotate = 0;
 
-        if (scrollTop + windowHeight / 2 < sectionCenter) {
-          // 섹션이 아래에 있을 때 (등장 전) - 모든 섹션에 적용
+        if (opacity < 1) {
+          // 섹션이 등장 중일 때
           const animProgress = 1 - opacity;
-          translateY = 150 * animProgress; // 더 큰 이동 거리
+          // 마지막 섹션은 translateY를 0부터 시작
+          translateY = isLastSection ? -10 : 150 * animProgress; // 마지막 섹션은 Y 이동 없음
           scale = 0.9 + 0.1 * opacity; // 더 작은 크기에서 시작
         } else if (distanceFromCenter > fullOpacityZone && !isLastSection) {
           // 섹션이 위로 지나갈 때 (퇴장) - 마지막 섹션은 제외
           const animProgress = 1 - opacity;
           translateY = -120 * animProgress; // 더 큰 이동 거리
-          scale = 1 + 0.1 * animProgress; // 더 큰 축소
+          scale = 1 - 0.1 * animProgress; // 더 큰 축소
           // rotate = -5 * animProgress; // 더 큰 회전
         } else if (isLastSection && scrollTop + windowHeight / 2 >= sectionCenter) {
           // 마지막 섹션이 화면 중앙을 지난 후에는 transform 고정
@@ -167,7 +169,7 @@
 
     // 각 섹션의 기본 스타일 설정
     sections.forEach((section) => {
-      section.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out'; // 더 빠른 전환
+      section.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
       section.style.willChange = 'opacity, transform';
     });
 
