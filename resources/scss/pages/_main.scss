@@ -7,10 +7,10 @@
     padding: 0;
   }
   #section-04 {
-    height: 100vh;
-    padding: 0;
+    min-height: 100vh;
+    padding-bottom: 8rem;
     @media screen and (max-width: 768px) {
-      height: auto;
+      min-height: 0;
       padding-top: 8rem;
     }
   }
@@ -209,33 +209,51 @@
 }
 .strength-list {
   width: 100%;
-  padding: 0;
   display: flex;
   gap: 0 3.2rem;
-  @media screen and (max-width: 768px) {
-    padding: 0 2.4rem;
+  .thumb-pagination {
+    width: calc(100% - 4.8rem);
+    height: 0.3rem;
+    display: none;
+    top: auto;
+    bottom: 0;
+    left: 2.4rem;
+    border-radius: 99rem;
+    overflow: hidden;
+    background-color: #ebecf2;
+    @media screen and (max-width: 1024px) {
+      display: block;
+    }
+    .swiper-pagination-progressbar-fill {
+      background-color: #5b5c61;
+    }
+  }
+  @media screen and (max-width: 1024px) {
     display: block;
+    padding: 0 2.4rem 2.4rem;
+    overflow: hidden;
+    .swiper-wrapper {
+      display: flex;
+      gap: 0;
+    }
   }
   .list-box {
+    //width: 29rem;
+    width: 15%;
     height: 56rem;
-    width: 29rem;
     flex: 0 0 auto;
     flex-shrink: 0;
     transition: all 0.3s ease-in;
     overflow: hidden;
-    @media screen and (max-width: 768px) {
-      opacity: 1 !important;
+    cursor: pointer;
+
+    &.increase {
+      width: 40%;
+    }
+    @media screen and (max-width: 1024px) {
       width: 32rem;
       height: 36.8rem;
-      flex: 0 0 auto !important;
-    }
-    cursor: pointer;
-    &.decrease,
-    &.increase {
-      transition: all 0.3s ease-in;
-    }
-    &.increase {
-      flex: 1;
+      transition: none;
     }
   }
   .item {
@@ -249,16 +267,41 @@
     align-items: end;
     padding: 4rem 3rem;
     overflow: hidden;
+    position: relative;
+    @media screen and (max-width: 1600px) {
+      padding: 4rem 1.5rem;
+    }
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      transform: scaleX(100%);
+      background-size: auto 56rem;
+      background-position: center;
+      background-repeat: no-repeat;
+      transition: 0.3s ease-in all;
+    }
+    @keyframes fadeInTxt {
+      to {
+        opacity: 1;
+      }
+    }
     .text-box {
       display: flex;
       flex-direction: column;
       gap: 0.6rem 0;
       flex-wrap: wrap;
+      position: relative;
       .idx {
         font-size: 1.8rem;
         font-weight: 700;
         opacity: 0;
-        visibility: hidden;
+        @media screen and (max-width: 1024px) {
+          opacity: 1;
+        }
       }
       .tit {
         font-size: 2.8rem;
@@ -268,41 +311,54 @@
         font-size: 1.8rem;
         font-weight: 400;
         opacity: 0;
-        visibility: hidden;
+        @media screen and (max-width: 1024px) {
+          opacity: 1;
+        }
       }
     }
     &.item-1 {
-      background-image: url('../../resources/images/main/img-item-1.png');
+      &::before {
+        background-image: url('../../resources/images/main/img-item-1.png');
+      }
     }
     &.item-2 {
-      background-image: url('../../resources/images/main/img-item-2.png');
+      &::before {
+        background-image: url('../../resources/images/main/img-item-2.png');
+      }
     }
     &.item-3 {
-      background-image: url('../../resources/images/main/img-item-3.png');
+      &::before {
+        background-image: url('../../resources/images/main/img-item-3.png');
+      }
     }
     &.item-4 {
-      background-image: url('../../resources/images/main/img-item-4.png');
+      &::before {
+        background-image: url('../../resources/images/main/img-item-4.png');
+      }
     }
     &.item-5 {
-      background-image: url('../../resources/images/main/img-item-5.png');
+      &::before {
+        background-image: url('../../resources/images/main/img-item-5.png');
+      }
     }
   }
   .increase {
     .item {
+      &::before {
+        transform: scaleX(120%);
+      }
       .text-box {
         .idx {
-          opacity: 1;
-          visibility: visible;
-          transition: all 0.3s 0.3s ease-in;
+          animation: fadeIn 0.3s forwards;
+          animation-delay: 0.3s;
         }
         .tit {
           font-size: 2.8rem;
           font-weight: 700;
         }
         .sub-tit {
-          opacity: 1;
-          visibility: visible;
-          transition: all 0.3s 0.3s ease-in;
+          animation: fadeIn 0.3s forwards;
+          animation-delay: 0.3s;
         }
       }
     }
@@ -403,7 +459,7 @@
   display: flex;
   gap: 0 3.2rem;
   margin-top: 7.3rem;
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 1024px) {
     flex-direction: column;
     padding: 0 0 8rem;
     gap: 2.4rem 0;
@@ -425,11 +481,14 @@
   display: flex;
   flex-direction: column;
   justify-content: end;
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 1024px) {
     width: 100%;
     height: auto;
-    min-height: 40.3rem;
+    min-height: 30rem;
     padding: 2.4rem;
+  }
+  @media screen and (max-width: 768px) {
+    height: 40.3rem;
   }
   &.europe {
     background-image: url('../../resources/images/main/bg-europe.svg');
@@ -449,7 +508,7 @@
   &.china {
     background-image: url('../../resources/images/main/bg-china.svg');
     top: 7rem;
-    @media screen and (max-width: 768px) {
+    @media screen and (max-width: 1024px) {
       top: 0;
     }
     .point-1 {
@@ -476,13 +535,13 @@
     font-weight: 400;
     line-height: 2.6rem;
     margin-top: 2.2rem;
-    @media screen and (max-width: 768px) {
+    @media screen and (max-width: 1024px) {
       margin-top: 1.6rem;
     }
     li {
       position: relative;
       padding-left: 1.2rem;
-      @media screen and (max-width: 768px) {
+      @media screen and (max-width: 1024px) {
         & + li {
           margin-top: 0.6rem;
         }

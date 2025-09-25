@@ -22,6 +22,7 @@
       const sectionTop = section.offsetTop;
       const sectionHeight = section.offsetHeight;
       const sectionCenter = sectionTop + sectionHeight / 2;
+      const isLastSection = index === sections.length - 1; // 마지막 섹션 확인
 
       if (section.id === 'section-01') {
         // 초기 애니메이션이 완료된 후에만 스크롤 효과 적용
@@ -50,14 +51,31 @@
 
         let opacity = 1;
 
-        if (distanceFromCenter > fullOpacityZone) {
-          // fullOpacityZone을 벗어난 거리만큼 페이드
-          const fadeDistance = distanceFromCenter - fullOpacityZone;
-          opacity = 1 - fadeDistance / fadeZone;
-          opacity = Math.max(0, Math.min(1, opacity));
+        // 마지막 섹션이 아닌 경우에만 페이드 적용
+        if (!isLastSection) {
+          if (distanceFromCenter > fullOpacityZone) {
+            // fullOpacityZone을 벗어난 거리만큼 페이드
+            const fadeDistance = distanceFromCenter - fullOpacityZone;
+            opacity = 1 - fadeDistance / fadeZone;
+            opacity = Math.max(0, Math.min(1, opacity));
 
-          // 더 급격한 페이드 커브 적용
-          opacity = Math.pow(opacity, 2);
+            // 더 급격한 페이드 커브 적용
+            opacity = Math.pow(opacity, 2);
+          }
+        } else {
+          // 마지막 섹션의 경우
+          if (scrollTop + windowHeight / 2 < sectionCenter) {
+            // 등장 전에만 opacity 조정 (등장 애니메이션용)
+            if (distanceFromCenter > fullOpacityZone) {
+              const fadeDistance = distanceFromCenter - fullOpacityZone;
+              opacity = 1 - fadeDistance / fadeZone;
+              opacity = Math.max(0, Math.min(1, opacity));
+              opacity = Math.pow(opacity, 2);
+            }
+          } else {
+            // 화면 중앙을 지난 후에는 항상 opacity 1 유지
+            opacity = 1;
+          }
         }
 
         // 등장/퇴장 애니메이션
@@ -66,16 +84,20 @@
         let rotate = 0;
 
         if (scrollTop + windowHeight / 2 < sectionCenter) {
-          // 섹션이 아래에 있을 때 (등장 전)
+          // 섹션이 아래에 있을 때 (등장 전) - 모든 섹션에 적용
           const animProgress = 1 - opacity;
           translateY = 150 * animProgress; // 더 큰 이동 거리
           scale = 0.9 + 0.1 * opacity; // 더 작은 크기에서 시작
-        } else if (distanceFromCenter > fullOpacityZone) {
-          // 섹션이 위로 지나갈 때 (퇴장)
+        } else if (distanceFromCenter > fullOpacityZone && !isLastSection) {
+          // 섹션이 위로 지나갈 때 (퇴장) - 마지막 섹션은 제외
           const animProgress = 1 - opacity;
           translateY = -120 * animProgress; // 더 큰 이동 거리
           scale = 1 + 0.1 * animProgress; // 더 큰 축소
           // rotate = -5 * animProgress; // 더 큰 회전
+        } else if (isLastSection && scrollTop + windowHeight / 2 >= sectionCenter) {
+          // 마지막 섹션이 화면 중앙을 지난 후에는 transform 고정
+          translateY = 0;
+          scale = 1;
         }
 
         section.style.opacity = opacity;
@@ -106,10 +128,10 @@
         const section01Opacity = parseFloat(section.style.opacity) || 0;
         if (section01Opacity > 0.5) {
           header.classList.add('bg-trans');
-          header.classList.remove('is-parallax');
+          // header.classList.remove('is-parallax');
         } else {
           header.classList.remove('bg-trans');
-          header.classList.add('is-parallax');
+          //header.classList.add('is-parallax');
         }
       }
     });
@@ -138,6 +160,11 @@
 
   // 초기화
   function init() {
+    // wrap에 main 클래스가 있으면 header에 bg-trans 추가
+    if (wrap.classList.contains('main') && header) {
+      header.classList.add('bg-trans');
+    }
+
     // 각 섹션의 기본 스타일 설정
     sections.forEach((section) => {
       section.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out'; // 더 빠른 전환
@@ -190,13 +217,26 @@
     setTimeout(() => {
       window.scrollTo(0, 0);
       handleScroll();
-    }, 100);
+    }, 300);
   }
 
   // DOM 로드 완료 후 초기화
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', function () {
+      // HTML 요소의 scrollTop을 0으로 초기화
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0; // 일부 브라우저 호환성
+      window.scrollTo(0, 0);
+
+      // init 함수 실행
+      init();
+    });
   } else {
+    // HTML 요소의 scrollTop을 0으로 초기화
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0; // 일부 브라우저 호환성
+    window.scrollTo(0, 0);
+
     init();
   }
 })();

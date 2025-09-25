@@ -207,15 +207,44 @@ function initStrengthList() {
 
   const listBoxes = strengthList.querySelectorAll('.list-box');
 
-  listBoxes.forEach((box) => {
-    box.addEventListener('click', function () {
-      // 모든 list-box에서 active 클래스 제거
+  // resize 이벤트 핸들러
+  function handleResize() {
+    if (window.innerWidth > 1024) {
+      // 1024 초과일 때: 모든 increase 삭제 후 첫 번째에만 추가
       listBoxes.forEach((item) => {
         item.classList.remove('increase');
       });
+      if (listBoxes[0]) {
+        listBoxes[0].classList.add('increase');
+      }
+    } else {
+      // 1024 이하일 때: 모든 listBoxes에서 increase 클래스 제거
+      listBoxes.forEach((item) => {
+        item.classList.remove('increase');
+        item.classList.remove('decrease');
+      });
+    }
+  }
 
-      // 클릭한 list-box에 active 클래스 추가
-      this.classList.add('increase');
+  // 초기 실행
+  handleResize();
+
+  // resize 이벤트 리스너 추가
+  window.addEventListener('resize', handleResize);
+
+  // 클릭 이벤트
+  listBoxes.forEach((box) => {
+    box.addEventListener('click', function () {
+      // 1024px 초과일 때만 increase 클래스 추가
+      if (window.innerWidth > 1024) {
+        // 모든 list-box에서 increase 클래스 제거
+        listBoxes.forEach((item) => {
+          item.classList.remove('increase');
+        });
+
+        // 클릭한 list-box에 increase 클래스 추가
+        this.classList.add('increase');
+      }
     });
   });
 }

@@ -496,15 +496,13 @@ section {
 
   .value-swiper {
     padding-bottom: 3rem;
-    // max-width: 100%;
-    // overflow: auto; // Changed from auto to hidden for Swiper to work
     .swiper-wrapper {
       display: flex;
-      gap: 0; // Swiper handles spacing with spaceBetween
+      gap: 0;
       .swiper-slide {
         min-height: 35.1rem;
         width: 32rem;
-        flex-shrink: 0; // Ensure slides don't shrink
+        flex-shrink: 0;
         padding: 4.8rem 3.2rem;
         .img-box {
           width: 5.6rem;

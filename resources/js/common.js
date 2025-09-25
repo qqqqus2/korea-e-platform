@@ -67,8 +67,8 @@ function commonUi() {
 
   // 헤더 높이 업데이트 함수 (sub-navigation 포함)
   function updateHeaderHeight() {
-    const headerHeight = $('#header').outerHeight() || 0;
-    const subNaviHeight = $('.sub-navigation').outerHeight() || 0;
+    const headerHeight = $('#header').outerHeight() + 80 || 0;
+    const subNaviHeight = $('.sub-navigation').outerHeight() - 80 || 0;
     cachedHeaderHeight = headerHeight + subNaviHeight;
     console.log('Total header height:', cachedHeaderHeight);
   }
@@ -484,14 +484,20 @@ function commonUi() {
     }
   });
 
-  let offeringValueSwiper;
-  let categorySwiper;
+  let thumbSwiper;
 
-  // 제공가치 swiper (모바일에서만)
+  //  thumb swiper (모바일에서만 실행)
   function initThumbSwiper() {
-    if (window.innerWidth <= 768) {
-      if (!offeringValueSwiper) {
-        offeringValueSwiper = new Swiper('.thumb-swiper', {
+    // strength-list 클래스를 가진 thumb-swiper 요소 확인
+    const strengthListSwiper = document.querySelector('.thumb-swiper.strength-list'); // 1024
+    const isStrengthList = strengthListSwiper !== null;
+
+    // strength-list는 1025px 미만, 그 외는 768px 이하에서 실행
+    const breakpoint = isStrengthList ? 1025 : 768;
+
+    if (window.innerWidth < breakpoint) {
+      if (!thumbSwiper) {
+        thumbSwiper = new Swiper('.thumb-swiper', {
           slidesPerView: 'auto',
           spaceBetween: 24,
           speed: 600,
@@ -506,50 +512,24 @@ function commonUi() {
         });
       }
     } else {
-      // pc에서는 swiper 제거 (768 이상)
-      if (offeringValueSwiper) {
-        offeringValueSwiper.destroy(true, true);
-        offeringValueSwiper = undefined;
+      // 설정된 breakpoint 이상에서는 swiper 제거
+      if (thumbSwiper) {
+        thumbSwiper.destroy(true, true);
+        thumbSwiper = undefined;
       }
     }
   }
 
-  // 취급항목 swiper (모바일에서만)
-  function initCategorySwiper() {
-    if (window.innerWidth <= 768) {
-      if (!categorySwiper) {
-        categorySwiper = new Swiper('.category-swiper', {
-          slidesPerView: 2.1,
-          spaceBetween: 16,
-          speed: 600,
-          grabCursor: true,
-          observer: true,
-          observeParents: true,
-          pagination: {
-            el: '.category-pagination',
-            type: 'progressbar'
-          }
-        });
-      }
-    } else {
-      // pc에서는 swiper 제거 (768 이상)
-      if (categorySwiper) {
-        categorySwiper.destroy(true, true);
-        categorySwiper = undefined;
-      }
-    }
-  }
-
-  function initSwipers() {
-    initThumbSwiper();
-    //initOfferingValueSwiper();
-    //initCategorySwiper();
-  }
-
-  initSwipers();
+  initThumbSwiper();
 
   $(window).on('resize', function () {
-    initSwipers();
+    // resize 시 header의 메뉴 관련 클래스 제거
+    const header = document.getElementById('header');
+    if (header) {
+      header.classList.remove('mGnbOpen', 'gnbOpen');
+    }
+
+    initThumbSwiper();
   });
 }
 
@@ -608,4 +588,5 @@ function resetAnimations(section) {
 // DOM 로드 완료 후 실행
 document.addEventListener('DOMContentLoaded', () => {
   commonUi();
+  // initThumbSwiper();
 });

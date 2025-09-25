@@ -190,7 +190,7 @@
   position: fixed;
   right: 2.4rem;
   top: 50%;
-  margin-top: 6.9rem;
+  // margin-top: 6.9rem;
   background-size: contain;
   z-index: 40;
 
@@ -276,7 +276,7 @@
   right: 0;
   top: 11.7rem;
   z-index: 12;
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 1024px) {
     top: 7.2rem;
   }
   a {
