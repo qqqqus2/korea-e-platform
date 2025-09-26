@@ -240,11 +240,11 @@
       }
 
       &.active {
-        .depth-2 {
-          visibility: visible;
-          opacity: 1;
-          height: auto;
-        }
+        // .depth-2 {
+        //   visibility: visible;
+        //   opacity: 1;
+        //   height: auto;
+        // }
       }
     }
     .depth-2 {
@@ -350,6 +350,9 @@
         opacity: 0;
         width: 0;
         transition: 0.3s cubic-bezier(0.075, 0.82, 0.165, 1) all;
+        @media screen and (max-width: 1024px) {
+          content: none;
+        }
       }
       @media screen and (max-width: 1024px) {
         border: 0;
@@ -374,6 +377,7 @@
         @media screen and (max-width: 1024px) {
           margin-left: auto;
           background-size: 3.2rem;
+          margin-right: 0.5rem;
         }
       }
     }
@@ -381,6 +385,7 @@
       .btn-arrow {
         color: #fff;
         border-color: #f6495f;
+
         &::before {
           width: 100%;
           opacity: 1;
@@ -388,6 +393,13 @@
         &::after {
           z-index: 3;
           background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M8.33333 5.83301L12.5 9.99967L8.33333 14.1663' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        }
+        @media screen and (max-width: 1024px) {
+          color: #404046;
+          background-color: #fff;
+          &::after {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M8.33333 5.83301L12.5 9.99967L8.33333 14.1663' stroke='%235B5C61' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+          }
         }
       }
     }
@@ -527,6 +539,7 @@
     .marketPlace-btn {
       .btn-arrow {
         color: #404046;
+
         &:after {
           background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M8.33333 5.83301L12.5 9.99967L8.33333 14.1663' stroke='%23404046' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
         }

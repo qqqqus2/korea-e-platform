@@ -24,6 +24,86 @@
       const sectionCenter = sectionTop + sectionHeight / 2;
       const isLastSection = index === sections.length - 1; // 마지막 섹션 확인
 
+      // position-intro 요소 찾기
+      const positionIntros = section.querySelectorAll('.position-intro');
+      positionIntros.forEach((positionIntro) => {
+        // data-delay 속성 가져오기 (기본값 0)
+        const delay = parseFloat(positionIntro.dataset.delay || 0) / 1000; // ms를 초 단위로 변환
+
+        // 섹션의 뷰포트 내 위치 계산
+        const startPoint = sectionTop - windowHeight * 0.8; // 섹션이 뷰포트 하단에서 80% 위치에 올 때 시작
+        const endPoint = sectionTop - windowHeight * 0.3; // 모든 요소가 같은 지점에서 끝남
+
+        // delay를 고려한 진행도 계산 (시작점만 조정, 끝점은 동일)
+        const adjustedStartPoint = startPoint + windowHeight * delay * 0.3; // delay에 따라 시작점만 조정
+
+        let positionProgress = 0;
+
+        if (scrollTop < adjustedStartPoint) {
+          // 아직 시작 전
+          positionProgress = 0;
+        } else if (scrollTop >= adjustedStartPoint && scrollTop <= endPoint) {
+          // 애니메이션 진행 중
+          positionProgress = (scrollTop - adjustedStartPoint) / (endPoint - adjustedStartPoint);
+        } else {
+          // 애니메이션 완료
+          positionProgress = 1;
+        }
+
+        // translateY 값 계산: -50px에서 0으로 변화
+        const translateY = 150 * (1 - positionProgress);
+
+        // opacity 값 계산: 0.5에서 1로 변화
+        const opacity = 0.5 + 0.5 * positionProgress;
+
+        // position-intro에 translateY와 opacity 적용
+        positionIntro.style.transform = `translateY(${translateY}px)`;
+        positionIntro.style.opacity = opacity;
+        positionIntro.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
+      });
+
+      // scale-intro 요소 찾기
+      const scaleIntros = section.querySelectorAll('.scale-intro');
+      scaleIntros.forEach((scaleIntro) => {
+        // data-delay 속성 가져오기 (기본값 0)
+        const delay = parseFloat(scaleIntro.dataset.delay || 0) / 1000; // ms를 초 단위로 변환
+
+        // 섹션의 뷰포트 내 위치 계산
+        const sectionBottomFromTop = sectionTop + sectionHeight;
+        const viewportCenter = scrollTop + windowHeight / 2;
+
+        // 섹션이 뷰포트에 들어오기 시작할 때부터 30% 지점까지의 진행도
+        const startPoint = sectionTop - windowHeight * 0.8; // 섹션이 뷰포트 하단에서 80% 위치에 올 때 시작
+        const endPoint = sectionTop - windowHeight * 0.3; // 모든 요소가 같은 지점에서 끝남
+
+        // delay를 고려한 진행도 계산 (시작점만 조정, 끝점은 동일)
+        const adjustedStartPoint = startPoint + windowHeight * delay * 0.3; // delay에 따라 시작점만 조정
+
+        let scaleProgress = 0;
+
+        if (scrollTop < adjustedStartPoint) {
+          // 아직 시작 전
+          scaleProgress = 0;
+        } else if (scrollTop >= adjustedStartPoint && scrollTop <= endPoint) {
+          // 애니메이션 진행 중
+          scaleProgress = (scrollTop - adjustedStartPoint) / (endPoint - adjustedStartPoint);
+        } else {
+          // 애니메이션 완료
+          scaleProgress = 1;
+        }
+
+        // scale 값 계산: 1.5에서 1로 변화
+        const scale = 1.5 - 0.5 * scaleProgress;
+
+        // opacity 값 계산: 0.5에서 1로 변화
+        const opacity = 0.5 + 0.5 * scaleProgress;
+
+        // scale-intro에 scale과 opacity 적용
+        scaleIntro.style.transform = `scale(${scale})`;
+        scaleIntro.style.opacity = opacity;
+        scaleIntro.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
+      });
+
       if (section.id === 'section-01') {
         // 초기 애니메이션이 완료된 후에만 스크롤 효과 적용
         if (initialAnimationComplete) {

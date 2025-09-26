@@ -209,7 +209,7 @@ function initStrengthList() {
 
   // resize 이벤트 핸들러
   function handleResize() {
-    if (window.innerWidth > 1024) {
+    if (window.innerWidth > 1300) {
       // 1024 초과일 때: 모든 increase 삭제 후 첫 번째에만 추가
       listBoxes.forEach((item) => {
         item.classList.remove('increase');

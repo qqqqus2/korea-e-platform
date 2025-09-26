@@ -9,9 +9,25 @@
   #section-04 {
     min-height: 100vh;
     padding-bottom: 8rem;
+    position: relative;
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: 0;
+      background-color: #000;
+      opacity: 0.3;
+      z-index: 2;
+    }
     @media screen and (max-width: 768px) {
       min-height: 0;
       padding-top: 8rem;
+    }
+    .section-title {
+      position: relative;
+      z-index: 3;
     }
   }
   .container {
@@ -216,7 +232,7 @@
 .strength-list {
   width: 100%;
   display: flex;
-  gap: 0 3.2rem;
+
   .swiper-wrapper {
     gap: 0 3.2rem;
   }
@@ -230,7 +246,7 @@
     border-radius: 99rem;
     overflow: hidden;
     background-color: #ebecf2;
-    @media screen and (max-width: 1024px) {
+    @media screen and (max-width: 1300px) {
       display: block;
     }
     .swiper-pagination-progressbar-fill {
@@ -247,8 +263,8 @@
     }
   }
   .list-box {
-    //width: 29rem;
-    width: 15%;
+    width: 29rem;
+    //width: calc(15% - 1.6rem);
     height: 56rem;
     flex: 0 0 auto;
     flex-shrink: 0;
@@ -257,9 +273,14 @@
     cursor: pointer;
 
     &.increase {
-      width: 40%;
+      //width: calc(40% - 1.6rem);
+      flex: 1;
+      .increase-hide {
+        display: none;
+      }
     }
-    @media screen and (max-width: 1024px) {
+
+    @media screen and (max-width: 1300px) {
       width: 32rem;
       height: 36.8rem;
       transition: none;
@@ -320,8 +341,10 @@
         font-size: 1.8rem;
         font-weight: 400;
         opacity: 0;
-        @media screen and (max-width: 1024px) {
+        height: 0;
+        @media screen and (max-width: 1300px) {
           opacity: 1;
+          height: auto;
         }
       }
     }
@@ -368,6 +391,7 @@
         .sub-tit {
           animation: fadeIn 0.3s forwards;
           animation-delay: 0.3s;
+          height: auto;
         }
       }
     }
@@ -505,21 +529,21 @@
       right: 12.5rem;
       top: 4.6rem;
       &::before {
-        animation: ripple 3s 1s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+        animation: ripple 4s 1s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
       }
     }
     .point-2 {
       right: 14.5rem;
       top: 9.6rem;
       &::before {
-        animation: ripple 3s 2s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+        animation: ripple 4s 2s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
       }
     }
     .point-3 {
       right: 10.5rem;
       top: 14.6rem;
       &::before {
-        animation: ripple 3s 3s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+        animation: ripple 4s 3s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
       }
     }
   }
@@ -533,14 +557,14 @@
       right: 10.7rem;
       top: 7.3rem;
       &::before {
-        animation: ripple 3s 1s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+        animation: ripple 4s 1s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
       }
     }
     .point-2 {
       right: 11.6rem;
       top: 11.8rem;
       &::before {
-        animation: ripple 3s 2s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+        animation: ripple 4s 2s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
       }
     }
   }

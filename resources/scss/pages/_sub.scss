@@ -1,12 +1,16 @@
 .sub-visual {
   height: 100vh;
+  &#section-01 {
+    height: auto;
+  }
   @media screen and (max-width: 1024px) {
     height: auto;
   }
   .title-section {
     display: flex;
     align-items: flex-end;
-    padding-block: 10.6rem;
+    padding-top: 16.4rem;
+    padding-bottom: 10.6rem;
     justify-content: space-between;
 
     .sub-tit {
@@ -143,6 +147,9 @@
 
 .value-swiper {
   overflow: hidden;
+  .value-pagination {
+    display: none;
+  }
   .swiper-wrapper {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -214,6 +221,9 @@ section {
   position: relative;
   padding-block: 16rem;
   background-color: #000027;
+  .category-pagination {
+    display: none;
+  }
   @media screen and (max-width: 1024px) {
     padding-block: 8rem;
   }
@@ -304,10 +314,10 @@ section {
       width: 381.5rem;
       height: 10.4rem;
       position: relative;
-      animation: 150s linear 0s infinite normal forwards running logo_one;
-      &.two {
-        animation: 150s linear 0s infinite normal none running logo_two;
-      }
+      animation: 50s linear 0s infinite normal forwards running logo_one;
+
+      //
+
       img {
         height: 100%;
         object-fit: contain;
@@ -315,6 +325,9 @@ section {
     }
     & + .client-slide {
       margin: 1.6rem 0 0 -10rem;
+      > div {
+        animation: 50s linear 0s infinite normal backwards running logo_two;
+      }
     }
   }
 }
@@ -335,10 +348,16 @@ section {
 }
 @keyframes logo_two {
   0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(0);
+  }
+  50.01% {
     transform: translateX(0);
   }
   100% {
-    transform: translateX(-200%);
+    transform: translateX(-100%);
   }
 }
 
@@ -524,6 +543,7 @@ section {
       }
     }
     .value-pagination {
+      display: block;
       width: calc(100% - 4.8rem);
       height: 0.3rem;
       top: auto;
@@ -577,6 +597,8 @@ section {
         border-radius: 99rem;
         overflow: hidden;
         background-color: #272e47;
+        display: block;
+
         .swiper-pagination-progressbar-fill {
           background-color: #c8c8ce;
         }

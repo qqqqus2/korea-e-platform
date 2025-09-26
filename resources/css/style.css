@@ -28279,11 +28279,6 @@ body:has(.force-white) {
     right: 2.4rem;
   }
 }
-#header #gnb .gnb-list.active .depth-2 {
-  visibility: visible;
-  opacity: 1;
-  height: auto;
-}
 #header #gnb .depth-2 {
   visibility: hidden;
   overflow: hidden;
@@ -28418,6 +28413,11 @@ body:has(.force-white) {
   transition: 0.3s cubic-bezier(0.075, 0.82, 0.165, 1) all;
 }
 @media screen and (max-width: 1024px) {
+  #header .marketPlace-btn .btn-arrow::before {
+    content: none;
+  }
+}
+@media screen and (max-width: 1024px) {
   #header .marketPlace-btn .btn-arrow {
     border: 0;
     font-size: 2rem;
@@ -28446,6 +28446,7 @@ body:has(.force-white) {
   #header .marketPlace-btn .btn-arrow:after {
     margin-left: auto;
     background-size: 3.2rem;
+    margin-right: 0.5rem;
   }
 }
 #header .marketPlace-btn:hover .btn-arrow {
@@ -28459,6 +28460,15 @@ body:has(.force-white) {
 #header .marketPlace-btn:hover .btn-arrow::after {
   z-index: 3;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M8.33333 5.83301L12.5 9.99967L8.33333 14.1663' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+@media screen and (max-width: 1024px) {
+  #header .marketPlace-btn:hover .btn-arrow {
+    color: #404046;
+    background-color: #fff;
+  }
+  #header .marketPlace-btn:hover .btn-arrow::after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M8.33333 5.83301L12.5 9.99967L8.33333 14.1663' stroke='%235B5C61' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
 }
 #header .out-link-menu {
   position: absolute;
@@ -28944,12 +28954,28 @@ body:has(.force-white) {
 .main #section-04 {
   min-height: 100vh;
   padding-bottom: 8rem;
+  position: relative;
+}
+.main #section-04::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  background-color: #000;
+  opacity: 0.3;
+  z-index: 2;
 }
 @media screen and (max-width: 768px) {
   .main #section-04 {
     min-height: 0;
     padding-top: 8rem;
   }
+}
+.main #section-04 .section-title {
+  position: relative;
+  z-index: 3;
 }
 .main .container {
   padding-block: 10rem;
@@ -29177,7 +29203,6 @@ body:has(.force-white) {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  gap: 0 3.2rem;
 }
 .strength-list .swiper-wrapper {
   gap: 0 3.2rem;
@@ -29193,7 +29218,7 @@ body:has(.force-white) {
   overflow: hidden;
   background-color: #ebecf2;
 }
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1300px) {
   .strength-list .thumb-pagination {
     display: block;
   }
@@ -29215,7 +29240,7 @@ body:has(.force-white) {
   }
 }
 .strength-list .list-box {
-  width: 15%;
+  width: 29rem;
   height: 56rem;
   -webkit-box-flex: 0;
       -ms-flex: 0 0 auto;
@@ -29228,9 +29253,14 @@ body:has(.force-white) {
   cursor: pointer;
 }
 .strength-list .list-box.increase {
-  width: 40%;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
 }
-@media screen and (max-width: 1024px) {
+.strength-list .list-box.increase .increase-hide {
+  display: none;
+}
+@media screen and (max-width: 1300px) {
   .strength-list .list-box {
     width: 32rem;
     height: 36.8rem;
@@ -29318,10 +29348,12 @@ body:has(.force-white) {
   font-size: 1.8rem;
   font-weight: 400;
   opacity: 0;
+  height: 0;
 }
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1300px) {
   .strength-list .item .text-box .sub-tit {
     opacity: 1;
+    height: auto;
   }
 }
 .strength-list .item.item-1::before {
@@ -29358,6 +29390,7 @@ body:has(.force-white) {
           animation: fadeIn 0.3s forwards;
   -webkit-animation-delay: 0.3s;
           animation-delay: 0.3s;
+  height: auto;
 }
 .strength-list .bottom-video {
   width: 100%;
@@ -29539,24 +29572,24 @@ body:has(.force-white) {
   top: 4.6rem;
 }
 .corporation-item.europe .point-1::before {
-  -webkit-animation: ripple 3s 1s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
-          animation: ripple 3s 1s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+  -webkit-animation: ripple 4s 1s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+          animation: ripple 4s 1s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
 }
 .corporation-item.europe .point-2 {
   right: 14.5rem;
   top: 9.6rem;
 }
 .corporation-item.europe .point-2::before {
-  -webkit-animation: ripple 3s 2s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
-          animation: ripple 3s 2s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+  -webkit-animation: ripple 4s 2s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+          animation: ripple 4s 2s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
 }
 .corporation-item.europe .point-3 {
   right: 10.5rem;
   top: 14.6rem;
 }
 .corporation-item.europe .point-3::before {
-  -webkit-animation: ripple 3s 3s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
-          animation: ripple 3s 3s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+  -webkit-animation: ripple 4s 3s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+          animation: ripple 4s 3s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
 }
 .corporation-item.china {
   background-image: url("../../resources/images/main/bg-china.svg");
@@ -29572,16 +29605,16 @@ body:has(.force-white) {
   top: 7.3rem;
 }
 .corporation-item.china .point-1::before {
-  -webkit-animation: ripple 3s 1s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
-          animation: ripple 3s 1s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+  -webkit-animation: ripple 4s 1s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+          animation: ripple 4s 1s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
 }
 .corporation-item.china .point-2 {
   right: 11.6rem;
   top: 11.8rem;
 }
 .corporation-item.china .point-2::before {
-  -webkit-animation: ripple 3s 2s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
-          animation: ripple 3s 2s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+  -webkit-animation: ripple 4s 2s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
+          animation: ripple 4s 2s cubic-bezier(0.075, 0.82, 0.165, 1) infinite;
 }
 .corporation-item .item-tit {
   color: #fff;
@@ -29684,6 +29717,9 @@ body:has(.force-white) {
 .sub-visual {
   height: 100vh;
 }
+.sub-visual#section-01 {
+  height: auto;
+}
 @media screen and (max-width: 1024px) {
   .sub-visual {
     height: auto;
@@ -29696,7 +29732,8 @@ body:has(.force-white) {
   -webkit-box-align: end;
       -ms-flex-align: end;
           align-items: flex-end;
-  padding-block: 10.6rem;
+  padding-top: 16.4rem;
+  padding-bottom: 10.6rem;
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
@@ -29851,6 +29888,9 @@ body:has(.force-white) {
 .value-swiper {
   overflow: hidden;
 }
+.value-swiper .value-pagination {
+  display: none;
+}
 .value-swiper .swiper-wrapper {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -29926,6 +29966,9 @@ section.gray-bg {
   position: relative;
   padding-block: 16rem;
   background-color: #000027;
+}
+.mro-category .category-pagination {
+  display: none;
 }
 @media screen and (max-width: 1024px) {
   .mro-category {
@@ -30035,12 +30078,8 @@ section.gray-bg {
   width: 381.5rem;
   height: 10.4rem;
   position: relative;
-  -webkit-animation: 150s linear 0s infinite normal forwards running logo_one;
-          animation: 150s linear 0s infinite normal forwards running logo_one;
-}
-.client-wrap .client-slide > div.two {
-  -webkit-animation: 150s linear 0s infinite normal none running logo_two;
-          animation: 150s linear 0s infinite normal none running logo_two;
+  -webkit-animation: 50s linear 0s infinite normal forwards running logo_one;
+          animation: 50s linear 0s infinite normal forwards running logo_one;
 }
 .client-wrap .client-slide > div img {
   height: 100%;
@@ -30049,6 +30088,10 @@ section.gray-bg {
 }
 .client-wrap .client-slide + .client-slide {
   margin: 1.6rem 0 0 -10rem;
+}
+.client-wrap .client-slide + .client-slide > div {
+  -webkit-animation: 50s linear 0s infinite normal backwards running logo_two;
+          animation: 50s linear 0s infinite normal backwards running logo_two;
 }
 
 @-webkit-keyframes logo_one {
@@ -30090,22 +30133,38 @@ section.gray-bg {
 }
 @-webkit-keyframes logo_two {
   0% {
+    -webkit-transform: translateX(-100%);
+            transform: translateX(-100%);
+  }
+  50% {
+    -webkit-transform: translateX(0);
+            transform: translateX(0);
+  }
+  50.01% {
     -webkit-transform: translateX(0);
             transform: translateX(0);
   }
   100% {
-    -webkit-transform: translateX(-200%);
-            transform: translateX(-200%);
+    -webkit-transform: translateX(-100%);
+            transform: translateX(-100%);
   }
 }
 @keyframes logo_two {
   0% {
+    -webkit-transform: translateX(-100%);
+            transform: translateX(-100%);
+  }
+  50% {
+    -webkit-transform: translateX(0);
+            transform: translateX(0);
+  }
+  50.01% {
     -webkit-transform: translateX(0);
             transform: translateX(0);
   }
   100% {
-    -webkit-transform: translateX(-200%);
-            transform: translateX(-200%);
+    -webkit-transform: translateX(-100%);
+            transform: translateX(-100%);
   }
 }
 @media screen and (max-width: 1280px) {
@@ -30261,6 +30320,7 @@ section.gray-bg {
     word-break: break-all;
   }
   .value-swiper .value-pagination {
+    display: block;
     width: calc(100% - 4.8rem);
     height: 0.3rem;
     top: auto;
@@ -30313,6 +30373,7 @@ section.gray-bg {
     border-radius: 99rem;
     overflow: hidden;
     background-color: #272e47;
+    display: block;
   }
   .mro-category .category-swiper .category-pagination .swiper-pagination-progressbar-fill {
     background-color: #c8c8ce;

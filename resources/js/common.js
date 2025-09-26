@@ -492,8 +492,8 @@ function commonUi() {
     const strengthListSwiper = document.querySelector('.thumb-swiper.strength-list'); // 1024
     const isStrengthList = strengthListSwiper !== null;
 
-    // strength-list는 1025px 미만, 그 외는 768px 이하에서 실행
-    const breakpoint = isStrengthList ? 1025 : 768;
+    // strength-list는 1300px 미만, 그 외는 768px 이하에서 실행
+    const breakpoint = isStrengthList ? 1300 : 768;
 
     if (window.innerWidth < breakpoint) {
       if (!thumbSwiper) {
