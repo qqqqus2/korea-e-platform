@@ -279,7 +279,9 @@
         display: none;
       }
     }
-
+    @media screen and (max-width: 1600px) {
+      width: 20rem;
+    }
     @media screen and (max-width: 1300px) {
       width: 32rem;
       height: 36.8rem;

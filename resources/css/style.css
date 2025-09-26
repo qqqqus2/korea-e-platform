@@ -29260,6 +29260,11 @@ body:has(.force-white) {
 .strength-list .list-box.increase .increase-hide {
   display: none;
 }
+@media screen and (max-width: 1600px) {
+  .strength-list .list-box {
+    width: 20rem;
+  }
+}
 @media screen and (max-width: 1300px) {
   .strength-list .list-box {
     width: 32rem;
