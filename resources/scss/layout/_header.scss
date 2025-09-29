@@ -226,6 +226,7 @@
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32' fill='none'%3E%3Cpath d='M9.33594 19.4443L16.0037 13.333L22.6693 19.4443' stroke='%235B5C61' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
           }
         }
+        &.hover,
         &:hover {
           color: #2172ec;
           &:after {
@@ -237,14 +238,6 @@
             }
           }
         }
-      }
-
-      &.active {
-        // .depth-2 {
-        //   visibility: visible;
-        //   opacity: 1;
-        //   height: auto;
-        // }
       }
     }
     .depth-2 {
@@ -525,6 +518,7 @@
         .gnb-link {
           color: #24252b;
           &.active,
+          &.hover,
           &:hover {
             color: #2172ec;
           }
@@ -586,6 +580,12 @@
         &.active {
           > .gnb-link {
             color: #2172ec;
+          }
+
+          .depth-2 {
+            visibility: visible;
+            opacity: 1;
+            height: auto;
           }
         }
         &.active {

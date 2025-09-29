@@ -1,10 +1,15 @@
 .sub-visual {
-  height: 100vh;
-  &#section-01 {
-    height: auto;
-  }
-  @media screen and (max-width: 1024px) {
-    height: auto;
+  height: 100dvh;
+  .title-visual {
+    height: 50vh;
+    position: absolute;
+    top: 0;
+    z-index: 2;
+    width: 100%;
+    @media screen and (max-width: 1024px) {
+      position: relative;
+      height: auto;
+    }
   }
   .title-section {
     display: flex;
@@ -12,7 +17,9 @@
     padding-top: 16.4rem;
     padding-bottom: 10.6rem;
     justify-content: space-between;
-
+    z-index: 20;
+    top: 0;
+    background-color: #fff;
     .sub-tit {
       font-size: 2.8rem;
       font-weight: 700;
@@ -28,6 +35,9 @@
       color: #090a10;
       margin-top: 1.6rem;
     }
+  }
+  @media screen and (max-width: 1024px) {
+    height: auto;
   }
 
   .visual-section {
@@ -73,6 +83,34 @@
           font-weight: 500;
           letter-spacing: -0.04rem;
           color: #404046;
+          overflow: hidden;
+          transition: 0.3s cubic-bezier(0.075, 0.82, 0.165, 1) all;
+          span {
+            position: relative;
+            z-index: 2;
+          }
+          &::before {
+            content: '';
+            background-color: #f6495f;
+            border-color: #f6495f;
+            z-index: 1;
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            opacity: 0;
+            width: 0;
+            transition: 0.3s cubic-bezier(0.075, 0.82, 0.165, 1) all;
+          }
+          &:hover {
+            color: #fff;
+            border-color: #f6495f;
+
+            &::before {
+              width: 100%;
+              opacity: 1;
+            }
+          }
         }
       }
     }
@@ -304,60 +342,39 @@ section {
 }
 
 .client-wrap {
-  width: 100%;
   position: relative;
   overflow: hidden;
+  width: 100%;
   .client-slide {
-    display: flex;
-    align-items: center;
-    > div {
-      width: 381.5rem;
-      height: 10.4rem;
-      position: relative;
-      animation: 50s linear 0s infinite normal forwards running logo_one;
-
-      //
-
-      img {
-        height: 100%;
-        object-fit: contain;
-      }
+    display: block;
+    width: 100%;
+    height: 10.4rem;
+    position: relative;
+    background-size: auto 10.4rem;
+    background-repeat: repeat-x;
+    background-position: left 0;
+    @media screen and (max-width: 1024px) {
+      height: 7.8rem;
+      background-size: auto 7.8rem;
     }
-    & + .client-slide {
-      margin: 1.6rem 0 0 -10rem;
-      > div {
-        animation: 50s linear 0s infinite normal backwards running logo_two;
-      }
+    &.one {
+      background-image: url('../../resources/images/sub/mro/mro-client-1.png');
+      animation: 40s linear 0s infinite infinitePixelSlide;
+    }
+    &.two {
+      margin-top: 1.6rem;
+      background-image: url('../../resources/images/sub/mro/mro-client-2.png');
+      animation: 40s linear 0s infinite reverse infinitePixelSlide;
     }
   }
 }
-
-@keyframes logo_one {
+// 패턴이나 반복 이미지용 (무한 루프)
+@keyframes infinitePixelSlide {
   0% {
-    transform: translateX(0);
-  }
-  50% {
-    transform: translateX(-100%);
-  }
-  50.01% {
-    transform: translateX(100%);
+    background-position: 0px center;
   }
   100% {
-    transform: translateX(0);
-  }
-}
-@keyframes logo_two {
-  0% {
-    transform: translateX(-100%);
-  }
-  50% {
-    transform: translateX(0);
-  }
-  50.01% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-100%);
+    background-position: -4160px center;
   }
 }
 

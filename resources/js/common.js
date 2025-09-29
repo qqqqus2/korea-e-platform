@@ -257,7 +257,6 @@ function commonUi() {
   });
 
   // GNB 메뉴 hover/focus 이벤트
-  const header = document.getElementById('wrap');
   const gnbLinks = document.querySelectorAll('#gnb .gnb-link');
   const gnbBg = document.querySelector('#gnb .gnb-bg');
   const gnbActiveBar = document.querySelector('.gnb-active-bar');
@@ -345,15 +344,33 @@ function commonUi() {
   // 각 gnb-list에 이벤트 추가
   gnbLists.forEach((gnbList) => {
     const mainLink = gnbList.querySelector('.gnb-link');
+    const depth2Menu = gnbList.querySelector('.depth-2');
 
     // gnb-list에 마우스 오버시 active bar 업데이트 (데스크탑에서만)
     gnbList.addEventListener('mouseenter', () => {
       if (isDesktop()) {
-        header.classList.add('gnbOpen');
+        wrap.classList.add('gnbOpen');
         setGnbBgHeight();
         updateActiveBar(mainLink);
       }
     });
+
+    // depth-2 메뉴에 마우스 오버/리브 이벤트 추가
+    if (depth2Menu) {
+      depth2Menu.addEventListener('mouseenter', () => {
+        // 형제 요소인 gnb-link에 hover 클래스 추가
+        if (mainLink) {
+          mainLink.classList.add('hover');
+        }
+      });
+
+      depth2Menu.addEventListener('mouseleave', () => {
+        // 형제 요소인 gnb-link에서 hover 클래스 제거
+        if (mainLink) {
+          mainLink.classList.remove('hover');
+        }
+      });
+    }
 
     mainLink.addEventListener('mousedown', (e) => {
       if (!isDesktop()) {
@@ -385,7 +402,7 @@ function commonUi() {
     // 포커스 이벤트 (데스크탑에서만)
     mainLink.addEventListener('focus', () => {
       if (isDesktop()) {
-        header.classList.add('gnbOpen');
+        wrap.classList.add('gnbOpen');
         wrap.classList.remove('mGnbOpen');
         setGnbBgHeight();
         updateActiveBar(mainLink);
@@ -399,13 +416,27 @@ function commonUi() {
 
   // GNB 영역을 벗어날 때 처리 (데스크탑에서만)
   if (headerElement && gnb) {
+    // header에 마우스 오버 시 gnbOpen 클래스 추가 (1025px 이상)
+    headerElement.addEventListener('mouseenter', (e) => {
+      if (window.innerWidth >= 1025) {
+        wrap.classList.add('gnbOpen');
+        setGnbBgHeight();
+
+        // 현재 active된 메뉴가 있으면 해당 위치에 active bar 표시
+        const activeGnbLink = document.querySelector('.gnb-list > .gnb-link.active');
+        if (activeGnbLink) {
+          updateActiveBar(activeGnbLink);
+        }
+      }
+    });
+
     // 마우스가 header 영역을 완전히 벗어날 때
     headerElement.addEventListener('mouseleave', (e) => {
       // 데스크탑에서만 처리
       if (isDesktop()) {
         // 마우스가 header 밖으로 나갔을 때만 처리
         if (!headerElement.contains(e.relatedTarget)) {
-          header.classList.remove('gnbOpen');
+          wrap.classList.remove('gnbOpen');
 
           // 기존에 active 클래스가 있는 메뉴가 있으면 그 위치로 돌아가기
           const activeGnbLink = document.querySelector('.gnb-list > .gnb-link.active');
@@ -436,7 +467,7 @@ function commonUi() {
       if (isDesktop()) {
         setTimeout(() => {
           if (!gnb.contains(document.activeElement)) {
-            header.classList.remove('gnbOpen');
+            wrap.classList.remove('gnbOpen');
 
             // 기존에 active 클래스가 있는 메뉴가 있으면 그 위치로 돌아가기
             const activeGnbLink = document.querySelector('.gnb-list > .gnb-link.active');
@@ -471,7 +502,7 @@ function commonUi() {
 
     // 모바일로 변경되면 gnbOpen 클래스 제거
     if (!isDesktop()) {
-      header.classList.remove('gnbOpen');
+      wrap.classList.remove('gnbOpen');
 
       // depth-2 메뉴 height 초기화
       const depth2Menus = document.querySelectorAll('#gnb .depth-2');
@@ -513,7 +544,7 @@ function commonUi() {
       }
     } else {
       // 설정된 breakpoint 이상에서는 swiper 제거
-      if (thumbSwiper) {
+      if (thumbSwiper && typeof thumbSwiper.destroy === 'function' && !thumbSwiper.destroyed) {
         thumbSwiper.destroy(true, true);
         thumbSwiper = undefined;
       }
@@ -524,9 +555,9 @@ function commonUi() {
 
   $(window).on('resize', function () {
     // resize 시 header의 메뉴 관련 클래스 제거
-    const header = document.getElementById('header');
-    if (header) {
-      header.classList.remove('mGnbOpen', 'gnbOpen');
+    const headerElement = document.getElementById('header');
+    if (headerElement) {
+      wrap.classList.remove('mGnbOpen', 'gnbOpen');
     }
 
     initThumbSwiper();

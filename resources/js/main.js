@@ -74,6 +74,16 @@ function mainUI() {
           player.play();
           videoPlayStatus = 'PLAYING';
 
+          // pagination 마지막에 첫 번째 bullet 복제본 추가
+          const pagination = document.querySelector('.swiper-pagination');
+          if (pagination) {
+            const loopFirstBullet = document.createElement('span');
+            loopFirstBullet.className = 'swiper-pagination-bullet swiper-pagination-bullet-loop-first';
+            loopFirstBullet.setAttribute('data-index', '0');
+            loopFirstBullet.innerHTML = '<em>1</em><strong class="progressbar"><i class="progress"></i></strong>';
+            pagination.appendChild(loopFirstBullet);
+          }
+
           const activeBullet = document.querySelector('.swiper-pagination-bullet-active .progress');
           if (activeBullet) {
             activeBullet.style.width = '0%';
@@ -207,21 +217,67 @@ function initStrengthList() {
 
   const listBoxes = strengthList.querySelectorAll('.list-box');
 
+  // item 너비 및 list-box 높이 조정 함수
+  function adjustItemDimensions() {
+    const screenWidth = window.innerWidth;
+    const baseHeight = 56; // 56rem 기준
+
+    // 화면 크기에 따른 높이 비율 계산 (resize시 커지도록)
+    let heightRatio = 1;
+    if (screenWidth >= 1300) {
+      heightRatio = Math.max(1, screenWidth / 1300); // 1300px 기준으로 커지게
+    }
+
+    const calculatedHeight = baseHeight * heightRatio;
+
+    // increase 클래스를 가진 list-box의 item 너비를 기준으로 설정
+    const increaseBox = strengthList.querySelector('.list-box.increase');
+    let referenceWidth = null;
+
+    if (increaseBox) {
+      referenceWidth = increaseBox.getBoundingClientRect().width;
+    }
+
+    listBoxes.forEach((box) => {
+      const item = box.querySelector('.item');
+      if (item) {
+        // increase 기준 너비가 있으면 그것을 사용, 없으면 부모 너비 사용
+        const targetWidth = referenceWidth || box.getBoundingClientRect().width;
+        item.style.width = `${targetWidth}px`;
+      }
+
+      // list-box 높이 조정
+      if (screenWidth > 1300) {
+        box.style.height = calculatedHeight + 'rem';
+      } else {
+        // 1300px 이하에서는 기본 높이 사용
+        box.style.height = '';
+      }
+    });
+  }
+
   // resize 이벤트 핸들러
   function handleResize() {
     if (window.innerWidth > 1300) {
-      // 1024 초과일 때: 모든 increase 삭제 후 첫 번째에만 추가
+      // 1024 초과일 때: 모든 increase 삭제
       listBoxes.forEach((item) => {
         item.classList.remove('increase');
+        listBoxes[2].classList.add('increase');
       });
-      if (listBoxes[0]) {
-        listBoxes[0].classList.add('increase');
-      }
+
+      // 애니메이션 완료 후 item 크기 조정
+      setTimeout(adjustItemDimensions, 0); // transition 0.3s + 약간의 여유
     } else {
       // 1024 이하일 때: 모든 listBoxes에서 increase 클래스 제거
       listBoxes.forEach((item) => {
         item.classList.remove('increase');
         item.classList.remove('decrease');
+        // item flex 및 list-box 높이 리셋
+        const childItem = item.querySelector('.item');
+        if (childItem) {
+          childItem.style.flex = '';
+        }
+        item.style.height = '';
       });
     }
   }
@@ -229,14 +285,32 @@ function initStrengthList() {
   // 초기 실행
   handleResize();
 
-  // resize 이벤트 리스너 추가
-  window.addEventListener('resize', handleResize);
+  // resize 이벤트 리스너 추가 (디바운싱 적용)
+  let resizeTimeout;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(handleResize, 0);
+  });
+
+  // document ready 시 3번째 box에 trigger 이벤트
+  document.addEventListener('DOMContentLoaded', function () {
+    if (listBoxes[2] && window.innerWidth > 1300) {
+      // 모든 list-box에서 increase 클래스 제거
+      listBoxes.forEach((item) => {
+        item.classList.remove('increase');
+        listBoxes[2].classList.add('increase');
+      });
+
+      // 애니메이션 완료 후 item 크기 조정
+      setTimeout(adjustItemDimensions, 300);
+    }
+  });
 
   // 클릭 이벤트
   listBoxes.forEach((box) => {
     box.addEventListener('click', function () {
       // 1024px 초과일 때만 increase 클래스 추가
-      if (window.innerWidth > 1024) {
+      if (window.innerWidth > 1300) {
         // 모든 list-box에서 increase 클래스 제거
         listBoxes.forEach((item) => {
           item.classList.remove('increase');
@@ -244,6 +318,9 @@ function initStrengthList() {
 
         // 클릭한 list-box에 increase 클래스 추가
         this.classList.add('increase');
+
+        // 애니메이션 완료 후 item 크기 조정
+        setTimeout(adjustItemDimensions, 0); // transition 0.3s + 약간의 여유
       }
     });
   });
