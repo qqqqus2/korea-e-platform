@@ -528,6 +528,12 @@ function commonUi() {
 
     if (window.innerWidth < breakpoint) {
       if (!thumbSwiper) {
+        // thumb-pagination 다시 표시
+        const thumbPaginations = document.querySelectorAll('.thumb-swiper .thumb-pagination');
+        thumbPaginations.forEach((pagination) => {
+          pagination.style.display = '';
+        });
+
         thumbSwiper = new Swiper('.thumb-swiper', {
           slidesPerView: 'auto',
           spaceBetween: 24,
@@ -541,12 +547,54 @@ function commonUi() {
           observer: true,
           observeParents: true
         });
+
+        console.log('thumbSwiper created at breakpoint:', breakpoint);
       }
     } else {
       // 설정된 breakpoint 이상에서는 swiper 제거
       if (thumbSwiper && typeof thumbSwiper.destroy === 'function' && !thumbSwiper.destroyed) {
+        // swiper-wrapper의 style 속성 완전 초기화
+        const swiperWrappers = document.querySelectorAll('.thumb-swiper .swiper-wrapper');
+        swiperWrappers.forEach((wrapper) => {
+          wrapper.removeAttribute('style');
+          // 강제로 중요한 스타일들 초기화
+          wrapper.style.cssText = '';
+          wrapper.style.transform = '';
+          wrapper.style.transitionDuration = '';
+          wrapper.style.width = '';
+          wrapper.style.height = '';
+          wrapper.style.display = '';
+        });
+
+        // swiper-slide의 style 속성도 완전 초기화
+        const swiperSlides = document.querySelectorAll('.thumb-swiper .swiper-slide');
+        swiperSlides.forEach((slide) => {
+          slide.removeAttribute('style');
+          slide.style.cssText = '';
+          slide.style.width = '';
+          slide.style.marginRight = '';
+        });
+
+        // thumb-swiper 컨테이너도 초기화
+        const thumbSwiperContainers = document.querySelectorAll('.thumb-swiper');
+        thumbSwiperContainers.forEach((container) => {
+          container.classList.remove('swiper-initialized', 'swiper-horizontal', 'swiper-pointer-events');
+          // 컨테이너 스타일도 초기화
+          container.style.overflow = '';
+          container.style.touchAction = '';
+        });
+
+        // thumb-pagination 숨기기
+        const thumbPaginations = document.querySelectorAll('.thumb-swiper .thumb-pagination');
+        thumbPaginations.forEach((pagination) => {
+          pagination.style.display = 'none';
+        });
+
         thumbSwiper.destroy(true, true);
         thumbSwiper = undefined;
+
+        console.log('thumbSwiper destroyed at breakpoint:', breakpoint);
+        alert(1);
       }
     }
   }

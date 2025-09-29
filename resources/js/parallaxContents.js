@@ -13,12 +13,6 @@
   // 초기 애니메이션 완료 여부
   let initialAnimationComplete = false;
 
-  // mro-visual 상태 저장
-  let mroVisualOpacity = 1;
-  let mroVisualTranslateY = 0;
-  let infoOpacity = 0;
-  let infoBoxTranslateY = 100; // info-box 초기 위치 (100%에서 시작)
-
   // 스크롤 이벤트 핸들러
   function handleScroll() {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -51,13 +45,70 @@
           infoBox.style.transition = 'transform 0.5s ease-out, opacity 0.5s ease-out';
         }
 
-        // overflow-hidden 다시 적용
-        document.body.style.overflow = 'hidden';
-        document.documentElement.style.overflow = 'hidden';
+        // 정상 스크롤 상태 유지
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
       }
     }
 
-    // mro-visual 패럴렉스 효과 처리 (wheel 이벤트에서 처리하므로 여기서는 제거)
+    // mro-visual sticky 제어 및 title-visual, info-box 스크롤 효과
+    const mroVisual = document.querySelector('.mro-visual');
+    if (mroVisual) {
+      const titleVisual = mroVisual.querySelector('.title-visual');
+      const infoBox = mroVisual.querySelector('.visual-section .info-box');
+
+      if (titleVisual) {
+        const titleVisualHeight = titleVisual.offsetHeight;
+        const mroVisualTop = mroVisual.offsetTop;
+
+        // header height 만큼 여유를 둔 스크롤 범위 설정
+        const headerHeight = header ? header.offsetHeight : 0;
+        const adjustedScrollRange = titleVisualHeight + headerHeight;
+
+        // 스크롤 위치에 따라 sticky 설정과 애니메이션
+        if (scrollTop < adjustedScrollRange) {
+          // 조정된 범위보다 적게 스크롤했을 때
+          mroVisual.style.position = 'sticky';
+          mroVisual.style.top = '0px';
+
+          // header height 여유를 고려한 스크롤 진행도 계산
+          const effectiveScroll = Math.max(0, scrollTop - headerHeight);
+          const progress = effectiveScroll / titleVisualHeight; // 0 ~ 1
+
+          // title-visual: 페이드아웃 + 위로 이동
+          const titleTranslateY = -100 * progress; // 0% ~ -100%
+          const titleOpacity = 1 - progress; // 1 ~ 0
+
+          titleVisual.style.transform = `translateY(${titleTranslateY}%)`;
+          titleVisual.style.opacity = titleOpacity;
+          titleVisual.style.transition = 'transform 0.1s ease-out, opacity 0.1s ease-out';
+
+          // info-box: 페이드인 + 아래에서 위로 이동
+          if (infoBox) {
+            const infoTranslateY = 100 * (1 - progress); // 100% ~ 0%
+            const infoOpacity = progress; // 0 ~ 1
+
+            infoBox.style.transform = `translateY(${infoTranslateY}%)`;
+            infoBox.style.opacity = infoOpacity;
+            infoBox.style.transition = 'transform 0.1s ease-out, opacity 0.1s ease-out';
+          }
+        } else {
+          // 조정된 범위만큼 스크롤했을 때 sticky 제거
+          //mroVisual.style.position = '';
+          mroVisual.style.top = '';
+
+          // title-visual 완전히 위로 사라진 상태로 고정
+          titleVisual.style.transform = 'translateY(-100%)';
+          titleVisual.style.opacity = '0';
+
+          // info-box 완전히 나타난 상태로 고정
+          if (infoBox) {
+            infoBox.style.transform = 'translateY(0%)';
+            infoBox.style.opacity = '1';
+          }
+        }
+      }
+    }
 
     sections.forEach((section, index) => {
       const sectionTop = section.offsetTop;
@@ -151,14 +202,11 @@
           // section-01은 스크롤이 시작되면 fade out + 위로 이동
           let progress = scrollTop / (sectionHeight * 0.7);
           progress = Math.min(1, progress);
-
           let opacity = 1 - progress;
           opacity = Math.max(0, opacity);
-
           // 위로 이동하며 사라지는 효과
           let translateY = -50 * progress; // 최대 -50px까지 이동
           let scale = 1; // 살짝 축소
-
           section.style.opacity = opacity;
           section.style.transform = `translateY(${translateY}px) scale(${scale})`;
         }
@@ -307,126 +355,21 @@
           infoBox.style.opacity = '';
         }
       } else {
-        // 1025px 이상으로 변경되면 초기 상태로 설정
+        // 1025px 이상으로 변경되면 정상 상태로 설정
         if (titleVisual) {
-          document.body.style.overflow = 'hidden';
-          document.documentElement.style.overflow = 'hidden';
+          document.body.style.overflow = '';
+          document.documentElement.style.overflow = '';
         }
 
         if (infoBox) {
-          infoBox.style.transform = `translateY(${infoBoxTranslateY}%)`;
-          infoBox.style.opacity = infoOpacity;
+          infoBox.style.transform = '';
+          infoBox.style.opacity = '';
         }
       }
     }
   }
 
-  // 마우스 휠 이벤트로 mro-visual 제어
-  function handleWheel(e) {
-    // 1025px 이상에서만 동작
-    if (window.innerWidth < 1025) return;
-
-    const mroVisual = document.querySelector('.mro-visual');
-    if (!mroVisual) return;
-
-    const titleVisual = mroVisual.querySelector('.title-visual');
-    const infoBox = mroVisual.querySelector('.visual-section .info-box');
-
-    // info-box 상태 확인
-    const currentInfoOpacity = infoBox ? 1 - infoBoxTranslateY / 100 : 0;
-
-    // info-box가 완전히 나타난 후에는 정상 스크롤 허용
-    if (currentInfoOpacity >= 1) {
-      document.body.style.overflow = '';
-      document.documentElement.style.overflow = '';
-      return; // wheel 이벤트 처리 중단, 정상 스크롤 허용
-    }
-
-    if (titleVisual && (mroVisualOpacity > 0 || mroVisualTranslateY < 0 || infoBoxTranslateY > 0)) {
-      // 스크롤 방향과 속도 감지
-      const delta = e.deltaY;
-
-      // delta 값을 직접 사용하여 더 민감하게 반응
-      const opacityChange = delta * 0.008; // opacity 변화량
-      const translateChange = delta * 0.4; // translateY 변화량
-
-      // 아래로 스크롤 (deltaY > 0)
-      if (delta > 0) {
-        // opacity 감소 (delta 값에 비례)
-        mroVisualOpacity -= Math.abs(opacityChange);
-        mroVisualOpacity = Math.max(0, mroVisualOpacity);
-
-        // translateY 감소 (위로 이동, delta 값에 비례)
-        mroVisualTranslateY -= Math.abs(translateChange);
-        mroVisualTranslateY = Math.max(-100, mroVisualTranslateY);
-      }
-      // 위로 스크롤 (deltaY < 0)
-      else if (delta < 0) {
-        // opacity 증가 (delta 값에 비례)
-        if (mroVisualOpacity < 1) {
-          mroVisualOpacity += Math.abs(opacityChange);
-          mroVisualOpacity = Math.min(1, mroVisualOpacity);
-        }
-
-        // translateY 증가 (아래로 이동, delta 값에 비례)
-        if (mroVisualTranslateY < 0) {
-          mroVisualTranslateY += Math.abs(translateChange);
-          mroVisualTranslateY = Math.min(0, mroVisualTranslateY);
-        }
-      }
-
-      // title-visual에 적용
-      titleVisual.style.transform = `translateY(${mroVisualTranslateY}%)`;
-      titleVisual.style.opacity = mroVisualOpacity;
-      titleVisual.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
-
-      // body overflow 제어 (info-box opacity가 1이 되면 스크롤 허용)
-      const updatedInfoOpacity = infoBox ? 1 - infoBoxTranslateY / 100 : 0;
-
-      if (updatedInfoOpacity >= 1) {
-        // info-box가 완전히 나타나면 overflow 속성 삭제하고 이벤트 전파 허용
-        document.body.style.overflow = '';
-        document.documentElement.style.overflow = '';
-        // 정상 스크롤 허용 - preventDefault 호출하지 않음
-      } else {
-        // 아직 애니메이션 진행 중이면 스크롤 방지
-        document.body.style.overflow = 'hidden';
-        document.documentElement.style.overflow = 'hidden';
-        e.preventDefault(); // 스크롤 방지
-      }
-
-      // info-box 제어 (delta에 반응하여 translateY와 opacity 조정)
-      if (infoBox) {
-        const progress = Math.abs(mroVisualTranslateY) / 100; // 0 ~ 1
-
-        // title-visual이 80% 이상 올라가면 info-box 애니메이션 시작
-        if (progress >= 0.8) {
-          // 아래로 스크롤 시 info-box 올라오기
-          if (delta > 0) {
-            infoBoxTranslateY -= Math.abs(translateChange * 2); // info-box는 더 빠르게 이동
-            infoBoxTranslateY = Math.max(0, infoBoxTranslateY);
-          }
-          // 위로 스크롤 시 info-box 내려가기
-          else if (delta < 0) {
-            infoBoxTranslateY += Math.abs(translateChange * 2);
-            infoBoxTranslateY = Math.min(100, infoBoxTranslateY);
-          }
-
-          // info-box opacity는 translateY에 따라 계산
-          const infoOpacity = 1 - infoBoxTranslateY / 100;
-
-          infoBox.style.transform = `translateY(${infoBoxTranslateY}%)`;
-          infoBox.style.opacity = infoOpacity;
-          infoBox.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
-        } else {
-          // progress가 0.8 미만이면 초기 상태로
-          infoBoxTranslateY = 100;
-          infoBox.style.transform = 'translateY(100%)';
-          infoBox.style.opacity = '0';
-        }
-      }
-    }
-  }
+  // 마우스 휠 이벤트 핸들러 (단순화됨)
 
   // 초기화
   function init() {
@@ -435,31 +378,15 @@
       header.classList.add('bg-trans');
     }
 
-    // mro-visual이 있으면 초기에 overflow-hidden 적용 및 wheel 이벤트 등록
+    // mro-visual 초기 상태 설정
     const mroVisual = document.querySelector('.mro-visual');
-    if (mroVisual && window.innerWidth >= 1025) {
+    if (mroVisual) {
       const titleVisual = mroVisual.querySelector('.title-visual');
       const infoBox = mroVisual.querySelector('.visual-section .info-box');
 
-      if (titleVisual) {
-        // 1025px 이상에서만 overflow-hidden 적용
-        document.body.style.overflow = 'hidden';
-        document.documentElement.style.overflow = 'hidden';
-
-        // wheel 이벤트 리스너 등록
-        window.addEventListener('wheel', handleWheel, { passive: false });
-      }
-
-      // info-box 초기 상태 설정 (1025px 이상에서만)
-      if (infoBox) {
-        infoBox.style.transform = `translateY(${infoBoxTranslateY}%)`;
-        infoBox.style.opacity = infoOpacity;
-        infoBox.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
-      }
-    } else if (mroVisual && window.innerWidth < 1025) {
-      // 1025px 미만에서는 기본 상태로 표시
-      const titleVisual = mroVisual.querySelector('.title-visual');
-      const infoBox = mroVisual.querySelector('.visual-section .info-box');
+      // 정상 스크롤 상태로 설정
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
 
       if (titleVisual) {
         titleVisual.style.transform = '';
@@ -515,6 +442,38 @@
         return;
       }
     });
+
+    // 스크롤 다운 버튼 이벤트 등록 (mro-visual 전용)
+    const scrollDownBtn = document.querySelector('.scroll-down');
+    if (scrollDownBtn) {
+      // 기존 jQuery 이벤트와 충돌 방지를 위해 capture phase에서 실행
+      scrollDownBtn.addEventListener(
+        'click',
+        function (e) {
+          // 첫 번째 섹션이 mro-visual인지 확인
+          const firstSection = sections[0];
+          if (firstSection && firstSection.classList.contains('mro-visual')) {
+            e.preventDefault();
+            e.stopImmediatePropagation(); // 다른 이벤트 리스너 중단
+
+            const titleVisual = firstSection.querySelector('.title-visual');
+            if (titleVisual) {
+              const titleVisualHeight = titleVisual.offsetHeight - header.offsetHeight;
+
+              // title-visual 높이만큼만 스크롤
+              window.scrollTo({
+                top: titleVisualHeight,
+                behavior: 'smooth'
+              });
+
+              console.log('mro-visual scroll down:', titleVisualHeight);
+            }
+          }
+          // mro-visual이 아닌 경우에는 이벤트를 전파하여 common.js에서 처리하도록 함
+        },
+        true
+      ); // capture phase에서 실행
+    }
 
     // 이벤트 리스너 등록
     window.addEventListener('scroll', optimizedScrollHandler, { passive: true });

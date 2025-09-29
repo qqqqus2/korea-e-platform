@@ -27537,10 +27537,10 @@ body:has(.force-white) {
   padding-top: 11.7rem;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
-  overflow-x: hidden;
 }
 #wrap.main {
   padding-top: 0;
+  overflow-x: hidden;
 }
 @media screen and (max-width: 1024px) {
   #wrap {
@@ -27782,6 +27782,13 @@ body:has(.force-white) {
   opacity: 0;
 }
 
+.bg-wht {
+  background-color: #fff;
+  z-index: 10;
+  position: relative;
+  overflow-x: hidden;
+}
+
 .container {
   position: relative;
   display: -webkit-box;
@@ -27968,6 +27975,9 @@ body:has(.force-white) {
 @media screen and (max-width: 1024px) {
   .sub-navigation {
     top: 7.2rem;
+    -webkit-box-pack: left;
+        -ms-flex-pack: left;
+            justify-content: left;
   }
 }
 .sub-navigation a {
@@ -29758,6 +29768,8 @@ body:has(.force-white) {
 
 .sub-visual {
   height: 100dvh;
+  overflow-y: hidden;
+  opacity: 1 !important;
 }
 .sub-visual .title-visual {
   height: 50vh;
@@ -29826,6 +29838,7 @@ body:has(.force-white) {
           justify-content: center;
   position: relative;
   background: url("../../resources/images/sub/mro/mro-kv.jpg") 50% 50%/cover no-repeat;
+  background-attachment: fixed;
 }
 @media screen and (max-width: 1024px) {
   .sub-visual .visual-section {

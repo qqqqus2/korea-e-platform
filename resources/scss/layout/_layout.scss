@@ -2,9 +2,10 @@
 #wrap {
   padding-top: 11.7rem;
   box-sizing: border-box;
-  overflow-x: hidden;
+  // overflow-x: hidden;
   &.main {
     padding-top: 0;
+    overflow-x: hidden;
   }
   @media screen and (max-width: 1024px) {
     padding-top: 7.2rem;
@@ -159,7 +160,12 @@
 // ========================================
 // Container
 // ========================================
-
+.bg-wht {
+  background-color: #fff;
+  z-index: 10;
+  position: relative;
+  overflow-x: hidden;
+}
 .container {
   position: relative;
   display: flex;
@@ -284,6 +290,7 @@
   }
   @media screen and (max-width: 1024px) {
     top: 7.2rem;
+    justify-content: left;
   }
   a {
     font-size: 1.8rem;
