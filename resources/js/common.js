@@ -515,88 +515,86 @@ function commonUi() {
     }
   });
 
-  let thumbSwiper;
+  let thumbSwipers = {}; // 여러 swiper 인스턴스를 저장할 객체
 
   //  thumb swiper (모바일에서만 실행)
   function initThumbSwiper() {
-    // strength-list 클래스를 가진 thumb-swiper 요소 확인
-    const strengthListSwiper = document.querySelector('.thumb-swiper.strength-list'); // 1024
-    const isStrengthList = strengthListSwiper !== null;
+    // 모든 thumb-swiper 요소 찾기
+    const thumbSwiperElements = document.querySelectorAll('.thumb-swiper');
 
-    // strength-list는 1300px 미만, 그 외는 768px 이하에서 실행
-    const breakpoint = isStrengthList ? 1300 : 768;
+    thumbSwiperElements.forEach((element) => {
+      // 각 swiper의 고유 식별자 생성 (클래스명 조합)
+      const elementId = element.className.split(' ').filter((cls) => cls !== 'thumb-swiper').join('-') || 'default';
 
-    if (window.innerWidth < breakpoint) {
-      if (!thumbSwiper) {
-        // thumb-pagination 다시 표시
-        const thumbPaginations = document.querySelectorAll('.thumb-swiper .thumb-pagination');
-        thumbPaginations.forEach((pagination) => {
+      // strength-list는 1300px, 그 외는 768px
+      const isStrengthList = element.classList.contains('strength-list');
+      const breakpoint = isStrengthList ? 1300 : 768;
+
+      const currentWidth = window.innerWidth;
+      const shouldBeActive = currentWidth < breakpoint;
+      const isActive = thumbSwipers[elementId] && !thumbSwipers[elementId].destroyed;
+
+      if (shouldBeActive && !isActive) {
+        // breakpoint 미만이고 swiper가 없으면 생성
+        const pagination = element.querySelector('.thumb-pagination');
+        if (pagination) {
           pagination.style.display = '';
-        });
+        }
 
-        thumbSwiper = new Swiper('.thumb-swiper', {
+        thumbSwipers[elementId] = new Swiper(element, {
           slidesPerView: 'auto',
           spaceBetween: 24,
           speed: 600,
           grabCursor: true,
           pagination: {
-            el: '.thumb-swiper .thumb-pagination',
+            el: element.querySelector('.thumb-pagination'),
             type: 'progressbar'
           },
-          // Enable swiper on mobile
           observer: true,
           observeParents: true
         });
 
-        console.log('thumbSwiper created at breakpoint:', breakpoint);
+        console.log(`✅ thumbSwiper [${elementId}] created (width: ${currentWidth}, breakpoint: ${breakpoint})`);
+      } else if (!shouldBeActive && isActive) {
+        // breakpoint 이상이고 swiper가 있으면 제거
+        console.log(`🔧 Destroying [${elementId}]...`, element);
+
+        // destroy 호출
+        try {
+          thumbSwipers[elementId].destroy(true, true);
+        } catch (e) {
+          console.error(`Error destroying [${elementId}]:`, e);
+        }
+        delete thumbSwipers[elementId];
+
+        // DOM 완전 초기화 - 비동기로 처리하여 확실하게
+        setTimeout(() => {
+          const wrapper = element.querySelector('.swiper-wrapper');
+          if (wrapper) {
+            wrapper.removeAttribute('style');
+            wrapper.style.cssText = '';
+            wrapper.style.transform = '';
+            wrapper.style.transitionDuration = '';
+          }
+
+          const slides = element.querySelectorAll('.swiper-slide');
+          slides.forEach((slide) => {
+            slide.removeAttribute('style');
+            slide.style.cssText = '';
+          });
+
+          element.classList.remove('swiper-initialized', 'swiper-horizontal', 'swiper-pointer-events', 'swiper-backface-hidden');
+          element.removeAttribute('style');
+
+          const pagination = element.querySelector('.thumb-pagination');
+          if (pagination) {
+            pagination.style.display = 'none';
+          }
+
+          console.log(`❌ thumbSwiper [${elementId}] destroyed and DOM cleaned (width: ${currentWidth}, breakpoint: ${breakpoint})`);
+        }, 10);
       }
-    } else {
-      // 설정된 breakpoint 이상에서는 swiper 제거
-      if (thumbSwiper && typeof thumbSwiper.destroy === 'function' && !thumbSwiper.destroyed) {
-        // swiper-wrapper의 style 속성 완전 초기화
-        const swiperWrappers = document.querySelectorAll('.thumb-swiper .swiper-wrapper');
-        swiperWrappers.forEach((wrapper) => {
-          wrapper.removeAttribute('style');
-          // 강제로 중요한 스타일들 초기화
-          wrapper.style.cssText = '';
-          wrapper.style.transform = '';
-          wrapper.style.transitionDuration = '';
-          wrapper.style.width = '';
-          wrapper.style.height = '';
-          wrapper.style.display = '';
-        });
-
-        // swiper-slide의 style 속성도 완전 초기화
-        const swiperSlides = document.querySelectorAll('.thumb-swiper .swiper-slide');
-        swiperSlides.forEach((slide) => {
-          slide.removeAttribute('style');
-          slide.style.cssText = '';
-          slide.style.width = '';
-          slide.style.marginRight = '';
-        });
-
-        // thumb-swiper 컨테이너도 초기화
-        const thumbSwiperContainers = document.querySelectorAll('.thumb-swiper');
-        thumbSwiperContainers.forEach((container) => {
-          container.classList.remove('swiper-initialized', 'swiper-horizontal', 'swiper-pointer-events');
-          // 컨테이너 스타일도 초기화
-          container.style.overflow = '';
-          container.style.touchAction = '';
-        });
-
-        // thumb-pagination 숨기기
-        const thumbPaginations = document.querySelectorAll('.thumb-swiper .thumb-pagination');
-        thumbPaginations.forEach((pagination) => {
-          pagination.style.display = 'none';
-        });
-
-        thumbSwiper.destroy(true, true);
-        thumbSwiper = undefined;
-
-        console.log('thumbSwiper destroyed at breakpoint:', breakpoint);
-        alert(1);
-      }
-    }
+    });
   }
 
   initThumbSwiper();

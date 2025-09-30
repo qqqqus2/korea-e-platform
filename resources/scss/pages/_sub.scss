@@ -1,7 +1,10 @@
 .sub-visual {
-  height: 100dvh;
-  overflow-y: hidden;
-  opacity: 1 !important;
+  // height: 100dvh;
+  // overflow-y: hidden;
+  // opacity: 1 !important;
+  @media screen and (max-width: 1024px) {
+    position: inherit !important;
+  }
   .title-visual {
     height: 50vh;
     position: absolute;
@@ -37,9 +40,6 @@
       color: #090a10;
       margin-top: 1.6rem;
     }
-  }
-  @media screen and (max-width: 1024px) {
-    height: auto;
   }
 
   .visual-section {
@@ -195,6 +195,10 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 3.2rem;
+    @media screen and (min-width: 769px) {
+      transform: translate3d(0px, 0px, 0px) !important;
+      cursor: auto !important;
+    }
     .swiper-slide {
       width: 100%;
       min-height: 44.5rem;
@@ -242,7 +246,7 @@ section {
     padding-top: 11.7rem;
   }
   &.section-pd {
-    min-height: 100vh;
+    // min-height: 100vh;
     padding-block: 12rem 16rem;
     @media screen and (max-width: 1024px) {
       padding-block: 8rem;
@@ -262,6 +266,7 @@ section {
   position: relative;
   padding-block: 16rem;
   background-color: #000027;
+  overflow: hidden;
   .category-pagination {
     display: none;
   }
@@ -295,6 +300,9 @@ section {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
       gap: 2.2rem;
+      @media screen and (min-width: 769px) {
+        // transform: translate3d(0px, 0px, 0px) !important;
+      }
       .fake-box {
         grid-column: span 3;
       }

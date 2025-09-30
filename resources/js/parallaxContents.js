@@ -64,26 +64,35 @@
 
         // header height 만큼 여유를 둔 스크롤 범위 설정
         const headerHeight = header ? header.offsetHeight : 0;
-        // sticky 삭제 시점을 mroVisual의 절반 지점으로 설정
-        const stickyRemovePoint = mroVisualHeight - header.offsetHeight;
+        // title-visual이 -100%가 되는 시점 (1단계)
+        const titleHidePoint = titleVisualHeight;
+        // mro-visual 전체가 이동하는 시점 (2단계)
+        const visualMoveEndPoint = mroVisualHeight;
 
-        // 스크롤 위치에 따라 sticky 설정과 애니메이션
-        if (scrollTop < stickyRemovePoint) {
-          // 조정된 범위보다 적게 스크롤했을 때
+        const visualSection = mroVisual.querySelector('.visual-section');
+
+        // 1단계: title-visual 애니메이션 (visual-section은 translateY(0) 유지)
+        if (scrollTop < titleHidePoint) {
           mroVisual.style.position = 'sticky';
           mroVisual.style.top = '0px';
           mroVisual.style.transform = 'translateY(0)';
 
           // sticky 범위 내에서의 스크롤 진행도 계산
-          const progress = scrollTop / stickyRemovePoint; // 0 ~ 1
+          const progress = scrollTop / titleHidePoint; // 0 ~ 1
 
           // title-visual: 페이드아웃 + 위로 이동
-          const titleTranslateY = -100 * progress * 1.5; // 0% ~ -100%
-          const titleOpacity = 1 - progress * 1.5; // 1 ~ 0
+          const titleTranslateY = -100 * progress; // 0% ~ -100%
+          const titleOpacity = 1 - progress; // 1 ~ 0
 
           titleVisual.style.transform = `translateY(${titleTranslateY}%)`;
           titleVisual.style.opacity = titleOpacity;
           titleVisual.style.transition = 'transform 0.1s ease-out, opacity 0.1s ease-out';
+
+          // visual-section은 translateY(0) 유지
+          if (visualSection) {
+            visualSection.style.transform = 'translateY(0)';
+            visualSection.style.transition = 'transform 0.1s ease-out';
+          }
 
           // info-box: 페이드인 + 아래에서 위로 이동
           if (infoBox) {
@@ -95,11 +104,7 @@
             infoBox.style.transition = 'transform 0.1s ease-out, opacity 0.1s ease-out';
           }
         } else {
-          // mroVisual 절반만큼 스크롤했을 때 sticky 제거
-          mroVisual.style.position = '';
-          mroVisual.style.top = '0';
-          mroVisual.style.transform = 'translateY(0)';
-
+          // 2단계: title-visual이 -100% 된 시점부터 mro-visual 전체가 위로 이동 시작
           // title-visual 완전히 위로 사라진 상태로 고정
           titleVisual.style.transform = 'translateY(-100%)';
           titleVisual.style.opacity = '0';
@@ -108,6 +113,30 @@
           if (infoBox) {
             infoBox.style.transform = 'translateY(0%)';
             infoBox.style.opacity = '1';
+          }
+
+          // visual-section 초기 상태 유지
+          if (visualSection) {
+            visualSection.style.transform = 'translateY(0)';
+          }
+
+          // mro-visual은 sticky 유지
+          mroVisual.style.position = 'sticky';
+          mroVisual.style.transform = 'translateY(0)';
+
+          const additionalScroll = scrollTop - titleHidePoint;
+          const moveRange = visualMoveEndPoint - titleHidePoint;
+          const moveProgress = Math.min(additionalScroll / moveRange, 1); // 0 ~ 1
+
+          // mro-visual의 top 값을 조정하여 위로 이동 (0vh ~ -100vh)
+          const mroTopValue = -100 * moveProgress;
+          mroVisual.style.top = `${mroTopValue}vh`;
+          mroVisual.style.transition = 'top 0.1s ease-out';
+
+          // sticky 해제 시점
+          if (scrollTop >= visualMoveEndPoint) {
+            mroVisual.style.position = '';
+            mroVisual.style.top = '';
           }
         }
       }
@@ -122,8 +151,17 @@
       // position-intro 요소 찾기
       const positionIntros = section.querySelectorAll('.position-intro');
       positionIntros.forEach((positionIntro) => {
+        // thumb-swiper 내부인지 확인
+        const isInThumbSwiper = positionIntro.closest('.thumb-swiper') !== null;
+        // strength-list 클래스를 가진 thumb-swiper인지 확인
+        const isStrengthList = isInThumbSwiper && positionIntro.closest('.thumb-swiper.strength-list') !== null;
+        // breakpoint 설정 (strength-list는 1300px, 그 외는 768px)
+        const breakpoint = isStrengthList ? 1300 : 768;
+
         // data-delay 속성 가져오기 (기본값 0)
-        const delay = parseFloat(positionIntro.dataset.delay || 0) / 1000; // ms를 초 단위로 변환
+        // thumb-swiper 내부이고 breakpoint 미만일 때는 delay 무시
+        const shouldUseDelay = !isInThumbSwiper || window.innerWidth >= breakpoint;
+        const delay = shouldUseDelay ? parseFloat(positionIntro.dataset.delay || 0) / 1000 : 0; // ms를 초 단위로 변환
 
         // 섹션의 뷰포트 내 위치 계산
         const startPoint = sectionTop - windowHeight * 0.8; // 섹션이 뷰포트 하단에서 80% 위치에 올 때 시작
@@ -160,8 +198,17 @@
       // scale-intro 요소 찾기
       const scaleIntros = section.querySelectorAll('.scale-intro');
       scaleIntros.forEach((scaleIntro) => {
+        // thumb-swiper 내부인지 확인
+        const isInThumbSwiper = scaleIntro.closest('.thumb-swiper') !== null;
+        // strength-list 클래스를 가진 thumb-swiper인지 확인
+        const isStrengthList = isInThumbSwiper && scaleIntro.closest('.thumb-swiper.strength-list') !== null;
+        // breakpoint 설정 (strength-list는 1300px, 그 외는 768px)
+        const breakpoint = isStrengthList ? 1300 : 768;
+
         // data-delay 속성 가져오기 (기본값 0)
-        const delay = parseFloat(scaleIntro.dataset.delay || 0) / 1000; // ms를 초 단위로 변환
+        // thumb-swiper 내부이고 breakpoint 미만일 때는 delay 무시
+        const shouldUseDelay = !isInThumbSwiper || window.innerWidth >= breakpoint;
+        const delay = shouldUseDelay ? parseFloat(scaleIntro.dataset.delay || 0) / 1000 : 0; // ms를 초 단위로 변환
 
         // 섹션의 뷰포트 내 위치 계산
         const sectionBottomFromTop = sectionTop + sectionHeight;
@@ -228,7 +275,7 @@
         // business-section은 더 느리게 등장 (60% 지점)
         // 마지막 섹션은 더 일찍 등장 (20% 지점)
         const isBusiness = section.classList.contains('business-section');
-        const triggerPoint = index > 0 ? (isLastSection ? sections[index - 1].offsetHeight * 0.2 : isBusiness ? sections[index - 1].offsetHeight * 0.9 : sections[index - 1].offsetHeight * 0.3) : 0;
+        const triggerPoint = index > 0 ? (isLastSection ? sections[index - 1].offsetHeight * 0.1 : isBusiness ? sections[index - 1].offsetHeight * 0.5 : sections[index - 1].offsetHeight * 0.2) : 0;
 
         // opacity 계산을 위한 거리
         const distanceFromCenter = Math.abs(scrollTop + windowHeight / 2 - sectionCenter);
@@ -247,7 +294,7 @@
           // 트리거 포인트를 지났으면 페이드인 시작
           const fadeInDistance = Math.abs(sectionDistanceFromBottom + triggerPoint);
           // 마지막 섹션은 더 빠른 페이드인
-          const fadeInSpeed = isLastSection ? windowHeight * 0.15 : windowHeight * 0.3;
+          const fadeInSpeed = isLastSection ? windowHeight * 0.1 : windowHeight * 0.2;
           opacity = Math.min(1, fadeInDistance / fadeInSpeed);
           // 마지막 섹션은 더 급격한 커브로 빠르게 나타남
           opacity = Math.pow(opacity, isLastSection ? 1 : 2);
@@ -301,9 +348,9 @@
       // z-index 조정 (현재 보이는 섹션이 위에 오도록)
       const opacity = parseFloat(section.style.opacity) || 0;
       if (opacity > 0.5) {
-        section.style.zIndex = 10;
+        // section.style.zIndex = 10;
       } else {
-        section.style.zIndex = 5;
+        //  section.style.zIndex = 5;
       }
 
       // Header 배경 제어 - section-01의 opacity에 따라 변경 (#wrap에 main 클래스가 있을 때만)
@@ -463,36 +510,93 @@
       }
     });
 
-    // 스크롤 다운 버튼 이벤트 등록 (mro-visual 전용)
+    // 스크롤 다운 버튼 이벤트 등록
     const scrollDownBtn = document.querySelector('.scroll-down');
     if (scrollDownBtn) {
       // 기존 jQuery 이벤트와 충돌 방지를 위해 capture phase에서 실행
       scrollDownBtn.addEventListener(
         'click',
         function (e) {
-          // 첫 번째 섹션이 mro-visual인지 확인
+          // scroll-top 클래스가 있으면 최상단으로 스크롤
+          if (scrollDownBtn.classList.contains('scroll-top')) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+            console.log('scroll to top');
+            return;
+          }
+
           const firstSection = sections[0];
+          const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+          // 첫 번째 섹션이 mro-visual인 경우
           if (firstSection && firstSection.classList.contains('mro-visual')) {
             e.preventDefault();
             e.stopImmediatePropagation(); // 다른 이벤트 리스너 중단
 
             const titleVisual = firstSection.querySelector('.title-visual');
             if (titleVisual) {
-              const titleVisualHeight = titleVisual.offsetHeight - header.offsetHeight;
+              const titleVisualHeight = titleVisual.offsetHeight;
 
-              // title-visual 높이만큼만 스크롤
-              window.scrollTo({
-                top: titleVisualHeight,
-                behavior: 'smooth'
-              });
+              // 현재 스크롤 위치가 이미 title-visual이 사라진 지점 이후라면
+              if (currentScrollTop >= titleVisualHeight - 10) {
+                // 현재 보이는 섹션 찾기
+                let currentSectionIndex = 0;
+                for (let i = 0; i < sections.length; i++) {
+                  const sectionTop = sections[i].offsetTop;
+                  if (currentScrollTop >= sectionTop - 100) {
+                    currentSectionIndex = i;
+                  }
+                }
 
-              console.log('mro-visual scroll down:', titleVisualHeight);
+                // 다음 섹션으로 이동
+                const nextSection = sections[currentSectionIndex + 1];
+                if (nextSection) {
+                  const nextSectionTop = nextSection.offsetTop;
+                  window.scrollTo({
+                    top: nextSectionTop,
+                    behavior: 'smooth'
+                  });
+                  console.log('scroll down to next section:', currentSectionIndex + 1);
+                }
+              } else {
+                // title-visual이 opacity 0이 되는 지점(완전히 사라지는 지점)까지 스크롤
+                window.scrollTo({
+                  top: titleVisualHeight,
+                  behavior: 'smooth'
+                });
+                console.log('scroll down to title hide point:', titleVisualHeight);
+              }
             }
           }
           // mro-visual이 아닌 경우에는 이벤트를 전파하여 common.js에서 처리하도록 함
         },
         true
       ); // capture phase에서 실행
+    }
+
+    // scrollDownBtn에 scroll-top 클래스가 있는지 감지
+    if (scrollDownBtn) {
+      // MutationObserver로 scrollDownBtn의 클래스 변화 감지
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+            // scroll-top 클래스가 추가되었는지 확인
+            if (scrollDownBtn.classList.contains('scroll-top')) {
+              console.log('scroll-top class detected on scrollDownBtn');
+            }
+          }
+        });
+      });
+
+      // scrollDownBtn 감시 시작
+      observer.observe(scrollDownBtn, {
+        attributes: true,
+        attributeFilter: ['class']
+      });
     }
 
     // 이벤트 리스너 등록

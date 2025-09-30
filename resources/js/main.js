@@ -221,6 +221,7 @@ function initStrengthList() {
   function adjustItemDimensions() {
     const screenWidth = window.innerWidth;
     const baseHeight = 56; // 56rem 기준
+    const maxHeight = 100; // 최대 50rem
 
     // 화면 크기에 따른 높이 비율 계산 (resize시 커지도록)
     let heightRatio = 1;
@@ -228,7 +229,8 @@ function initStrengthList() {
       heightRatio = Math.max(1, screenWidth / 1300); // 1300px 기준으로 커지게
     }
 
-    const calculatedHeight = baseHeight * heightRatio;
+    // 계산된 높이와 최대 높이 중 작은 값 선택
+    const calculatedHeight = Math.min(baseHeight * heightRatio, maxHeight);
 
     // increase 클래스를 가진 list-box의 item 너비를 기준으로 설정
     const increaseBox = strengthList.querySelector('.list-box.increase');

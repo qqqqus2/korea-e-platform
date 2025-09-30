@@ -239,6 +239,7 @@
       gap: 0;
     }
   }
+
   .thumb-pagination {
     width: calc(100% - 4.8rem);
     height: 0.3rem;
@@ -289,6 +290,9 @@
       width: 32rem;
       height: 36.8rem;
       transition: none;
+    }
+    @media screen and (max-width: 1300px) {
+      flex: 0 0 auto;
     }
   }
   .item {
