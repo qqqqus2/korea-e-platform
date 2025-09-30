@@ -113,7 +113,7 @@ function commonUi() {
   $scrollDownBtn.on('click', function () {
     // scroll-top 클래스가 있으면 페이지 상단으로 이동
     if ($(this).hasClass('scroll-top')) {
-      $('html, body').animate({ scrollTop: 0 }, 800, 'swing');
+      $('html, body').animate({ scrollTop: 0 }, 300, 'smooth');
       return;
     }
 
@@ -161,8 +161,8 @@ function commonUi() {
         {
           scrollTop: $(document).height() - $(window).height()
         },
-        800,
-        'swing'
+        300,
+        'smooth'
       );
       return;
     }
@@ -524,7 +524,11 @@ function commonUi() {
 
     thumbSwiperElements.forEach((element) => {
       // 각 swiper의 고유 식별자 생성 (클래스명 조합)
-      const elementId = element.className.split(' ').filter((cls) => cls !== 'thumb-swiper').join('-') || 'default';
+      const elementId =
+        element.className
+          .split(' ')
+          .filter((cls) => cls !== 'thumb-swiper')
+          .join('-') || 'default';
 
       // strength-list는 1300px, 그 외는 768px
       const isStrengthList = element.classList.contains('strength-list');
