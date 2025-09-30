@@ -60,24 +60,26 @@
       if (titleVisual) {
         const titleVisualHeight = titleVisual.offsetHeight;
         const mroVisualTop = mroVisual.offsetTop;
+        const mroVisualHeight = mroVisual.offsetHeight;
 
         // header height 만큼 여유를 둔 스크롤 범위 설정
         const headerHeight = header ? header.offsetHeight : 0;
-        const adjustedScrollRange = titleVisualHeight + headerHeight;
+        // sticky 삭제 시점을 mroVisual의 절반 지점으로 설정
+        const stickyRemovePoint = mroVisualHeight - header.offsetHeight;
 
         // 스크롤 위치에 따라 sticky 설정과 애니메이션
-        if (scrollTop < adjustedScrollRange) {
+        if (scrollTop < stickyRemovePoint) {
           // 조정된 범위보다 적게 스크롤했을 때
           mroVisual.style.position = 'sticky';
           mroVisual.style.top = '0px';
+          mroVisual.style.transform = 'translateY(0)';
 
-          // header height 여유를 고려한 스크롤 진행도 계산
-          const effectiveScroll = Math.max(0, scrollTop - headerHeight);
-          const progress = effectiveScroll / titleVisualHeight; // 0 ~ 1
+          // sticky 범위 내에서의 스크롤 진행도 계산
+          const progress = scrollTop / stickyRemovePoint; // 0 ~ 1
 
           // title-visual: 페이드아웃 + 위로 이동
-          const titleTranslateY = -100 * progress; // 0% ~ -100%
-          const titleOpacity = 1 - progress; // 1 ~ 0
+          const titleTranslateY = -100 * progress * 1.5; // 0% ~ -100%
+          const titleOpacity = 1 - progress * 1.5; // 1 ~ 0
 
           titleVisual.style.transform = `translateY(${titleTranslateY}%)`;
           titleVisual.style.opacity = titleOpacity;
@@ -93,9 +95,10 @@
             infoBox.style.transition = 'transform 0.1s ease-out, opacity 0.1s ease-out';
           }
         } else {
-          // 조정된 범위만큼 스크롤했을 때 sticky 제거
-          //mroVisual.style.position = '';
-          mroVisual.style.top = '';
+          // mroVisual 절반만큼 스크롤했을 때 sticky 제거
+          mroVisual.style.position = '';
+          mroVisual.style.top = '0';
+          mroVisual.style.transform = 'translateY(0)';
 
           // title-visual 완전히 위로 사라진 상태로 고정
           titleVisual.style.transform = 'translateY(-100%)';
@@ -197,26 +200,35 @@
       });
 
       if (section.id === 'section-01') {
-        // 초기 애니메이션이 완료된 후에만 스크롤 효과 적용
-        if (initialAnimationComplete) {
-          // section-01은 스크롤이 시작되면 fade out + 위로 이동
-          let progress = scrollTop / (sectionHeight * 0.7);
-          progress = Math.min(1, progress);
-          let opacity = 1 - progress;
-          opacity = Math.max(0, opacity);
-          // 위로 이동하며 사라지는 효과
-          let translateY = -50 * progress; // 최대 -50px까지 이동
-          let scale = 1; // 살짝 축소
-          section.style.opacity = opacity;
-          section.style.transform = `translateY(${translateY}px) scale(${scale})`;
+        // mro-visual 클래스가 있는 경우 스크롤 효과 적용하지 않음
+        if (section.classList.contains('mro-visual')) {
+          // mro-visual인 경우 transform 고정
+          section.style.transform = 'translateY(0) scale(1)';
+          section.style.opacity = '1';
+        } else {
+          // 초기 애니메이션이 완료된 후에만 스크롤 효과 적용
+          if (initialAnimationComplete) {
+            // section-01은 스크롤이 시작되면 fade out + 위로 이동
+            let progress = scrollTop / (sectionHeight * 0.7);
+            progress = Math.min(1, progress);
+            let opacity = 1 - progress;
+            opacity = Math.max(0, opacity);
+            // 위로 이동하며 사라지는 효과
+            let translateY = -50 * progress; // 최대 -50px까지 이동
+            let scale = 1; // 살짝 축소
+            section.style.opacity = opacity;
+            section.style.transform = `translateY(${translateY}px) scale(${scale})`;
+          }
         }
       } else {
         // 섹션의 상단이 뷰포트 하단에서 얼마나 떨어져 있는지 계산
         const sectionDistanceFromBottom = sectionTop - (scrollTop + windowHeight);
 
         // 이전 섹션 높이의 절반 지점부터 다음 섹션이 나타나도록 설정
+        // business-section은 더 느리게 등장 (60% 지점)
         // 마지막 섹션은 더 일찍 등장 (20% 지점)
-        const triggerPoint = index > 0 ? (isLastSection ? sections[index - 1].offsetHeight * 0.2 : sections[index - 1].offsetHeight * 0.3) : 0;
+        const isBusiness = section.classList.contains('business-section');
+        const triggerPoint = index > 0 ? (isLastSection ? sections[index - 1].offsetHeight * 0.2 : isBusiness ? sections[index - 1].offsetHeight * 0.9 : sections[index - 1].offsetHeight * 0.3) : 0;
 
         // opacity 계산을 위한 거리
         const distanceFromCenter = Math.abs(scrollTop + windowHeight / 2 - sectionCenter);
@@ -408,28 +420,36 @@
     // section-01 초기 애니메이션 적용
     const section01 = document.getElementById('section-01');
     if (section01) {
-      // 초기 상태 설정 (숨김)
-      section01.style.opacity = '0';
-      section01.style.transform = 'scale(0.5)';
+      // mro-visual 클래스가 없는 경우에만 초기 애니메이션 적용
+      if (!section01.classList.contains('mro-visual')) {
+        // 초기 상태 설정 (숨김)
+        section01.style.opacity = '0';
+        section01.style.transform = 'scale(0.5)';
 
-      // 페이지 로드 후 애니메이션 시작
-      setTimeout(() => {
-        section01.style.transition = 'opacity .5s ease-in, transform .5s ease-in';
-        section01.style.opacity = '1';
-        section01.style.transform = 'scale(1)';
-
-        // section-01의 data-fade 요소들에도 애니메이션 적용
-        if (typeof applyFadeInUpAnimation === 'function') {
-          setTimeout(() => {
-            applyFadeInUpAnimation(section01);
-          }, 300);
-        }
-
-        // 초기 애니메이션 완료 표시
+        // 페이지 로드 후 애니메이션 시작
         setTimeout(() => {
-          initialAnimationComplete = true;
-        }, 1000);
-      }, 200);
+          section01.style.transition = 'opacity .5s ease-in, transform .5s ease-in';
+          section01.style.opacity = '1';
+          section01.style.transform = 'scale(1)';
+
+          // section-01의 data-fade 요소들에도 애니메이션 적용
+          if (typeof applyFadeInUpAnimation === 'function') {
+            setTimeout(() => {
+              applyFadeInUpAnimation(section01);
+            }, 300);
+          }
+
+          // 초기 애니메이션 완료 표시
+          setTimeout(() => {
+            initialAnimationComplete = true;
+          }, 1000);
+        }, 200);
+      } else {
+        // mro-visual인 경우 바로 표시
+        section01.style.opacity = '1';
+        section01.style.transform = 'translateY(0) scale(1)';
+        initialAnimationComplete = true;
+      }
     } else {
       // section-01이 없으면 바로 완료 표시
       initialAnimationComplete = true;
