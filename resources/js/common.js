@@ -584,7 +584,6 @@ function commonUi() {
           const slides = element.querySelectorAll('.swiper-slide');
           slides.forEach((slide) => {
             slide.removeAttribute('style');
-            slide.style.cssText = '';
           });
 
           element.classList.remove('swiper-initialized', 'swiper-horizontal', 'swiper-pointer-events', 'swiper-backface-hidden');
@@ -594,8 +593,6 @@ function commonUi() {
           if (pagination) {
             pagination.style.display = 'none';
           }
-
-          console.log(`❌ thumbSwiper [${elementId}] destroyed and DOM cleaned (width: ${currentWidth}, breakpoint: ${breakpoint})`);
         }, 10);
       }
     });

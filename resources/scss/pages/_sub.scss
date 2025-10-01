@@ -437,7 +437,9 @@ section {
   .sub-visual {
     .visual-section {
       .info-box {
-        gap: 7.8rem;
+        flex-direction: column;
+        gap: 3.8rem;
+        // gap: 7.8rem;
         padding: 0 4rem;
         .info-desc {
           p {
@@ -490,8 +492,6 @@ section {
     .visual-section {
       padding-block: 12rem;
       .info-box {
-        flex-direction: column;
-        gap: 3.8rem;
         .info-tit {
           font-size: 4rem;
           line-height: 1.2;

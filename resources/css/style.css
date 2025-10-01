@@ -29276,6 +29276,7 @@ body:has(.force-white) {
   }
 }
 .strength-list .list-box {
+  height: 56rem;
   -webkit-box-flex: 0;
       -ms-flex: 0 0 29rem;
           flex: 0 0 29rem;
@@ -29359,18 +29360,23 @@ body:has(.force-white) {
     padding: 4rem 1.5rem;
   }
 }
-.strength-list .item::before {
-  content: "";
+.strength-list .item .bg-img {
   position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
+  left: 50%;
+  top: 50%;
+  height: 100%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   -webkit-transition: 0.3s ease-in all;
   transition: 0.3s ease-in all;
+}
+@media screen and (max-width: 1300px) {
+  .strength-list .item .bg-img {
+    width: 100%;
+  }
 }
 @-webkit-keyframes fadeInTxt {
   to {
@@ -29421,19 +29427,19 @@ body:has(.force-white) {
     height: auto;
   }
 }
-.strength-list .item.item-1::before {
+.strength-list .item.item-1 .bg-img {
   background-image: url("../../resources/images/main/img-item-1.png");
 }
-.strength-list .item.item-2::before {
+.strength-list .item.item-2 .bg-img {
   background-image: url("../../resources/images/main/img-item-2.png");
 }
-.strength-list .item.item-3::before {
+.strength-list .item.item-3 .bg-img {
   background-image: url("../../resources/images/main/img-item-3.png");
 }
-.strength-list .item.item-4::before {
+.strength-list .item.item-4 .bg-img {
   background-image: url("../../resources/images/main/img-item-4.png");
 }
-.strength-list .item.item-5::before {
+.strength-list .item.item-5 .bg-img {
   background-image: url("../../resources/images/main/img-item-5.png");
 }
 .strength-list .increase .item .text-box .idx {
@@ -30251,7 +30257,11 @@ section.gray-bg {
     height: 8.8rem;
   }
   .sub-visual .visual-section .info-box {
-    gap: 7.8rem;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    gap: 3.8rem;
     padding: 0 4rem;
   }
   .sub-visual .visual-section .info-box .info-desc p {
@@ -30293,13 +30303,6 @@ section.gray-bg {
   }
   .sub-visual .visual-section {
     padding-block: 12rem;
-  }
-  .sub-visual .visual-section .info-box {
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-            flex-direction: column;
-    gap: 3.8rem;
   }
   .sub-visual .visual-section .info-box .info-tit {
     font-size: 4rem;

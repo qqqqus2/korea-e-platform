@@ -269,7 +269,7 @@
   .list-box {
     // width: 29rem;
     //width: calc(15% - 1.6rem);
-    // min-height: 56rem;
+    height: 56rem;
     flex: 0 0 29rem;
     flex-shrink: 0;
     transition: all 0.3s ease-in;
@@ -323,17 +323,20 @@
     @media screen and (max-width: 1600px) {
       padding: 4rem 1.5rem;
     }
-    &::before {
-      content: '';
+    .bg-img {
       position: absolute;
-      left: 0;
-      top: 0;
-      right: 0;
-      bottom: 0;
+      left: 50%;
+      top: 50%;
+      height: 100%;
+      transform: translate(-50%, -50%);
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
       transition: 0.3s ease-in all;
+
+      @media screen and (max-width: 1300px) {
+        width: 100%;
+      }
     }
     @keyframes fadeInTxt {
       to {
@@ -370,27 +373,27 @@
       }
     }
     &.item-1 {
-      &::before {
+      .bg-img {
         background-image: url('../../resources/images/main/img-item-1.png');
       }
     }
     &.item-2 {
-      &::before {
+      .bg-img {
         background-image: url('../../resources/images/main/img-item-2.png');
       }
     }
     &.item-3 {
-      &::before {
+      .bg-img {
         background-image: url('../../resources/images/main/img-item-3.png');
       }
     }
     &.item-4 {
-      &::before {
+      .bg-img {
         background-image: url('../../resources/images/main/img-item-4.png');
       }
     }
     &.item-5 {
-      &::before {
+      .bg-img {
         background-image: url('../../resources/images/main/img-item-5.png');
       }
     }

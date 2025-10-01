@@ -217,43 +217,40 @@ function initStrengthList() {
 
   const listBoxes = strengthList.querySelectorAll('.list-box');
 
-  // item 너비 및 list-box 높이 조정 함수
+  // 최초 increase 기준 너비 저장
+  let initialReferenceWidth = null;
+
+  // item 너비 및 bg-img 크기 조정 함수
   function adjustItemDimensions() {
     const screenWidth = window.innerWidth;
-    const baseHeight = 56; // 56rem 기준
-    const maxHeight = 100; // 최대 50rem
 
-    // 화면 크기에 따른 높이 비율 계산 (resize시 커지도록)
-    let heightRatio = 1;
-    if (screenWidth >= 1300) {
-      heightRatio = Math.max(1, screenWidth / 1300); // 1300px 기준으로 커지게
-    }
-
-    // 계산된 높이와 최대 높이 중 작은 값 선택
-    const calculatedHeight = Math.min(baseHeight * heightRatio, maxHeight);
-
-    // increase 클래스를 가진 list-box의 item 너비를 기준으로 설정
-    const increaseBox = strengthList.querySelector('.list-box.increase');
-    let referenceWidth = null;
-
-    if (increaseBox) {
-      referenceWidth = increaseBox.getBoundingClientRect().width;
+    // increase 클래스를 가진 list-box의 너비를 기준으로 설정 (최초 1회만)
+    if (!initialReferenceWidth) {
+      const increaseBox = strengthList.querySelector('.list-box.increase');
+      if (increaseBox) {
+        initialReferenceWidth = increaseBox.getBoundingClientRect().width;
+      }
     }
 
     listBoxes.forEach((box) => {
       const item = box.querySelector('.item');
+      const bgImg = box.querySelector('.bg-img');
+
       if (item) {
-        // increase 기준 너비가 있으면 그것을 사용, 없으면 부모 너비 사용
-        const targetWidth = referenceWidth || box.getBoundingClientRect().width;
+        // 최초 저장된 increase 기준 너비 사용, 없으면 부모 너비 사용
+        const targetWidth = initialReferenceWidth || box.getBoundingClientRect().width;
         item.style.width = `${targetWidth}px`;
       }
 
-      // list-box 높이 조정
-      if (screenWidth > 1300) {
-        box.style.height = calculatedHeight + 'rem';
+      // bg-img 너비를 최초 increase 기준으로 모두 동일하게 조정
+      if (screenWidth > 1300 && bgImg && initialReferenceWidth) {
+        bgImg.style.width = `${initialReferenceWidth}px`;
       } else {
-        // 1300px 이하에서는 기본 높이 사용
-        box.style.height = '';
+        // 1300px 이하에서는 기본 크기 사용
+        if (bgImg) {
+          bgImg.style.width = '';
+          bgImg.style.height = '';
+        }
       }
     });
   }
@@ -267,8 +264,11 @@ function initStrengthList() {
         listBoxes[2].classList.add('increase');
       });
 
-      // 애니메이션 완료 후 item 크기 조정
-      setTimeout(adjustItemDimensions, 0); // transition 0.3s + 약간의 여유
+      // 리사이즈 시에는 너비를 다시 측정하기 위해 초기화
+      initialReferenceWidth = null;
+
+      // 애니메이션 완료 후 item 크기 조정 (충분한 시간 대기)
+      setTimeout(adjustItemDimensions, 350); // transition 0.3s + 여유
     } else {
       // 1024 이하일 때: 모든 listBoxes에서 increase 클래스 제거
       listBoxes.forEach((item) => {
@@ -281,6 +281,8 @@ function initStrengthList() {
         }
         item.style.height = '';
       });
+      // 1300px 이하로 변경되면 초기화
+      initialReferenceWidth = null;
     }
   }
 
@@ -303,8 +305,8 @@ function initStrengthList() {
         listBoxes[2].classList.add('increase');
       });
 
-      // 애니메이션 완료 후 item 크기 조정
-      setTimeout(adjustItemDimensions, 300);
+      // 애니메이션 완료 후 item 크기 조정 (충분한 시간 대기)
+      setTimeout(adjustItemDimensions, 350);
     }
   });
 
@@ -321,8 +323,10 @@ function initStrengthList() {
         // 클릭한 list-box에 increase 클래스 추가
         this.classList.add('increase');
 
-        // 애니메이션 완료 후 item 크기 조정
-        setTimeout(adjustItemDimensions, 0); // transition 0.3s + 약간의 여유
+        // 최초 1회만 너비 측정 (클릭 시에는 측정하지 않음)
+        if (!initialReferenceWidth) {
+          setTimeout(adjustItemDimensions, 350);
+        }
       }
     });
   });

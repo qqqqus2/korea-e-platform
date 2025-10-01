@@ -234,16 +234,13 @@
           scaleProgress = 1;
         }
 
-        // scale 값 계산: 1.5에서 1로 변화
-        const scale = 1.5 - 0.5 * scaleProgress;
-
         // opacity 값 계산: 0.5에서 1로 변화
         const opacity = 0.5 + 0.5 * scaleProgress;
 
-        // scale-intro에 scale과 opacity 적용
-        scaleIntro.style.transform = `scale(${scale})`;
+        // scale-intro에 opacity만 적용
+        scaleIntro.style.transform = `scale(1)`;
         scaleIntro.style.opacity = opacity;
-        scaleIntro.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
+        scaleIntro.style.transition = 'opacity 0.3s ease-out';
       });
 
       if (section.id === 'section-01') {
@@ -262,9 +259,8 @@
             opacity = Math.max(0, opacity);
             // 위로 이동하며 사라지는 효과
             let translateY = -50 * progress; // 최대 -50px까지 이동
-            let scale = 1; // 살짝 축소
             section.style.opacity = opacity;
-            section.style.transform = `translateY(${translateY}px) scale(${scale})`;
+            section.style.transform = `translateY(${translateY}px)`;
           }
         }
       } else {
@@ -309,7 +305,6 @@
 
         // 등장/퇴장 애니메이션
         let translateY = 0;
-        let scale = 1;
         let rotate = 0;
 
         if (opacity < 1) {
@@ -317,21 +312,18 @@
           const animProgress = 1 - opacity;
           // 마지막 섹션은 translateY를 0부터 시작
           translateY = isLastSection ? -10 : 150 * animProgress; // 마지막 섹션은 Y 이동 없음
-          scale = 0.9 + 0.1 * opacity; // 더 작은 크기에서 시작
         } else if (distanceFromCenter > fullOpacityZone && !isLastSection) {
           // 섹션이 위로 지나갈 때 (퇴장) - 마지막 섹션은 제외
           const animProgress = 1 - opacity;
           translateY = -120 * animProgress; // 더 큰 이동 거리
-          scale = 1 - 0.1 * animProgress; // 더 큰 축소
           // rotate = -5 * animProgress; // 더 큰 회전
         } else if (isLastSection && scrollTop + windowHeight / 2 >= sectionCenter) {
           // 마지막 섹션이 화면 중앙을 지난 후에는 transform 고정
           translateY = 0;
-          scale = 1;
         }
 
         section.style.opacity = opacity;
-        section.style.transform = `translateY(${translateY}px) scale(${scale}) rotate(${rotate}deg)`;
+        section.style.transform = `translateY(${translateY}px) rotate(${rotate}deg)`;
 
         // opacity가 1이 되면 fadeInUp 애니메이션 실행
         if (opacity >= 0.99 && !sectionAnimationState.get(section)) {
