@@ -183,16 +183,23 @@
           positionProgress = 1;
         }
 
-        // translateY 값 계산: -50px에서 0으로 변화
-        const translateY = 150 * (1 - positionProgress);
+        // 768px 이하에서만 translateY와 opacity 효과 적용
+        if (window.innerWidth <= 768) {
+          // translateY 값 계산: -50px에서 0으로 변화
+          const translateY = 150 * (1 - positionProgress);
 
-        // opacity 값 계산: 0.5에서 1로 변화
-        const opacity = 0.5 + 0.5 * positionProgress;
+          // opacity 값 계산: 0.5에서 1로 변화
+          const opacity = 0.5 + 0.5 * positionProgress;
 
-        // position-intro에 translateY와 opacity 적용
-        positionIntro.style.transform = `translateY(${translateY}px) scale(1)`;
-        positionIntro.style.opacity = opacity;
-        positionIntro.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
+          // position-intro에 translateY와 opacity 적용
+          positionIntro.style.transform = `translateY(${translateY}px) scale(1)`;
+          positionIntro.style.opacity = opacity;
+          positionIntro.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
+        } else {
+          // 768px 초과시 기본 상태로 설정
+          positionIntro.style.transform = 'translateY(0) scale(1)';
+          positionIntro.style.opacity = '1';
+        }
       });
 
       // scale-intro 요소 찾기
@@ -234,13 +241,20 @@
           scaleProgress = 1;
         }
 
-        // opacity 값 계산: 0.5에서 1로 변화
-        const opacity = 0.5 + 0.5 * scaleProgress;
+        // 768px 이하에서만 opacity 효과 적용
+        if (window.innerWidth <= 768) {
+          // opacity 값 계산: 0.5에서 1로 변화
+          const opacity = 0.5 + 0.5 * scaleProgress;
 
-        // scale-intro에 opacity만 적용
-        scaleIntro.style.transform = `scale(1)`;
-        scaleIntro.style.opacity = opacity;
-        scaleIntro.style.transition = 'opacity 0.3s ease-out';
+          // scale-intro에 opacity만 적용
+          scaleIntro.style.transform = `scale(1)`;
+          scaleIntro.style.opacity = opacity;
+          scaleIntro.style.transition = 'opacity 0.3s ease-out';
+        } else {
+          // 768px 초과시 기본 상태로 설정
+          scaleIntro.style.transform = 'scale(1)';
+          scaleIntro.style.opacity = '1';
+        }
       });
 
       if (section.id === 'section-01') {
