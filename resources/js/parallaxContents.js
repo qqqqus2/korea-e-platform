@@ -15,6 +15,11 @@
 
   // 스크롤 이벤트 핸들러
   function handleScroll() {
+    // 768px 이하에서는 handleScroll 실행 안 함
+    if (window.innerWidth <= 768) {
+      return;
+    }
+
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const windowHeight = window.innerHeight;
 

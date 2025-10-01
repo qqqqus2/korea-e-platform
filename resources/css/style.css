@@ -27814,6 +27814,14 @@ body:has(.force-white) {
   -webkit-transform: translateY(-50%);
           transform: translateY(-50%);
 }
+@media screen and (max-width: 768px) {
+  .container {
+    opacity: 1 !important;
+    -webkit-transform: none !important;
+            transform: none !important;
+  }
+}
+
 .scroll-down {
   width: 9.6rem;
   height: 9.6rem;
@@ -29009,11 +29017,6 @@ body:has(.force-white) {
 }
 .main .container {
   padding-block: 10rem;
-}
-@media screen and (max-width: 768px) {
-  .main .container {
-    padding-block: 0;
-  }
 }
 .main .main-banner {
   height: 100%;

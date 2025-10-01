@@ -184,8 +184,9 @@
     transform: translateY(-50%);
   }
 
-  &#section-01 {
-    // z-index: 5;
+  @media screen and (max-width: 768px) {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
 .scroll-down {
