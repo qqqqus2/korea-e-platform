@@ -91,12 +91,12 @@
 
           titleVisual.style.transform = `translateY(${titleTranslateY}%)`;
           titleVisual.style.opacity = titleOpacity;
-          titleVisual.style.transition = 'transform 0.1s ease-out, opacity 0.1s ease-out';
+          titleVisual.style.transition = 'transform 0.5s ease-out, opacity 0.1s ease-out';
 
           // visual-section은 translateY(0) 유지
           if (visualSection) {
             visualSection.style.transform = 'translateY(0)';
-            visualSection.style.transition = 'transform 0.1s ease-out';
+            visualSection.style.transition = 'transform 0.5s ease-out';
           }
 
           // info-box: 페이드인 + 아래에서 위로 이동
@@ -106,7 +106,7 @@
 
             infoBox.style.transform = `translateY(${infoTranslateY}%)`;
             infoBox.style.opacity = infoOpacity;
-            infoBox.style.transition = 'transform 0.1s ease-out, opacity 0.1s ease-out';
+            infoBox.style.transition = 'transform 0.5s ease-out, opacity 0.1s ease-out';
           }
         } else {
           // 2단계: title-visual이 -100% 된 시점부터 mro-visual 전체가 위로 이동 시작
@@ -189,24 +189,15 @@
           // 애니메이션 완료
           positionProgress = 1;
         }
+        const translateY = 150 * (1 - positionProgress);
 
-        // 768px 이하에서만 translateY와 opacity 효과 적용
-        if (window.innerWidth <= 768) {
-          // translateY 값 계산: -50px에서 0으로 변화
-          const translateY = 150 * (1 - positionProgress);
+        // opacity 값 계산: 0.5에서 1로 변화
+        const opacity = 0.5 + 0.5 * positionProgress;
 
-          // opacity 값 계산: 0.5에서 1로 변화
-          const opacity = 0.5 + 0.5 * positionProgress;
-
-          // position-intro에 translateY와 opacity 적용
-          positionIntro.style.transform = `translateY(${translateY}px) scale(1)`;
-          positionIntro.style.opacity = opacity;
-          positionIntro.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
-        } else {
-          // 768px 초과시 기본 상태로 설정
-          positionIntro.style.transform = 'translateY(0) scale(1)';
-          positionIntro.style.opacity = '1';
-        }
+        // position-intro에 translateY와 opacity 적용
+        positionIntro.style.transform = `translateY(${translateY}px) scale(1)`;
+        positionIntro.style.opacity = opacity;
+        positionIntro.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
       });
 
       // scale-intro 요소 찾기
@@ -249,20 +240,13 @@
           scaleProgress = 1;
         }
 
-        // 768px 이하에서만 opacity 효과 적용
-        if (window.innerWidth <= 768) {
-          // opacity 값 계산: 0.5에서 1로 변화
-          const opacity = 0.5 + 0.5 * scaleProgress;
+        // opacity 값 계산: 0.5에서 1로 변화
+        const opacity = 0.5 + 0.5 * scaleProgress;
 
-          // scale-intro에 opacity만 적용
-          scaleIntro.style.transform = `scale(1)`;
-          scaleIntro.style.opacity = opacity;
-          scaleIntro.style.transition = 'opacity 0.3s ease-out';
-        } else {
-          // 768px 초과시 기본 상태로 설정
-          scaleIntro.style.transform = 'scale(1)';
-          scaleIntro.style.opacity = '1';
-        }
+        // scale-intro에 opacity만 적용
+        scaleIntro.style.transform = `scale(1)`;
+        scaleIntro.style.opacity = opacity;
+        scaleIntro.style.transition = 'opacity 0.3s ease-out';
       });
 
       if (section.id === 'section-01') {
@@ -295,9 +279,7 @@
         // viewport 높이 기준으로 트리거 포인트 설정 (섹션 높이 무관)
         const isBusiness = section.classList.contains('business-section');
         const isSection03 = section.id === 'section-03';
-        const triggerPoint = isMobile
-          ? (isLastSection ? -windowHeight * 0.3 : isBusiness ? windowHeight * 0.1 : isSection03 ? -windowHeight * 0.3 : -windowHeight * 0.1)
-          : (isLastSection ? windowHeight * 0.1 : isBusiness ? windowHeight * 0.5 : windowHeight * 0.2);
+        const triggerPoint = isMobile ? (isLastSection ? -windowHeight * 0.3 : isBusiness ? windowHeight * 0.1 : isSection03 ? -windowHeight * 0.3 : -windowHeight * 0.1) : isLastSection ? windowHeight * 0.1 : isBusiness ? windowHeight * 0.5 : windowHeight * 0.2;
 
         // opacity 계산을 위한 거리
         const distanceFromCenter = Math.abs(scrollTop + windowHeight / 2 - sectionCenter);
@@ -334,7 +316,7 @@
             // 트리거 포인트를 지났으면 페이드인 시작
             const fadeInDistance = Math.abs(sectionDistanceFromBottom + triggerPoint);
             // 768px 이하에서는 더 빠른 페이드인
-            const fadeInSpeed = isMobile ? windowHeight * 0.01 : (isLastSection ? windowHeight * 0.1 : windowHeight * 0.2);
+            const fadeInSpeed = isMobile ? windowHeight * 0.01 : isLastSection ? windowHeight * 0.1 : windowHeight * 0.2;
             opacity = Math.min(1, fadeInDistance / fadeInSpeed);
             // 마지막 섹션은 더 급격한 커브로 빠르게 나타남
             opacity = Math.pow(opacity, isLastSection ? 1 : 2);

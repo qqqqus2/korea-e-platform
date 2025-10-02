@@ -29010,6 +29010,11 @@ body:has(.force-white) {
 .main .container {
   padding-block: 10rem;
 }
+@media screen and (max-width: 768px) {
+  .main .container {
+    padding: 10rem 0 5rem;
+  }
+}
 .main .main-banner {
   height: 100%;
   position: relative;
