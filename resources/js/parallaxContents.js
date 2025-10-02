@@ -17,7 +17,7 @@
   function handleScroll() {
     // 768px 이하에서는 handleScroll 실행 안 함
     if (window.innerWidth <= 768) {
-      return;
+      // return;
     }
 
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -169,8 +169,10 @@
         const delay = shouldUseDelay ? parseFloat(positionIntro.dataset.delay || 0) / 1000 : 0; // ms를 초 단위로 변환
 
         // 섹션의 뷰포트 내 위치 계산
-        const startPoint = sectionTop - windowHeight * 0.8; // 섹션이 뷰포트 하단에서 80% 위치에 올 때 시작
-        const endPoint = sectionTop - windowHeight * 0.3; // 모든 요소가 같은 지점에서 끝남
+        // 768px 이하: 섹션 상단이 화면 50% 위치에 올 때 애니메이션 완료
+        const isMobile = window.innerWidth <= 768;
+        const startPoint = isMobile ? sectionTop - windowHeight * 0.8 : sectionTop - windowHeight * 0.8;
+        const endPoint = isMobile ? sectionTop - windowHeight * 0.5 : sectionTop - windowHeight * 0.3;
 
         // delay를 고려한 진행도 계산 (시작점만 조정, 끝점은 동일)
         const adjustedStartPoint = startPoint + windowHeight * delay * 0.3; // delay에 따라 시작점만 조정
@@ -226,9 +228,10 @@
         const sectionBottomFromTop = sectionTop + sectionHeight;
         const viewportCenter = scrollTop + windowHeight / 2;
 
-        // 섹션이 뷰포트에 들어오기 시작할 때부터 30% 지점까지의 진행도
-        const startPoint = sectionTop - windowHeight * 0.8; // 섹션이 뷰포트 하단에서 80% 위치에 올 때 시작
-        const endPoint = sectionTop - windowHeight * 0.3; // 모든 요소가 같은 지점에서 끝남
+        // 768px 이하: 섹션 상단이 화면 50% 위치에 올 때 애니메이션 완료
+        const isMobile = window.innerWidth <= 768;
+        const startPoint = isMobile ? sectionTop - windowHeight * 0.8 : sectionTop - windowHeight * 0.8;
+        const endPoint = isMobile ? sectionTop - windowHeight * 0.5 : sectionTop - windowHeight * 0.3;
 
         // delay를 고려한 진행도 계산 (시작점만 조정, 끝점은 동일)
         const adjustedStartPoint = startPoint + windowHeight * delay * 0.3; // delay에 따라 시작점만 조정
@@ -286,39 +289,62 @@
         // 섹션의 상단이 뷰포트 하단에서 얼마나 떨어져 있는지 계산
         const sectionDistanceFromBottom = sectionTop - (scrollTop + windowHeight);
 
-        // 이전 섹션 높이의 절반 지점부터 다음 섹션이 나타나도록 설정
-        // business-section은 더 느리게 등장 (60% 지점)
-        // 마지막 섹션은 더 일찍 등장 (20% 지점)
+        // 768px 이하에서는 더 일찍 등장하도록 조정
+        const isMobile = window.innerWidth <= 768;
+
+        // viewport 높이 기준으로 트리거 포인트 설정 (섹션 높이 무관)
         const isBusiness = section.classList.contains('business-section');
-        const triggerPoint = index > 0 ? (isLastSection ? sections[index - 1].offsetHeight * 0.1 : isBusiness ? sections[index - 1].offsetHeight * 0.5 : sections[index - 1].offsetHeight * 0.2) : 0;
+        const isSection03 = section.id === 'section-03';
+        const triggerPoint = isMobile
+          ? (isLastSection ? -windowHeight * 0.3 : isBusiness ? windowHeight * 0.1 : isSection03 ? -windowHeight * 0.3 : -windowHeight * 0.1)
+          : (isLastSection ? windowHeight * 0.1 : isBusiness ? windowHeight * 0.5 : windowHeight * 0.2);
 
         // opacity 계산을 위한 거리
         const distanceFromCenter = Math.abs(scrollTop + windowHeight / 2 - sectionCenter);
 
         // opacity 1을 유지하는 구간 설정
-        const fadeZone = windowHeight * 0.5; // 페이드 영역을 더 길게
-        const fullOpacityZone = windowHeight * 0.3; // opacity 1 유지 구간을 줄여서 더 일찍 사라지기 시작
+        const fadeZone = windowHeight * 0.8; // 페이드 영역을 더 길게
+        const fullOpacityZone = windowHeight * 0.2; // opacity 1 유지 구간을 줄여서 더 일찍 사라지기 시작
 
         let opacity = 1;
 
-        // 섹션이 트리거 포인트를 지났는지 확인 (이전 섹션의 절반 지점)
-        if (sectionDistanceFromBottom > -triggerPoint) {
-          // 아직 트리거 포인트에 도달하지 않음
-          opacity = 0;
-        } else {
-          // 트리거 포인트를 지났으면 페이드인 시작
-          const fadeInDistance = Math.abs(sectionDistanceFromBottom + triggerPoint);
-          // 마지막 섹션은 더 빠른 페이드인
-          const fadeInSpeed = isLastSection ? windowHeight * 0.1 : windowHeight * 0.2;
-          opacity = Math.min(1, fadeInDistance / fadeInSpeed);
-          // 마지막 섹션은 더 급격한 커브로 빠르게 나타남
-          opacity = Math.pow(opacity, isLastSection ? 1 : 2);
+        // section-03 모바일: 섹션 상단이 viewport 절반 지나면 opacity 1
+        if (isSection03 && isMobile) {
+          // 섹션 상단이 viewport 중간을 지났는지 확인
+          const sectionTopFromViewportMiddle = sectionTop - (scrollTop + windowHeight / 2);
 
-          // 섹션이 화면을 벗어날 때 페이드아웃 (마지막 섹션 제외)
-          if (!isLastSection && distanceFromCenter > fullOpacityZone) {
-            const fadeDistance = distanceFromCenter - fullOpacityZone;
-            const fadeOutOpacity = 1 - fadeDistance / fadeZone;
-            opacity = Math.min(opacity, Math.max(0, fadeOutOpacity));
+          if (sectionTopFromViewportMiddle > 0) {
+            // 아직 viewport 중간에 도달 안함
+            opacity = 0;
+          } else if (sectionTopFromViewportMiddle > -windowHeight * 0.5) {
+            // viewport 중간부터 절반 거리까지 페이드인
+            const progress = Math.abs(sectionTopFromViewportMiddle) / (windowHeight * 0.5);
+            opacity = Math.min(1, progress);
+          } else {
+            // 완전히 opacity 1
+            opacity = 1;
+          }
+        } else {
+          // 기존 로직
+          // 섹션이 트리거 포인트를 지났는지 확인 (이전 섹션의 절반 지점)
+          if (sectionDistanceFromBottom > -triggerPoint) {
+            // 아직 트리거 포인트에 도달하지 않음
+            opacity = 0;
+          } else {
+            // 트리거 포인트를 지났으면 페이드인 시작
+            const fadeInDistance = Math.abs(sectionDistanceFromBottom + triggerPoint);
+            // 768px 이하에서는 더 빠른 페이드인
+            const fadeInSpeed = isMobile ? windowHeight * 0.01 : (isLastSection ? windowHeight * 0.1 : windowHeight * 0.2);
+            opacity = Math.min(1, fadeInDistance / fadeInSpeed);
+            // 마지막 섹션은 더 급격한 커브로 빠르게 나타남
+            opacity = Math.pow(opacity, isLastSection ? 1 : 2);
+
+            // 섹션이 화면을 벗어날 때 페이드아웃 (마지막 섹션 제외)
+            if (!isLastSection && distanceFromCenter > fullOpacityZone) {
+              const fadeDistance = distanceFromCenter - fullOpacityZone;
+              const fadeOutOpacity = 1 - fadeDistance / fadeZone;
+              opacity = Math.min(opacity, Math.max(0, fadeOutOpacity));
+            }
           }
         }
 
